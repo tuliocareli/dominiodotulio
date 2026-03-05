@@ -1245,6 +1245,115 @@
 
             return wrap;
         },
+
+        wordpad: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column' } });
+
+            // Menu bar simplificada
+            const menu = h('div', { style: { display: 'flex', gap: '10px', padding: '2px 8px', background: '#ece9d8', borderBottom: '1px solid #aca899', fontSize: '11px', fontFamily: 'Tahoma' } });
+            ['Arquivo', 'Editar', 'Formatar', 'Exibir', 'Ajuda'].forEach(m => {
+                menu.appendChild(h('span', { style: { cursor: 'pointer' } }, m));
+            });
+
+            const textarea = h('textarea', {
+                spellcheck: 'false',
+                style: {
+                    flex: '1', width: '100%', resize: 'none', border: 'none', padding: '10px', outline: 'none',
+                    fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', lineHeight: '1.4',
+                    background: '#fff', color: '#000'
+                }
+            });
+
+            textarea.value = `GTA_Cheats.txt - Bloco de Notas
+--------------------------------
+GTA San Andreas Dicas Clássicas:
+HESOYAM  - Saúde, Colete e $250k
+AEZAKMI  - Policia nunca te procura
+UZUMYMW  - Pacote de Armas 3
+CHITTYCHITTYBANGBANG - Carros Voadores
+JUMPJET  - Hydra
+BAGUVIX  - Modo Deus (Vida infinita)
+RIPAZHA  - Carros voam
+
+GTA Vice City:
+PANZER   - Traz o Rhyno (Tanque)
+LEAVEMEALONE - Reduz Nível de Procurado
+NUTTERTOOLS - Armas Pesadas
+
+...salve em disquete para não perder!`;
+
+            wrap.appendChild(menu);
+            wrap.appendChild(textarea);
+            return wrap;
+        },
+
+        tuliowire: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#fff', fontSize: '12px', fontFamily: 'Tahoma' } });
+
+            const header = h('div', { style: { display: 'flex', alignItems: 'center', background: '#e4ecf7', padding: '8px', borderBottom: '1px solid #8ba0c5' } });
+            header.innerHTML = `<span style="font-size:20px; margin-right:8px">🍋</span> <strong style="color: #1c4b9e">TulioWire Enterprise Edition</strong>`;
+
+            const tabs = h('div', { style: { display: 'flex', gap: '4px', background: '#f5f5f5', padding: '4px 8px 0', borderBottom: '1px solid #ccc' } });
+            tabs.innerHTML = `
+                <div style="padding: 4px 12px; background: #fff; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #333; cursor: default">Pesquisar</div>
+                <div style="padding: 4px 12px; background: #e0e0e0; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #666; cursor: default">Transferências</div>
+                <div style="padding: 4px 12px; background: #e0e0e0; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #666; cursor: default">Biblioteca</div>
+            `;
+
+            const tableWrap = h('div', { style: { flex: 1, padding: '10px', background: '#fff' } });
+
+            const table = document.createElement('table');
+            table.style.width = '100%';
+            table.style.borderCollapse = 'collapse';
+            table.style.textAlign = 'left';
+
+            table.innerHTML = `
+                <thead>
+                    <tr style="background:#f0f0f0; border-bottom:1px solid #ccc;">
+                        <th style="padding:4px">Nome do Arquivo</th>
+                        <th style="padding:4px">Tamanho</th>
+                        <th style="padding:4px">Progresso</th>
+                        <th style="padding:4px">Velocidade</th>
+                        <th style="padding:4px">Tempo Rest.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">Linkin_Park_Numb_Oficial.mp3.exe</td>
+                        <td style="padding:4px; color:#666">32 KB</td>
+                        <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:99%;background:#0c0;height:100%"></div></div></td>
+                        <td style="padding:4px; color:#666">0.2 kb/s</td>
+                        <td style="padding:4px; color:#666">Estagnado</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">Dragon_Ball_AF_Ep_01.rmvb</td>
+                        <td style="padding:4px; color:#666">45.2 MB</td>
+                        <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:14%;background:#0c0;height:100%"></div></div></td>
+                        <td style="padding:4px; color:#666">1.5 kb/s</td>
+                        <td style="padding:4px; color:#666">8 anos</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">Keygen_Photoshop_CS2.zip</td>
+                        <td style="padding:4px; color:#666">1.1 MB</td>
+                        <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:98%;background:#0c0;height:100%"></div></div></td>
+                        <td style="padding:4px; color:#666">0.0 kb/s</td>
+                        <td style="padding:4px; color:#666">Infinito</td>
+                    </tr>
+                </tbody>
+            `;
+
+            tableWrap.appendChild(table);
+
+            const status = h('div', { style: { padding: '4px', background: '#ece9d8', borderTop: '1px solid #ccc', color: '#555' } });
+            status.textContent = 'Conectado a 1.204 hosts. Compartilhando 6 arquivos.';
+
+            wrap.appendChild(header);
+            wrap.appendChild(tabs);
+            wrap.appendChild(tableWrap);
+            wrap.appendChild(status);
+
+            return wrap;
+        },
     };
 
 
@@ -1289,6 +1398,8 @@
             minesweeper: { w: '300px', h: '360px' },
             burningrom: { w: '480px', h: '420px' },
             messenger: { w: '480px', h: '380px' },
+            wordpad: { w: '440px', h: '400px' },
+            tuliowire: { w: '540px', h: '340px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
