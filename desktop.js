@@ -2392,11 +2392,11 @@ NUTTERTOOLS - Armas Pesadas
         bsod.style.zIndex = '999999';
         bsod.style.cursor = 'none';
         bsod.innerHTML = `
-            <p>Foi detectado um problema e o Windows foi desligado para evitar danos ao computador.</p>
+            <p>Foi detectado um problema e o Tulio OS foi desligado para evitar danos ao computador.</p>
             <br>
             <p>Se esta for a primeira vez que você vê esta tela de erro de parada, reinicie o computador. Se a tela for exibida novamente, siga estas etapas:</p>
             <br>
-            <p>Certifique-se de que há espaço suficiente em disco. Se um driver for identificado na mensagem de parada, desative o driver ou verifique com o fabricante sobre atualizações. Tente trocar de placa de vídeo.</p>
+            <p>Certifique-se de que há memória RAM suficiente disponível. Se um script for identificado na mensagem de parada, desative o script ou verifique atualizações.</p>
             <br>
             <p>Informações técnicas:</p>
             <p>*** STOP: 0x000000FE (0x00000008, 0x00000006, 0x00000009, 0x847075CC)</p>
@@ -2409,15 +2409,28 @@ NUTTERTOOLS - Armas Pesadas
 
         let p = 1;
         const bsodInt = setInterval(() => {
-            p += Math.floor(Math.random() * 10) + 5;
+            p += Math.floor(Math.random() * 25) + 15; // Mais rápido
             if (p >= 100) {
                 p = 100;
                 clearInterval(bsodInt);
-                setTimeout(() => location.reload(), 2000);
+
+                setTimeout(() => {
+                    bsod.remove();
+                    // Hard reset of OS state
+                    const curDesk = document.getElementById('xpDesktop');
+                    if (curDesk) curDesk.remove();
+                    mounted = false;
+                    shuttingDown = false;
+                    isOnline = false;
+                    for (let key in openWindows) delete openWindows[key];
+
+                    // Trigger Boot again
+                    buildDesktop();
+                }, 800);
             }
             const pEl = document.getElementById('bsodPercent');
             if (pEl) pEl.innerText = `Despejo de memória física concluído: ${p}%`;
-        }, 300);
+        }, 200);
     }
 
     // ── INIT: wire up Start buttons (footer + header) ──
