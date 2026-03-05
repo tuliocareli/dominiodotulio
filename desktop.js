@@ -129,6 +129,7 @@
                 if (now - (win.dataset.lastClone || 0) > 20) {
                     const clone = win.cloneNode(true);
                     clone.classList.remove('xp-win--active', 'xp-win--frozen');
+                    clone.classList.add('xp-accel-clone');
                     clone.style.pointerEvents = 'none'; // Clones you can't click
                     clone.style.zIndex = zTop - 1;
                     desk.appendChild(clone);
@@ -1273,7 +1274,7 @@
             head.innerHTML = `<span>TULIOAMP</span> <span>kbps: 128 kHz: 44</span>`;
 
             const display = h('div', { style: { padding: '10px', textAlign: 'center', fontSize: '14px', flex: '1', borderBottom: '1px solid #333' } });
-            display.textContent = '01. Dj_Tulio_-_Electro_Mix.mp3';
+            display.textContent = '01. Cant get over you, tell me you will come back baby.mp3';
 
             const spectrum = h('div', { style: { display: 'flex', height: '30px', margin: '5px auto', width: '80%', alignItems: 'flex-end', justifyContent: 'center', gap: '2px', opacity: 0.5 } });
 
@@ -1855,6 +1856,13 @@ NUTTERTOOLS - Armas Pesadas
                                     titlebar.style.pointerEvents = 'all';
                                     titlebar.style.cursor = 'wait';
                                 }
+                                // Auto close gracefully after 8 seconds
+                                setTimeout(() => {
+                                    closeWin('accelerator');
+                                    document.querySelectorAll('.xp-accel-clone').forEach(c => c.remove());
+                                    const pop = document.getElementById('xpAccelClosePopup');
+                                    if (pop) pop.remove();
+                                }, 8000);
                             }
                         }, 1200);
                     };
@@ -1991,7 +1999,25 @@ NUTTERTOOLS - Armas Pesadas
             const icon = ICONS.find(i => i.id === id);
             const btn = h('button', {
                 class: 'xp-taskbar-app' + (w.classList.contains('xp-win--active') && !w.classList.contains('xp-win--minimized') ? ' xp-tb--active' : ''),
-                onclick: () => {
+                onclick: (e) => {
+                    if (id === 'accelerator' && w.classList.contains('xp-win--frozen')) {
+                        e.stopPropagation();
+                        let pop = document.getElementById('xpAccelClosePopup');
+                        if (pop) { pop.remove(); return; }
+                        pop = h('div', {
+                            id: 'xpAccelClosePopup',
+                            style: { position: 'absolute', bottom: '45px', left: e.clientX + 'px', background: '#ece9d8', border: '1px solid #7f9db9', padding: '6px', zIndex: 10005, boxShadow: '2px 2px 5px rgba(0,0,0,0.5)', fontFamily: 'Tahoma', fontSize: '11px', cursor: 'pointer' },
+                            onclick: () => {
+                                closeWin('accelerator');
+                                document.querySelectorAll('.xp-accel-clone').forEach(c => c.remove());
+                                pop.remove();
+                            }
+                        }, '✕ Forçar Fechamento (Não Respondendo)');
+                        document.body.appendChild(pop);
+                        setTimeout(() => document.body.addEventListener('click', () => { const p = document.getElementById('xpAccelClosePopup'); if (p) p.remove(); }, { once: true }), 50);
+                        return;
+                    }
+
                     if (w.classList.contains('xp-win--minimized')) {
                         w.classList.remove('xp-win--minimized');
                         focusWin(w);
