@@ -802,4 +802,54 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(tickScore, 800);
     }
 
+    // ════════════════════════════════════════
+    // 13. CLIPPY HELPER & TERMINAL GLITCH
+    // ════════════════════════════════════════
+    const clippy = document.getElementById('clippyHelper');
+    const headerTerm = document.querySelector('.header-main-title');
+
+    // Mostra o Clippy depois de 10 segundos
+    setTimeout(() => {
+        if (clippy && !document.getElementById('xpDesktop')) {
+            clippy.classList.add('visible');
+        }
+    }, 10000);
+
+    // Esconde o clippy ao clicar nele ou ao abrir o Desktop
+    if (clippy) {
+        clippy.addEventListener('click', () => {
+            clippy.classList.remove('visible');
+        });
+    }
+
+    document.getElementById('headerStartBtn')?.addEventListener('click', () => {
+        if (clippy) clippy.classList.remove('visible');
+    });
+
+    document.getElementById('footerStartBtn')?.addEventListener('click', () => {
+        if (clippy) clippy.classList.remove('visible');
+    });
+
+    // Mensagem subliminar no Terminal do Header
+    if (headerTerm) {
+        setInterval(() => {
+            // Só faz o glitch do aviso se o Desktop não estiver aberto e de vez em quando (30% de chance a cada 4s)
+            if (Math.random() > 0.7 && !document.getElementById('xpDesktop')) {
+                const oldRaw = headerTerm.getAttribute('data-text');
+                const oldText = headerTerm.textContent;
+                const subliminal = ">> EXECUTE INICIAR.EXE PARA ACESSAR O SO";
+
+                headerTerm.textContent = subliminal;
+                headerTerm.setAttribute('data-text', subliminal);
+                headerTerm.style.color = "var(--neon-green)";
+
+                setTimeout(() => {
+                    headerTerm.textContent = oldText;
+                    headerTerm.setAttribute('data-text', oldRaw);
+                    headerTerm.style.color = "";
+                }, 800); // Pisca por 800ms
+            }
+        }, 4000);
+    }
+
 });
