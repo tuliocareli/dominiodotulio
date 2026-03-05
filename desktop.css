@@ -110,6 +110,57 @@
     }
 }
 
+/* ── NUDGE ANIMATION ─────────────────────────────── */
+@keyframes xpNudgeShaking {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    10% {
+        transform: translate(-15px, -15px);
+    }
+
+    20% {
+        transform: translate(15px, -15px);
+    }
+
+    30% {
+        transform: translate(-15px, 15px);
+    }
+
+    40% {
+        transform: translate(15px, 15px);
+    }
+
+    50% {
+        transform: translate(-10px, -10px);
+    }
+
+    60% {
+        transform: translate(10px, -10px);
+    }
+
+    70% {
+        transform: translate(-10px, 10px);
+    }
+
+    80% {
+        transform: translate(10px, 10px);
+    }
+
+    90% {
+        transform: translate(-5px, -5px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+.xp-nudge-shake {
+    animation: xpNudgeShaking 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
 /* ── WELCOME SCREEN ─────────────────────────────────── */
 #xpWelcome {
     position: absolute;

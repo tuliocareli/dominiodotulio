@@ -1250,6 +1250,154 @@
             return wrap;
         },
 
+        winamp: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#1c1c1c', border: '2px solid #333', color: '#00ff00', fontFamily: 'Courier New' } });
+
+            // Layout bem old-school
+            const head = h('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '2px 4px', background: '#0a0a0a', borderBottom: '1px solid #333', fontSize: '10px' } });
+            head.innerHTML = `<span>TULIOAMP</span> <span>kbps: 128 kHz: 44</span>`;
+
+            const display = h('div', { style: { padding: '10px', textAlign: 'center', fontSize: '14px', flex: '1', borderBottom: '1px solid #333' } });
+            display.textContent = '01. Dj_Tulio_-_Electro_Mix.mp3';
+
+            const spectrum = h('div', { style: { display: 'flex', height: '30px', margin: '5px auto', width: '80%', alignItems: 'flex-end', justifyContent: 'center', gap: '2px', opacity: 0.5 } });
+
+            // Barrinhas do spectro
+            const bars = [];
+            for (let i = 0; i < 15; i++) {
+                const b = h('div', { style: { width: '8px', background: '#00ff00', height: (Math.random() * 80 + 20) + '%' } });
+                bars.push(b);
+                spectrum.appendChild(b);
+            }
+            display.appendChild(spectrum);
+
+            const controls = h('div', { style: { display: 'flex', gap: '5px', padding: '10px', justifyContent: 'center', background: '#111' } });
+            const playBtn = h('button', { style: { background: '#333', color: '#00ff00', border: '1px outset #555', cursor: 'pointer', padding: '4px 12px', fontWeight: 'bold' } }, '▶ PLAY');
+            const stopBtn = h('button', { style: { background: '#333', color: '#00ff00', border: '1px outset #555', cursor: 'pointer', padding: '4px 12px', fontWeight: 'bold' } }, '◼ STOP');
+
+            let animInterval = null;
+
+            playBtn.onclick = () => {
+                spectrum.style.opacity = 1;
+                clearInterval(animInterval);
+                animInterval = setInterval(() => {
+                    bars.forEach(b => b.style.height = (Math.random() * 90 + 10) + '%');
+                }, 150);
+
+                // "Winamp, it really whips the llama's ass!" via TTS
+                if ('speechSynthesis' in window) {
+                    const u = new SpeechSynthesisUtterance("Tulioamp. It really whips the llama's ass.");
+                    u.lang = 'en-US';
+                    u.pitch = 0.5; // voz mais grave/comprimida
+                    u.rate = 1.2;
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(u);
+                }
+            };
+
+            stopBtn.onclick = () => {
+                spectrum.style.opacity = 0.5;
+                clearInterval(animInterval);
+                bars.forEach(b => b.style.height = '10%');
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            };
+
+            controls.appendChild(playBtn);
+            controls.appendChild(stopBtn);
+
+            wrap.appendChild(head);
+            wrap.appendChild(display);
+            wrap.appendChild(controls);
+
+            return wrap;
+        },
+
+        messenger: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#f5f5f5', fontFamily: 'Tahoma' } });
+
+            const header = h('div', { style: { padding: '8px', background: '#fff', borderBottom: '1px solid #ccc', display: 'flex', alignItems: 'center', gap: '8px' } });
+            header.innerHTML = `<span style="font-size:20px">💬</span> <div><h3 style="margin:0; font-size:12px; color:#1c4b9e">Lari (Ocupada)</h3><p style="margin:0; font-size:10px; color:#666">"Naquelas longas noites em claro..."</p></div>`;
+
+            const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', borderBottom: '1px solid #ccc' } });
+            chatBox.innerHTML = `
+                <div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- Lari acabou de entrar ---</div>
+                <div style="margin-bottom: 5px"><strong style="color: #666">Lari diz:</strong></div>
+                <div style="margin-bottom: 10px; padding-left: 10px; font-family: 'Comic Sans MS'; color: #000080">oioioioi</div>
+            `;
+
+            const inputBox = h('div', { style: { height: '80px', padding: '5px', background: '#ece9d8', display: 'flex', flexDirection: 'column' } });
+
+            // Fake barra de formatação Msn
+            const toolBar = h('div', { style: { display: 'flex', gap: '4px', marginBottom: '4px' } });
+            toolBar.innerHTML = `<span style="cursor:pointer">🅰️</span><span style="cursor:pointer">😊</span><span style="cursor:pointer">🎵</span>`;
+
+            const form = h('form', { style: { display: 'flex', gap: '5px', flex: 1 } });
+            const input = h('input', { type: 'text', style: { flex: 1, border: '1px solid #7f9db9', padding: '4px' }, placeholder: 'Escreva uma mensagem...' });
+            const btn = h('button', { type: 'submit', style: { padding: '0 15px', fontFamily: 'Tahoma' } }, 'Enviar');
+
+            form.appendChild(input);
+            form.appendChild(btn);
+            inputBox.appendChild(toolBar);
+            inputBox.appendChild(form);
+
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                if (!input.value.trim()) return;
+
+                // Add user msg
+                const msgWrap = document.createElement('div');
+                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Tulio diz:</strong></div><div style="padding-left: 10px">${input.value}</div>`;
+                chatBox.appendChild(msgWrap);
+                input.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                // Nudge logic! 2s delay
+                setTimeout(() => {
+                    const notice = document.createElement('div');
+                    notice.style.color = 'red';
+                    notice.style.fontWeight = 'bold';
+                    notice.style.textAlign = 'center';
+                    notice.style.margin = '10px 0';
+                    notice.innerText = "Lari acaba de enviar um chamar a atenção!";
+                    chatBox.appendChild(notice);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+
+                    // Tremer a tela inteira (Nudge effect)
+                    const desk = document.getElementById('xpDesktop');
+                    if (desk) {
+                        desk.classList.add('xp-nudge-shake');
+                        setTimeout(() => desk.classList.remove('xp-nudge-shake'), 400); // tempo que rola na keyframe -> 0.4s
+                    }
+
+                    // Som de Nudge (Thud sintético grave via AudioContext)
+                    try {
+                        const C = window.AudioContext || window.webkitAudioContext;
+                        if (C) {
+                            const c = new C();
+                            const g = c.createGain();
+                            const o = c.createOscillator();
+                            o.type = 'triangle';
+                            o.frequency.setValueAtTime(150, c.currentTime);    // freq inicial grave
+                            o.frequency.exponentialRampToValueAtTime(40, c.currentTime + 0.3); // drop rápido pra bater
+                            g.gain.setValueAtTime(1, c.currentTime);
+                            g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.3);
+                            o.connect(g);
+                            g.connect(c.destination);
+                            o.start();
+                            o.stop(c.currentTime + 0.4);
+                        }
+                    } catch (err) { }
+
+                }, 2000);
+            };
+
+            wrap.appendChild(header);
+            wrap.appendChild(chatBox);
+            wrap.appendChild(inputBox);
+
+            return wrap;
+        },
+
         wordpad: () => {
             const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column' } });
 
@@ -1602,6 +1750,7 @@ NUTTERTOOLS - Armas Pesadas
             minesweeper: { w: '300px', h: '360px' },
             burningrom: { w: '480px', h: '420px' },
             messenger: { w: '480px', h: '380px' },
+            winamp: { w: '280px', h: '160px' },
             wordpad: { w: '440px', h: '400px' },
             gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
