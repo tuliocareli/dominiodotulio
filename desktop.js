@@ -1321,15 +1321,33 @@
 
             const display = h('div', { class: 'winamp-display', style: { display: 'flex', flexDirection: 'column' } }, viz, infoPanel);
 
+            // Progress Bar
+            const progContainer = h('div', {
+                style: { width: '80%', height: '8px', background: '#111', border: '1px solid #333', margin: '5px auto 0 auto', cursor: 'pointer', position: 'relative' },
+                onclick: (e) => {
+                    if (!ytReady || !ytPlayer || !ytPlayer.getDuration) return;
+                    const rect = e.target.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const percent = clickX / rect.width;
+                    const dur = ytPlayer.getDuration();
+                    if (dur) ytPlayer.seekTo(dur * percent, true);
+                }
+            });
+            const progFill = h('div', { style: { width: '0%', height: '100%', background: '#0f0', transition: 'width 0.1s linear', pointerEvents: 'none' } });
+            progContainer.appendChild(progFill);
+
             // Controls
             const btnPrev = h('button', { class: 'wbtn', title: 'Anterior' }, '⏮');
             const btnPlay = h('button', { class: 'wbtn play', title: 'Play' }, '▶');
             const btnPause = h('button', { class: 'wbtn', title: 'Pause' }, '⏸');
             const btnNext = h('button', { class: 'wbtn', title: 'Próximo' }, '⏭');
 
-            const controls = h('div', { class: 'winamp-controls' },
-                btnPrev, btnPlay, btnPause, h('button', { class: 'wbtn' }, '⏹'), btnNext,
-                h('button', { class: 'wbtn shuffle' }, '⇀⇁'), h('button', { class: 'wbtn' }, '↻')
+            const controlsWrap = h('div', { style: { display: 'flex', flexDirection: 'column' } },
+                progContainer,
+                h('div', { class: 'winamp-controls', style: { paddingTop: '8px' } },
+                    btnPrev, btnPlay, btnPause, h('button', { class: 'wbtn' }, '⏹'), btnNext,
+                    h('button', { class: 'wbtn shuffle' }, '⇀⇁'), h('button', { class: 'wbtn' }, '↻')
+                )
             );
 
             // Playlist
@@ -1381,10 +1399,67 @@
 
             ytFooter.appendChild(playerContainer);
 
+            // Psychedelic Canvas Visualizer
+            const canvasContainer = h('div', {
+                style: { height: '150px', background: '#000', borderTop: '2px solid #555', overflow: 'hidden', position: 'relative' }
+            });
+            const canvas = h('canvas', { style: { display: 'block', width: '100%', height: '100%' } });
+            canvasContainer.appendChild(canvas);
+
+            let ctx = null;
+            let vizTime = 0;
+            let vizActive = false;
+            let animId = null;
+
+            const drawViz = () => {
+                if (!ctx) {
+                    canvas.width = canvasContainer.clientWidth || 280;
+                    canvas.height = canvasContainer.clientHeight || 150;
+                    ctx = canvas.getContext('2d');
+                }
+                const width = canvas.width;
+                const height = canvas.height;
+
+                // Fading effect for trailing lines
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.fillRect(0, 0, width, height);
+
+                if (vizActive) {
+                    vizTime += 0.05;
+                    ctx.save();
+                    ctx.translate(width / 2, height / 2);
+
+                    const numLines = 5;
+                    for (let i = 0; i < numLines; i++) {
+                        ctx.beginPath();
+                        const phase = vizTime + (i * Math.PI * 2 / numLines);
+
+                        for (let a = 0; a < Math.PI * 2; a += 0.05) {
+                            const r = (30 + 15 * Math.sin(a * 4 + phase * 2)) * (1 + 0.3 * Math.sin(vizTime * 3));
+                            const x = Math.cos(a + phase) * r * 2;
+                            const y = Math.sin(a * 2 + phase) * r * 1.5;
+
+                            if (a === 0) ctx.moveTo(x, y);
+                            else ctx.lineTo(x, y);
+                        }
+                        ctx.strokeStyle = `hsl(${(phase * 50) % 360}, 100%, 60%)`;
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+
+                animId = requestAnimationFrame(drawViz);
+            };
+
+            // Start animation loop
+            requestAnimationFrame(() => drawViz());
+
             wrap.appendChild(titlebar);
             wrap.appendChild(display);
-            wrap.appendChild(controls);
+            wrap.appendChild(controlsWrap);
             wrap.appendChild(plSection);
+            wrap.appendChild(canvasContainer);
             wrap.appendChild(ytFooter);
 
             let ytPlayer;
@@ -1454,13 +1529,20 @@
                             checkInterval = setInterval(() => {
                                 if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
                                     const t = ytPlayer.getCurrentTime();
+                                    const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
                                     const state = ytPlayer.getPlayerState();
                                     timeLabel.textContent = formatTime(t);
 
+                                    if (dur > 0) {
+                                        progFill.style.width = `${(t / dur) * 100}%`;
+                                    }
+
                                     // Visualizer animation
                                     if (state === window.YT.PlayerState.PLAYING) {
+                                        vizActive = true;
                                         viz.childNodes.forEach(b => b.style.height = (Math.random() * 80 + 20) + '%');
                                     } else {
+                                        vizActive = false;
                                         viz.childNodes.forEach(b => b.style.height = '10%');
                                     }
                                 }
@@ -1506,6 +1588,7 @@
                 if (!document.body.contains(wrap)) {
                     clearInterval(checkInterval);
                     clearInterval(cleanup);
+                    if (animId) cancelAnimationFrame(animId);
                     if (ytPlayer && typeof ytPlayer.destroy === 'function') ytPlayer.destroy();
                 }
             }, 1000);
