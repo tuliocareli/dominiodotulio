@@ -59,6 +59,7 @@
         { id: 'earth', icon: '🌎', label: 'Tulio Earth' },
         { id: 'burningrom', icon: '💿', label: 'Tulio Burning ROM' },
         { id: 'messenger', icon: '💬', label: 'Tulio Messenger' },
+        { id: 'wordpad', icon: '📝', label: 'Tulio WordPad' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
@@ -623,6 +624,50 @@
         trash: () => h('div', { class: 'xp-file-view xp-empty' },
             h('div', { class: 'xp-empty-msg' }, '🗑️ A Lixeira está vazia.'),
         ),
+
+        // ── WORDPAD ─────────────────────────────────────
+        wordpad: () => {
+            const wrap = h('div', { class: 'xp-wordpad' });
+
+            const toolbar = h('div', {
+                class: 'xp-ie-toolbar', html:
+                    '<span>Arquivo</span><span>Editar</span><span>Exibir</span>' +
+                    '<span>Inserir</span><span>Formatar</span><span>Ajuda</span>'
+            });
+
+            // Format bar mockup
+            const formatBar = h('div', { class: 'xp-wp-formatbar' },
+                h('select', { class: 'xp-wp-select' },
+                    h('option', {}, 'Arial'),
+                    h('option', { selected: true }, 'Times New Roman'),
+                    h('option', {}, 'Tahoma'),
+                    h('option', {}, 'Comic Sans MS')
+                ),
+                h('select', { class: 'xp-wp-select xp-wp-select-size' },
+                    h('option', {}, '10'),
+                    h('option', { selected: true }, '12'),
+                    h('option', {}, '14'),
+                    h('option', {}, '18'),
+                    h('option', {}, '24')
+                ),
+                h('button', { class: 'xp-wp-btn', title: 'Negrito' }, h('b', {}, 'N')),
+                h('button', { class: 'xp-wp-btn', title: 'Itálico' }, h('i', {}, 'I')),
+                h('button', { class: 'xp-wp-btn', title: 'Sublinhado' }, h('u', {}, 'S')),
+            );
+
+            const ruler = h('div', { class: 'xp-wp-ruler' });
+
+            const editorArea = h('div', { class: 'xp-wp-editor' },
+                h('textarea', { class: 'xp-wp-textarea', spellcheck: false, placeholder: 'Comece a digitar o seu texto aqui...' })
+            );
+
+            wrap.appendChild(toolbar);
+            wrap.appendChild(formatBar);
+            wrap.appendChild(ruler);
+            wrap.appendChild(editorArea);
+
+            return wrap;
+        },
     };
 
 

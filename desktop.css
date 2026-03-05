@@ -989,3 +989,96 @@
 .xp-wa-bar:nth-child(20) {
     animation-duration: 0.63s;
 }
+
+/* ── WORDPAD ───────────────────────────────────── */
+.xp-wordpad {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 250px;
+}
+
+.xp-wp-formatbar {
+    display: flex;
+    gap: 4px;
+    padding: 3px 6px 4px;
+    align-items: center;
+}
+
+.xp-wp-select {
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    padding: 1px 2px;
+    border: 1px inset #fff;
+    background: #fff;
+}
+
+.xp-wp-select-size {
+    width: 45px;
+}
+
+.xp-wp-btn {
+    width: 22px;
+    height: 22px;
+    background: #d4d0c8;
+    border: 1px solid #fff;
+    border-bottom-color: #888;
+    border-right-color: #888;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.xp-wp-btn:active {
+    border: 1px solid #888;
+    border-bottom-color: #fff;
+    border-right-color: #fff;
+    padding-top: 1px;
+    padding-left: 1px;
+}
+
+.xp-wp-ruler {
+    height: 14px;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+    font-family: monospace;
+    font-size: 10px;
+    line-height: 14px;
+    color: #999;
+    padding: 0 10px;
+    white-space: pre;
+    overflow: hidden;
+}
+
+.xp-wp-editor {
+    flex: 1;
+    background: #aba096;
+    /* fundo em volta das margens, estilo word */
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.xp-wp-textarea {
+    width: 100%;
+    max-width: 800px;
+    /* simula a largura da página sulfite */
+    background: #fff;
+    border: 1px inset #999;
+    padding: 24px;
+    font-family: 'Times New Roman', serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #000;
+    resize: none;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.xp-wp-textarea:focus {
+    outline: none;
+}
