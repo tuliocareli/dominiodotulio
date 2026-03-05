@@ -64,6 +64,7 @@
         { id: 'imageviewer', icon: '🖼️', label: 'Imagens' },
         { id: 'calculator', icon: '🖩', label: 'Calculadora' },
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
+        { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
@@ -74,6 +75,7 @@
     let mounted = false;
     let shuttingDown = false;
     let clockTimer = null;
+    let isOnline = false;
     const openWindows = {}; // id → window el
 
     // ── HELPERS ───────────────────────────────────────
@@ -1410,6 +1412,145 @@ NUTTERTOOLS - Armas Pesadas
             wrap.appendChild(tableWrap);
             wrap.appendChild(status);
 
+            wrap.appendChild(status);
+
+            return wrap;
+        },
+
+        tulionet: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#ece9d8', fontFamily: 'Tahoma', fontSize: '11px' } });
+
+            if (isOnline) {
+                wrap.innerHTML = `
+                    <div style="padding: 20px; text-align: center; background: #fff; flex: 1; border-bottom: 1px solid #aca899;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🌍</div>
+                        <h3 style="margin: 0 0 10px 0; color: #1c4b9e; font-size: 16px;">TulioNet 56K</h3>
+                        <p style="color: green; font-weight: bold; margin: 5px 0;">Status: Conectado</p>
+                        <p style="margin: 5px 0;">Velocidade: 48,0 Kbps</p>
+                        <p style="margin: 5px 0;">Duração: 00:02:14</p>
+                    </div>
+                    <div style="padding: 10px; background: #f5f5f5; text-align: right;">
+                        <button id="tnDiscBtn" style="padding: 4px 15px; font-family: Tahoma; text-shadow: none">Desconectar</button>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const dBtn = wrap.querySelector('#tnDiscBtn');
+                    if (dBtn) dBtn.onclick = () => {
+                        isOnline = false;
+                        closeWin('tulionet');
+                    };
+                }, 50);
+                return wrap;
+            }
+
+            const topHalf = h('div', { style: { padding: '15px', background: '#fff', flex: 1 } });
+            topHalf.innerHTML = `
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <div style="font-size: 36px;">☎️</div>
+                    <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 14px;">Conectar a TulioNet</h3>
+                        <p style="margin: 0; color: #666;">Provedor de Acesso à Internet</p>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 80px 1fr; gap: 8px; align-items: center; margin-bottom: 15px;">
+                    <label>Usuário:</label>
+                    <input type="text" value="tulio_underground" disabled style="background:#fff; border:1px solid #7f9db9; padding:2px 4px; color:#555">
+                    <label>Senha:</label>
+                    <input type="password" value="********" disabled style="background:#fff; border:1px solid #7f9db9; padding:2px 4px; color:#555">
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-left: 88px">
+                    <input type="checkbox" checked disabled id="tnSave">
+                    <label for="tnSave">Salvar senha</label>
+                </div>
+                <div style="display: grid; grid-template-columns: 80px 1fr; gap: 8px; align-items: center;">
+                    <label>Discar para:</label>
+                    <input type="text" value="1466-9912" disabled style="background:#fff; border:1px solid #7f9db9; padding:2px 4px; color:#555">
+                </div>
+            `;
+
+            const statusArea = h('div', { style: { display: 'none', padding: '15px', borderTop: '1px solid #aca899', background: '#ece9d8' } });
+            statusArea.innerHTML = `
+                <p id="tnStatusText" style="margin: 0 0 10px 0; font-weight: bold;">Ligando para 1466-9912...</p>
+                <div style="width: 100%; border: 1px solid #888; height: 14px; background: #fff; position: relative;">
+                    <div id="tnProg" style="width: 0%; height: 100%; background: #0c0;"></div>
+                </div>
+            `;
+
+            const btnArea = h('div', { style: { padding: '10px 15px', background: '#f5f5f5', borderTop: '1px solid #aca899', display: 'flex', justifyContent: 'flex-end', gap: '8px' } });
+            const connBtn = h('button', { style: { padding: '4px 15px', fontFamily: 'Tahoma', fontWeight: 'bold' } }, 'Conectar');
+            const cancelBtn = h('button', { style: { padding: '4px 15px', fontFamily: 'Tahoma' } }, 'Cancelar');
+
+            cancelBtn.onclick = () => closeWin('tulionet');
+
+            connBtn.onclick = () => {
+                connBtn.disabled = true;
+                cancelBtn.disabled = true;
+                topHalf.style.opacity = '0.5';
+                statusArea.style.display = 'block';
+
+                const sTxt = statusArea.querySelector('#tnStatusText');
+                const prog = statusArea.querySelector('#tnProg');
+
+                prog.style.width = '10%';
+
+                // Beep Boop Sintético de Conexão + Chieira
+                try {
+                    const C = window.AudioContext || window.webkitAudioContext;
+                    if (C) {
+                        const c = new C();
+                        let t = c.currentTime + 0.1;
+                        '14669912'.split('').forEach(d => {
+                            const f = { '1': [697, 1209], '2': [697, 1336], '3': [697, 1477], '4': [770, 1209], '5': [770, 1336], '6': [770, 1477], '7': [852, 1209], '8': [852, 1336], '9': [852, 1477], '0': [941, 1336] }[d] || [852, 1209];
+                            const o1 = c.createOscillator(); const o2 = c.createOscillator();
+                            const g = c.createGain();
+                            o1.type = 'square'; o1.frequency.value = f[0];
+                            o2.type = 'square'; o2.frequency.value = f[1];
+                            o1.connect(g); o2.connect(g); g.connect(c.destination);
+                            g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.05, t + 0.01); g.gain.linearRampToValueAtTime(0, t + 0.1);
+                            o1.start(t); o1.stop(t + 0.1); o2.start(t); o2.stop(t + 0.1);
+                            t += 0.15;
+                        });
+                        const bSize = c.sampleRate * 2.5;
+                        const b = c.createBuffer(1, bSize, c.sampleRate);
+                        const data = b.getChannelData(0);
+                        for (let i = 0; i < bSize; i++) data[i] = (Math.random() * 2 - 1) * 0.03;
+                        const n = c.createBufferSource(); n.buffer = b; n.connect(c.destination);
+                        n.start(t + 0.3); // Chieira (Handshake noise)
+                    }
+                } catch (e) { }
+
+                setTimeout(() => {
+                    sTxt.textContent = "Verificando nome de usuário e senha...";
+                    prog.style.width = '40%';
+
+                    setTimeout(() => {
+                        prog.style.width = '60%';
+                    }, 1500);
+
+                    setTimeout(() => {
+                        sTxt.textContent = "Registrando seu computador na rede...";
+                        prog.style.width = '80%';
+
+                        setTimeout(() => {
+                            prog.style.width = '100%';
+
+                            setTimeout(() => {
+                                isOnline = true;
+                                closeWin('tulionet');
+                                setTimeout(() => openWin('tulionet'), 100);
+                            }, 800);
+                        }, 1500);
+                    }, 3000);
+                }, 2000);
+            };
+
+            btnArea.appendChild(connBtn);
+            btnArea.appendChild(cancelBtn);
+
+            wrap.appendChild(topHalf);
+            wrap.appendChild(statusArea);
+            wrap.appendChild(btnArea);
+
             return wrap;
         },
     };
@@ -1417,6 +1558,11 @@ NUTTERTOOLS - Armas Pesadas
 
     // ── OPEN / CLOSE WINDOW ───────────────────────────
     function openWin(id) {
+        if (id === 'ie' && !isOnline) {
+            alert('⚠️ ERRO DE REDE: Não foi possível localizar o servidor.\\n\\nVocê precisa abrir o discador (TulioNet 56K) e se conectar para acessar a Internet!');
+            return;
+        }
+
         if (openWindows[id]) {
             // Já existe: só traz pro foco ou desfaz minimizar
             const w = openWindows[id];
@@ -1459,6 +1605,7 @@ NUTTERTOOLS - Armas Pesadas
             wordpad: { w: '440px', h: '400px' },
             gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
+            tulionet: { w: '380px', h: '360px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
@@ -1738,8 +1885,9 @@ NUTTERTOOLS - Armas Pesadas
                 delete openWindows[id];
             });
 
-            // Reseta estados de maximização
+            // Reseta estados de maximização e online
             Object.keys(maximized).forEach(k => delete maximized[k]);
+            isOnline = false;
 
             desk.classList.remove('xp-desk--open');
             clearInterval(clockTimer);
