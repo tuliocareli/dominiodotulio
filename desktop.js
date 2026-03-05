@@ -1389,7 +1389,7 @@
             );
 
             // Playlist
-            const plList = h('ul', { class: 'winamp-pl-list', style: { flexGrow: 1, minHeight: '140px', overflowY: 'auto', listStyle: 'none', padding: '0', margin: '0', background: '#0a0a0a', color: '#888', fontSize: '10px' } });
+            const plList = h('ul', { class: 'winamp-pl-list', style: { flexGrow: '1', minHeight: '140px', overflowY: 'auto', listStyle: 'none', padding: '0', margin: '0', background: '#0a0a0a', color: '#888', fontSize: '10px' } });
 
             const updatePlaylistUI = () => {
                 plList.innerHTML = '';
@@ -1415,7 +1415,7 @@
                 });
             };
 
-            const plSection = h('div', { class: 'winamp-playlist-section', style: { display: 'flex', flexDirection: 'column', flexGrow: 1, minHeight: 0 } },
+            const plSection = h('div', { class: 'winamp-playlist-section', style: { display: 'flex', flexDirection: 'column', flexGrow: '1', minHeight: '0px' } },
                 h('div', { class: 'winamp-eq-titlebar' },
                     h('span', { class: 'winamp-logo' }, '📋 PLAYLIST'),
                     h('span', { style: { color: '#aaa', fontSize: '10px' } }, `${MUSIC_DATA.length} FILES`)
@@ -2301,7 +2301,7 @@ NUTTERTOOLS - Armas Pesadas
             minesweeper: { w: '300px', h: '360px' },
             burningrom: { w: '480px', h: '420px' },
             messenger: { w: '480px', h: '380px' },
-            winamp: { w: '280px', h: null },
+            winamp: { w: '280px', h: '580px' },
             wordpad: { w: '440px', h: '400px' },
             gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
