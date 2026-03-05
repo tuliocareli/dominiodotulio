@@ -1622,7 +1622,7 @@ NUTTERTOOLS - Armas Pesadas
             setTimeout(() => {
                 const ads = [
                     { t: "PARABÉNS!", msg: "VOCÊ É O VISITANTE 1.000.000! CLIQUE PARA REIVINDICAR SEU IPOD NANO!", color: "#ff0000" },
-                    { t: "ALERTA DE SEGURANÇA", msg: "Seu PC está infectado com 34 vírus! Baixe o Antivirus 2005 agora mesmo para limpar.", color: "#ffff00", tColor: "#000" },
+                    { t: "ALERTA DE SEGURANÇA", msg: "Promoção imperdivel, compre 6 e leve 3. é por tempo limitado!", color: "#ffff00", tColor: "#000" },
                     { t: "Ganhe Dinheiro Fácil!", msg: "Trabalhe de casa clicando em links. Renda garantida! Inscreva-se.", color: "#00ff00", tColor: "#000" }
                 ];
 
