@@ -1379,7 +1379,7 @@
                 } else {
                     chatBox.innerHTML += `
                         <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
-                        <div style="margin-bottom: 10px; padding-left: 10px; color: #000080">E aí! Sou a IA assistente no modo clássico. Do que precisa?</div>
+                        <div style="margin-bottom: 10px; padding-left: 10px; color: #000080">Olá, tudo bem por ai?</div>
                     `;
                 }
 
@@ -1434,13 +1434,14 @@
                         // Tulio bot response
                         setTimeout(() => {
                             const responses = [
-                                "Pode crer, interessante isso.",
-                                "Claro, eu trabalho como Product Designer e UX!",
-                                "O fluxo disso dava pra simplificar, hein?",
-                                "Se precisar de um insight de design ou código, só mandar.",
-                                "Hahaha, 2005 ligou e pediu o MSN de volta."
+                                "Poxa, que legal ouvir isso!",
+                                "Lembra daquelas tardes jogando no fliperama? Bons tempos.",
+                                "Fico muito feliz em saber disso, meu amigo.",
+                                "Com certeza! Sempre que precisar, estou por aqui.",
+                                "Nossa, faz tanto tempo que não nos falamos né? Saudade!",
+                                "Claro, claro. Faz todo o sentido, muito legal da sua parte."
                             ];
-                            const resp = msg.toLowerCase().includes('?') ? "Hmm, boa pergunta. Como designer, diria que o contexto importa muito!" : responses[Math.floor(Math.random() * responses.length)];
+                            const resp = msg.toLowerCase().includes('?') ? "Hmm, ótima pergunta. Vou ter que pensar um pouco sobre isso, meu caro." : responses[Math.floor(Math.random() * responses.length)];
 
                             const botWrap = document.createElement('div');
                             botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #666">${contactName} diz:</strong></div><div style="padding-left: 10px; color: #000080">${resp}</div>`;
@@ -1470,10 +1471,10 @@
                 grpOnline.innerHTML = `<div style="padding: 2px 10px; font-weight:bold; color:#1c4b9e; border-bottom: 1px solid #eee; margin-bottom:5px; font-size:11px">Amigos e Família (2/5)</div>`;
 
                 const btnTulio = h('div', { style: { padding: '5px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
-                btnTulio.innerHTML = `<div style="width:10px; height:10px; background:#0c0; border-radius:50%; box-shadow:inset -2px -2px 4px rgba(0,0,0,0.3)"></div> <div><strong style="color:#000">Túlio</strong> <span style="color:#888">- "Bora codar?"</span></div>`;
+                btnTulio.innerHTML = `<div style="width:10px; height:10px; background:#0c0; border-radius:50%; box-shadow:inset -2px -2px 4px rgba(0,0,0,0.3)"></div> <div><strong style="color:#000">Túlio</strong> <span style="color:#888">- "Bora CS?"</span></div>`;
                 btnTulio.onmouseover = () => btnTulio.style.background = '#eef3fc';
                 btnTulio.onmouseout = () => btnTulio.style.background = 'transparent';
-                btnTulio.onclick = () => renderChat('Túlio', '"Bora codar?"', false);
+                btnTulio.onclick = () => renderChat('Túlio', '"Bora CS?"', false);
 
                 const btnLets = h('div', { style: { padding: '5px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
                 btnLets.innerHTML = `<div style="width:10px; height:10px; background:#0c0; border-radius:50%; box-shadow:inset -2px -2px 4px rgba(0,0,0,0.3)"></div> <div><strong style="color:#000">Lets</strong> <span style="color:#888">- "Naquelas longas noites em claro..."</span></div>`;
@@ -1488,7 +1489,7 @@
                 const grpOffline = h('div', { style: { marginTop: '10px' } });
                 grpOffline.innerHTML = `<div style="padding: 2px 10px; font-weight:bold; color:#888; border-bottom: 1px solid #eee; margin-bottom:5px; font-size:11px">Offline (3)</div>`;
 
-                ['Gui', 'Mãe', 'Bruno'].forEach(name => {
+                ['Calazdroid', 'JubaJubs86', 'ZedTHPS'].forEach(name => {
                     const offC = h('div', { style: { padding: '5px 15px', display: 'flex', alignItems: 'center', gap: '8px', color: '#888', fontSize: '11px' } });
                     offC.innerHTML = `<div style="width:10px; height:10px; background:#ccc; border-radius:50%"></div> <span>${name}</span>`;
                     grpOffline.appendChild(offC);
@@ -1498,7 +1499,7 @@
                 listWrap.appendChild(grpOffline);
 
                 const botBar = h('div', { style: { background: '#ece9d8', borderTop: '1px solid #c0c0c0', padding: '5px', textAlign: 'center', fontSize: '10px', color: '#1c4b9e', cursor: 'pointer' } });
-                botBar.textContent = "MSN Today -> Descubra seu horóscopo!";
+                botBar.textContent = "CHAT Today -> Descubra seu horóscopo!";
 
                 viewContainer.appendChild(topBar);
                 viewContainer.appendChild(listWrap);
