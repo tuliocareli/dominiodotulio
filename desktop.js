@@ -1328,10 +1328,24 @@
             }
         });
 
+        // WELCOME SCREEN
+        const welcome = h('div', { id: 'xpWelcome' },
+            h('div', { class: 'xp-shutdown-logo' }, '⊞'),
+            h('div', { class: 'xp-welcome-text' }, 'Bem-vindo')
+        );
+        desk.appendChild(welcome);
+
         // BOOT SCREEN (briefly shown)
         const boot = h('div', { id: 'xpBoot' },
-            h('div', { class: 'xp-boot-logo' }, '⊞'),
-            h('div', { class: 'xp-boot-text' }, 'TC UNDERGROUND OS\nCarregando...'),
+            h('div', { class: 'xp-boot-wordmark' },
+                h('div', { class: 'xp-boot-os' },
+                    'Microsoft',
+                    h('sup', { style: { fontSize: '10px', verticalAlign: 'super', marginLeft: '2px', fontStyle: 'normal' } }, '®'),
+                    ' Windows',
+                    h('span', { class: 'xp-colored' }, 'xp')
+                ),
+                h('div', { class: 'xp-boot-version' }, 'TC Underground Edition')
+            ),
             h('div', { class: 'xp-boot-bar' },
                 h('div', { class: 'xp-boot-fill' })
             )
@@ -1388,14 +1402,25 @@
         buildStartMenu();
         startClock();
 
-        // Boot animation: after 1.2s, show the desktop
+        // Boot animation flow: Boot -> Welcome -> Desktop
         setTimeout(() => {
-            boot.style.opacity = '0';
+            boot.style.opacity = '0'; // Hide black boot screen
+
             setTimeout(() => {
-                boot.remove();
-                area.style.opacity = '1';
-            }, 400);
-        }, 1200);
+                boot.remove(); // Remove boot, Welcome connects
+
+                // Show Welcome screen for 1.5s
+                setTimeout(() => {
+                    welcome.style.opacity = '0'; // Hide welcome screen
+
+                    setTimeout(() => {
+                        welcome.remove();
+                        area.style.opacity = '1'; // Show actual desktop
+                    }, 400); // 400ms transition
+                }, 1500); // 1.5s welcome duration
+
+            }, 400); // 400ms boot transition
+        }, 1800); // 1.8s boot duration
     }
 
     // ── CLOSE DESKTOP ─────────────────────────────────────────────────────

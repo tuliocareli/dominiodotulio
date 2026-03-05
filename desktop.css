@@ -38,64 +38,98 @@
 #xpBoot {
     position: absolute;
     inset: 0;
-    z-index: 999;
+    z-index: 10003;
     background: #000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
     transition: opacity 0.4s ease;
 }
 
-.xp-boot-logo {
-    font-size: 80px;
-    color: #4a9af5;
-    text-shadow: 0 0 30px rgba(74, 154, 245, 0.8);
-    animation: xpBootPulse 0.8s ease-in-out infinite;
+.xp-boot-wordmark {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 60px;
 }
 
-@keyframes xpBootPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.5;
-    }
+.xp-boot-os {
+    color: #fff;
+    font-family: Arial, Tahoma, sans-serif;
+    font-size: 38px;
+    font-style: italic;
+    font-weight: bold;
+    letter-spacing: -1px;
+    display: flex;
+    align-items: flex-start;
 }
 
-.xp-boot-text {
-    font-family: 'Tahoma', sans-serif;
+.xp-boot-os span.xp-colored {
+    color: #fca11a;
+    font-weight: normal;
+    margin-left: 6px;
+}
+
+.xp-boot-version {
+    color: #fff;
+    font-family: Arial, sans-serif;
     font-size: 14px;
-    color: #aaccff;
-    text-align: center;
-    white-space: pre-line;
-    letter-spacing: 2px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-top: 4px;
 }
 
 .xp-boot-bar {
-    width: 200px;
-    height: 10px;
-    background: #1a1a2a;
-    border: 1px solid #4a9af5;
-    border-radius: 3px;
+    width: 150px;
+    height: 14px;
+    border: 2px solid #b3b3b3;
+    border-radius: 4px;
+    background: transparent;
+    position: relative;
     overflow: hidden;
 }
 
 .xp-boot-fill {
     height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #245edb, #4a9af5);
-    animation: xpBootLoad 1.1s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+    width: 30px;
+    background: linear-gradient(90deg, #245edb 0%, #4a9af5 50%, #245edb 100%);
+    position: absolute;
+    left: -40px;
+    border-radius: 2px;
+    animation: xpBootLoad 1.2s linear infinite;
 }
 
 @keyframes xpBootLoad {
-    to {
-        width: 100%;
+    0% {
+        left: -40px;
     }
+
+    100% {
+        left: 160px;
+    }
+}
+
+/* ── WELCOME SCREEN ─────────────────────────────────── */
+#xpWelcome {
+    position: absolute;
+    inset: 0;
+    z-index: 10002;
+    background: #396eba;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease;
+}
+
+.xp-welcome-text {
+    font-family: Arial, Tahoma, sans-serif;
+    font-size: 36px;
+    font-style: italic;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* ── SHUTDOWN SCREEN ─────────────────────────────────── */
