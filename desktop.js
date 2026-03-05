@@ -68,6 +68,7 @@
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
         { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
+        { id: 'bsod', icon: '💽', label: 'Limpar_Cache_Rapido.exe' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
@@ -1617,6 +1618,72 @@ NUTTERTOOLS - Armas Pesadas
 
             const tableWrap = h('div', { style: { flex: 1, padding: '10px', background: '#fff' } });
 
+            // Fake Adware Popups trigger
+            setTimeout(() => {
+                const ads = [
+                    { t: "PARABÉNS!", msg: "VOCÊ É O VISITANTE 1.000.000! CLIQUE PARA REIVINDICAR SEU IPOD NANO!", color: "#ff0000" },
+                    { t: "ALERTA DE SEGURANÇA", msg: "Seu PC está infectado com 34 vírus! Baixe o Antivirus 2005 agora mesmo para limpar.", color: "#ffff00", tColor: "#000" },
+                    { t: "Ganhe Dinheiro Fácil!", msg: "Trabalhe de casa clicando em links. Renda garantida! Inscreva-se.", color: "#00ff00", tColor: "#000" }
+                ];
+
+                ads.forEach((ad, i) => {
+                    const pop = document.createElement('div');
+                    pop.style.position = 'absolute';
+                    pop.style.top = (20 + (Math.random() * 40)) + '%';
+                    pop.style.left = (10 + (Math.random() * 50)) + '%';
+                    pop.style.width = '300px';
+                    pop.style.backgroundColor = '#ece9d8';
+                    pop.style.border = '2px solid #0055eb';
+                    pop.style.boxShadow = '5px 5px 15px rgba(0,0,0,0.5)';
+                    pop.style.zIndex = 10000 + i;
+                    pop.style.fontFamily = 'Tahoma';
+
+                    const titlebar = document.createElement('div');
+                    titlebar.style.background = 'linear-gradient(180deg, #094af3, #001272)';
+                    titlebar.style.color = '#fff';
+                    titlebar.style.padding = '3px 6px';
+                    titlebar.style.fontSize = '12px';
+                    titlebar.style.fontWeight = 'bold';
+                    titlebar.style.display = 'flex';
+                    titlebar.style.justifyContent = 'space-between';
+
+                    const titleTxt = document.createElement('span');
+                    titleTxt.innerText = ad.t;
+
+                    const closeBtn = document.createElement('button');
+                    closeBtn.innerText = '✕';
+                    closeBtn.style.background = '#e95648';
+                    closeBtn.style.color = '#fff';
+                    closeBtn.style.border = '1px solid #fff';
+                    closeBtn.style.cursor = 'pointer';
+                    closeBtn.onclick = () => pop.remove();
+
+                    titlebar.appendChild(titleTxt);
+                    titlebar.appendChild(closeBtn);
+
+                    const content = document.createElement('div');
+                    content.style.padding = '15px';
+                    content.style.textAlign = 'center';
+                    content.style.background = ad.color;
+                    content.style.color = ad.tColor || '#fff';
+                    content.style.fontWeight = 'bold';
+                    content.style.fontSize = '14px';
+                    content.style.cursor = 'pointer';
+                    content.innerText = ad.msg;
+                    content.onclick = () => pop.remove();
+
+                    pop.appendChild(titlebar);
+                    pop.appendChild(content);
+                    document.getElementById('xpDesktopArea').appendChild(pop);
+
+                    // Simple shake for impact
+                    let blink = setInterval(() => {
+                        if (!pop.parentNode) { clearInterval(blink); return; }
+                        pop.style.borderColor = pop.style.borderColor === 'red' ? '#0055eb' : 'red';
+                    }, 500);
+                });
+            }, 1000);
+
             const table = document.createElement('table');
             table.style.width = '100%';
             table.style.borderCollapse = 'collapse';
@@ -1879,6 +1946,11 @@ NUTTERTOOLS - Armas Pesadas
     function openWin(id) {
         if (id === 'ie' && !isOnline) {
             alert('⚠️ ERRO DE REDE: Não foi possível localizar o servidor.\\n\\nVocê precisa abrir o discador (TulioNet 56K) e se conectar para acessar a Internet!');
+            return;
+        }
+
+        if (id === 'bsod') {
+            triggerBSOD();
             return;
         }
 
@@ -2303,7 +2375,50 @@ NUTTERTOOLS - Armas Pesadas
     }
 
     // ── PUBLIC API ────────────────────────────────────
-    window.tcDesktop = { open: buildDesktop, close: closeDesktop };
+    window.tcDesktop = { open: buildDesktop, close: closeDesktop, bsod: triggerBSOD };
+
+    function triggerBSOD() {
+        const bsod = document.createElement('div');
+        bsod.style.position = 'fixed';
+        bsod.style.top = '0';
+        bsod.style.left = '0';
+        bsod.style.width = '100vw';
+        bsod.style.height = '100vh';
+        bsod.style.backgroundColor = '#0000aa';
+        bsod.style.color = '#fff';
+        bsod.style.fontFamily = '"Courier New", Courier, monospace';
+        bsod.style.fontSize = '18px';
+        bsod.style.padding = '40px';
+        bsod.style.zIndex = '999999';
+        bsod.style.cursor = 'none';
+        bsod.innerHTML = `
+            <p>Foi detectado um problema e o Windows foi desligado para evitar danos ao computador.</p>
+            <br>
+            <p>Se esta for a primeira vez que você vê esta tela de erro de parada, reinicie o computador. Se a tela for exibida novamente, siga estas etapas:</p>
+            <br>
+            <p>Certifique-se de que há espaço suficiente em disco. Se um driver for identificado na mensagem de parada, desative o driver ou verifique com o fabricante sobre atualizações. Tente trocar de placa de vídeo.</p>
+            <br>
+            <p>Informações técnicas:</p>
+            <p>*** STOP: 0x000000FE (0x00000008, 0x00000006, 0x00000009, 0x847075CC)</p>
+            <br>
+            <p>Iniciando despejo de memória física...</p>
+            <p id="bsodPercent">Despejo de memória física concluído: 1%</p>
+        `;
+
+        document.body.appendChild(bsod);
+
+        let p = 1;
+        const bsodInt = setInterval(() => {
+            p += Math.floor(Math.random() * 10) + 5;
+            if (p >= 100) {
+                p = 100;
+                clearInterval(bsodInt);
+                setTimeout(() => location.reload(), 2000);
+            }
+            const pEl = document.getElementById('bsodPercent');
+            if (pEl) pEl.innerText = `Despejo de memória física concluído: ${p}%`;
+        }, 300);
+    }
 
     // ── INIT: wire up Start buttons (footer + header) ──
     document.addEventListener('DOMContentLoaded', () => {
