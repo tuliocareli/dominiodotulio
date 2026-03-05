@@ -673,7 +673,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ════════════════════════════════════════
-    // 10. FOOTER CLOCK
+    // 10. PAINEL "O QUE ESTOU OUVINDO"
+    // ════════════════════════════════════════
+    const listenItems = [
+        { file: 'o que estou ouvindo/erykah badu.jpg', title: 'Erykah Badu' },
+        { file: 'o que estou ouvindo/The Dillinger Escape Plan.jpg', title: 'The Dillinger Escape Plan' },
+        { file: 'o que estou ouvindo/Bloc Party.jpg', title: 'Bloc Party' },
+        { file: 'o que estou ouvindo/Phil Collins.jpg', title: 'Phil Collins' },
+        { file: 'o que estou ouvindo/DMX.jpg', title: 'DMX' },
+        { file: 'o que estou ouvindo/d angelo.jpg', title: "D'Angelo" }
+    ];
+
+    const listenGrid = document.getElementById("listeningGrid");
+    if (listenGrid) {
+        listenItems.forEach(item => {
+            const el = document.createElement("div");
+            el.className = "media-item";
+            el.style.backgroundImage = `url('${item.file}')`;
+            // Aplicar crop em 1:1 e ajustar proporção
+            el.style.backgroundSize = "cover";
+            el.style.backgroundPosition = "center";
+            el.style.aspectRatio = "1 / 1";
+            el.title = item.title;
+
+            const titleDiv = document.createElement("div");
+            titleDiv.className = "media-item-title";
+            titleDiv.textContent = item.title;
+
+            el.appendChild(titleDiv);
+            listenGrid.appendChild(el);
+        });
+    }
+
+    // ════════════════════════════════════════
+    // 11. FOOTER CLOCK
     // ════════════════════════════════════════
     const clockEl = document.getElementById("footerClock");
     const updateClock = () => {
