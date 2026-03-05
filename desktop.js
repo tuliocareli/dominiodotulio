@@ -61,6 +61,7 @@
         { id: 'messenger', icon: '💬', label: 'Tulio Messenger' },
         { id: 'wordpad', icon: '📝', label: 'Tulio WordPad' },
         { id: 'mediaplayer', icon: '🎬', label: 'Tulio Media Player' },
+        { id: 'imageviewer', icon: '🖼️', label: 'Vis. de Imagens do Windows' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
@@ -870,6 +871,79 @@
                     if (ytPlayer && typeof ytPlayer.destroy === 'function') ytPlayer.destroy();
                 }
             }, 1000);
+
+            return wrap;
+        },
+
+        // ── VISUALIZADOR DE IMAGENS ─────────────────────────────────────
+        imageviewer: () => {
+            const wrap = h('div', { class: 'xp-img-viewer' });
+
+            const IMAGES = [
+                'imagens/2-fast-2-furious-paul-walker-brian-oconner-car-wallpaper-thumb.jpg',
+                'imagens/5580714839_0bd41901d5_b.jpg',
+                'imagens/A03sDh.jpg',
+                'imagens/HD-wallpaper-2-fast-2-furious-hot-cars-tyrese-gibson-thumbnail.jpg',
+                'imagens/NIBXVEi.png',
+                'imagens/THUG_11.jpg',
+                'imagens/Toa_inika.jpg',
+                'imagens/XwK--yGuGfhX5pE6OB6XGdmfyD0qLgcT2RiVGHXZJmU.jpg',
+                'imagens/slipknot-nu-metal-moda-gq.avif',
+                'imagens/thug_wp_02_1024x786.jpg',
+                'imagens/thug_wp_03_1024x768.jpg',
+                'imagens/v2XKEcN.png'
+            ];
+
+            let curIdx = 0;
+            let currentRotation = 0;
+
+            const displayWrap = h('div', { class: 'xp-img-display' });
+            const imgElement = h('img', { src: IMAGES[curIdx], alt: 'Imagem do visualizador' });
+            displayWrap.appendChild(imgElement);
+
+            const toolbar = h('div', { class: 'xp-img-toolbar' });
+
+            // Botões Clássicos do Visualizador do XP
+            const btnPrev = h('button', { class: 'xp-img-btn', title: 'Imagem Anterior (Seta Esquerda)' }, '⬅️');
+            const btnNext = h('button', { class: 'xp-img-btn', title: 'Próxima Imagem (Seta Direita)' }, '➡️');
+            const btnRotateL = h('button', { class: 'xp-img-btn', title: 'Girar no Sentido Anti-horário' }, '↺');
+            const btnRotateR = h('button', { class: 'xp-img-btn', title: 'Girar no Sentido Horário' }, '↻');
+
+            // Navegação
+            const updateImage = () => {
+                imgElement.src = IMAGES[curIdx];
+                currentRotation = 0; // zera pro padrão da nova foto
+                imgElement.style.transform = `rotate(0deg)`;
+            };
+
+            btnPrev.onclick = () => {
+                curIdx = (curIdx - 1 + IMAGES.length) % IMAGES.length;
+                updateImage();
+            };
+
+            btnNext.onclick = () => {
+                curIdx = (curIdx + 1) % IMAGES.length;
+                updateImage();
+            };
+
+            // Rotação Mock
+            btnRotateL.onclick = () => {
+                currentRotation -= 90;
+                imgElement.style.transform = `rotate(${currentRotation}deg)`;
+            };
+
+            btnRotateR.onclick = () => {
+                currentRotation += 90;
+                imgElement.style.transform = `rotate(${currentRotation}deg)`;
+            };
+
+            toolbar.appendChild(btnPrev);
+            toolbar.appendChild(btnNext);
+            toolbar.appendChild(btnRotateL);
+            toolbar.appendChild(btnRotateR);
+
+            wrap.appendChild(displayWrap);
+            wrap.appendChild(toolbar);
 
             return wrap;
         },
