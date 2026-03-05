@@ -768,14 +768,15 @@
             const wrap = h('div', { class: 'xp-wmp' });
 
             const VIDS = [
-                'iuJDhFRDx9M', // 1° solicitado anteriormente
-                'Gdp4k77RZGA', // 2° solicitado agora
-                'oHg5SJYRHA0', // Novo solicitado
+                'iuJDhFRDx9M', // 1°
+                'Gdp4k77RZGA', // 2°
+                'FgyF70uWNRw', // 3° solicitado
+                'LCDaw0QmQQc', // 4° solicitado
+                'oHg5SJYRHA0',
                 'z9XkY84MUls',
                 'VgDgWzBL7s4',
                 'Ro7yHf_pU14',
                 'qnexXNl24cE',
-                'psLGf9eKOAQ',
                 'k85mRPqvMbE',
                 'pFlcqWQVVuU'
             ];
