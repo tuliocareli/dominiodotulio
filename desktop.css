@@ -1082,3 +1082,103 @@
 .xp-wp-textarea:focus {
     outline: none;
 }
+
+/* ── MEDIA PLAYER (WMP) ─────────────────────────── */
+.xp-wmp {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 280px;
+    background: #000;
+}
+
+.xp-wmp-toolbar {
+    background: #0a0a0a !important;
+    color: #fff;
+    border-bottom: 1px solid #333 !important;
+}
+
+.xp-wmp-toolbar span {
+    color: #ccc !important;
+}
+
+.xp-wmp-toolbar span:hover {
+    background: #333 !important;
+}
+
+.xp-wmp-screen-wrap {
+    flex: 1;
+    position: relative;
+    background: #000;
+}
+
+.xp-wmp-yt-container {
+    position: absolute;
+    inset: 0;
+}
+
+.xp-wmp-blocker {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    cursor: default;
+    /* Essa div transparente captura os cliques impedindo o acesso ao logo ou controles do YT */
+}
+
+.xp-wmp-controls {
+    background: linear-gradient(180deg, #181818, #0a0a0a);
+    padding: 10px;
+    border-top: 2px solid #3a3a3a;
+}
+
+.xp-wmp-seek {
+    width: 100%;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.xp-wmp-btns {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+}
+
+.xp-wmp-btn {
+    background: linear-gradient(180deg, #444, #222);
+    border: 2px outset #555;
+    color: #fff;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+}
+
+.xp-wmp-btn:active {
+    border: 2px inset #555;
+    padding-top: 2px;
+}
+
+.xp-wmp-btn.xp-wmp-play {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    background: linear-gradient(180deg, #3a7ac8, #1a46b8);
+    border-color: #3b76c8;
+}
+
+.xp-wmp-btn.xp-wmp-play:active {
+    border-color: #1a46b8;
+}
+
+.xp-wmp-time {
+    color: #00e44d;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    margin-left: 20px;
+}

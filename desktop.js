@@ -60,6 +60,7 @@
         { id: 'burningrom', icon: '💿', label: 'Tulio Burning ROM' },
         { id: 'messenger', icon: '💬', label: 'Tulio Messenger' },
         { id: 'wordpad', icon: '📝', label: 'Tulio WordPad' },
+        { id: 'mediaplayer', icon: '🎬', label: 'Tulio Media Player' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
@@ -698,6 +699,172 @@
             wrap.appendChild(formatBar);
             wrap.appendChild(ruler);
             wrap.appendChild(editorArea);
+
+            return wrap;
+        },
+
+        // ── MEDIA PLAYER ─────────────────────────────────────
+        mediaplayer: () => {
+            const wrap = h('div', { class: 'xp-wmp' });
+
+            const VIDS = [
+                'iuJDhFRDx9M', // O usuário pediu esse primeiro
+                '8W-cOhcPfY4',
+                'z9XkY84MUls',
+                'VgDgWzBL7s4',
+                'Ro7yHf_pU14'
+            ];
+            let currentIdx = 0;
+            let ytPlayer;
+            let checkInterval;
+            let ytReady = false;
+
+            const toolbar = h('div', {
+                class: 'xp-ie-toolbar xp-wmp-toolbar', html:
+                    '<span>Arquivo</span><span>Exibir</span><span>Tocar</span><span>Ferramentas</span><span>Ajuda</span>'
+            });
+
+            const videoWrapper = h('div', { class: 'xp-wmp-screen-wrap' });
+            // Um escudo (overlay bloqueador) por cima do iframe para impedir pausar clicando no botão do YT
+            const blocker = h('div', { class: 'xp-wmp-blocker' });
+            const playerContainer = h('div', { class: 'xp-wmp-yt-container' });
+
+            videoWrapper.appendChild(playerContainer);
+            videoWrapper.appendChild(blocker);
+
+            const controlsWrap = h('div', { class: 'xp-wmp-controls' });
+            const progressBar = h('input', { type: 'range', class: 'xp-wmp-seek', min: 0, max: 100, value: 0 });
+
+            const btnWrap = h('div', { class: 'xp-wmp-btns' });
+            const btnPrev = h('button', { class: 'xp-wmp-btn', title: 'Anterior' }, '⏮');
+            const btnPlay = h('button', { class: 'xp-wmp-btn xp-wmp-play', title: 'Reproduzir/Pausar' }, '▶');
+            const btnNext = h('button', { class: 'xp-wmp-btn', title: 'Próximo' }, '⏭');
+            const timeLabel = h('div', { class: 'xp-wmp-time' }, '00:00 / 00:00');
+
+            btnWrap.appendChild(btnPrev);
+            btnWrap.appendChild(btnPlay);
+            btnWrap.appendChild(btnNext);
+            btnWrap.appendChild(timeLabel);
+
+            controlsWrap.appendChild(progressBar);
+            controlsWrap.appendChild(btnWrap);
+
+            wrap.appendChild(toolbar);
+            wrap.appendChild(videoWrapper);
+            wrap.appendChild(controlsWrap);
+
+            const formatTime = (secs) => {
+                if (!secs) return '00:00';
+                secs = Math.floor(secs);
+                const m = Math.floor(secs / 60);
+                const s = secs % 60;
+                return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            };
+
+            const ensureAPIReady = (callback) => {
+                if (window.YT && window.YT.Player) {
+                    callback();
+                } else {
+                    if (!document.getElementById('yt-iframe-api')) {
+                        const script = document.createElement('script');
+                        script.id = 'yt-iframe-api';
+                        script.src = 'https://www.youtube.com/iframe_api';
+                        document.head.appendChild(script);
+                    }
+                    const checkYT = setInterval(() => {
+                        if (window.YT && window.YT.Player) {
+                            clearInterval(checkYT);
+                            callback();
+                        }
+                    }, 100);
+                }
+            };
+
+            // Criar ID unico pro iframe para a API do Google mapear corretamente
+            const playerDivId = 'yt-player-' + Date.now();
+            playerContainer.id = playerDivId;
+
+            ensureAPIReady(() => {
+                ytPlayer = new window.YT.Player(playerDivId, {
+                    height: '100%',
+                    width: '100%',
+                    videoId: VIDS[currentIdx],
+                    playerVars: {
+                        'playsinline': 1,
+                        'controls': 0, // Esconde os controles nativos
+                        'disablekb': 1,
+                        'fs': 0, // Desativa botão fullscreen
+                        'modestbranding': 1,
+                        'rel': 0
+                    },
+                    events: {
+                        'onReady': () => {
+                            ytReady = true;
+
+                            // Clique no bloqueador (em cima do video) faz play/pause
+                            blocker.onclick = () => {
+                                const state = ytPlayer.getPlayerState();
+                                if (state === window.YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+                                else ytPlayer.playVideo();
+                            };
+
+                            // Atualização da barrinha de tempo
+                            checkInterval = setInterval(() => {
+                                if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') return;
+                                const c = ytPlayer.getCurrentTime();
+                                const d = ytPlayer.getDuration();
+                                if (d > 0) {
+                                    progressBar.value = (c / d) * 100;
+                                    timeLabel.textContent = `${formatTime(c)} / ${formatTime(d)}`;
+                                }
+                            }, 300);
+                        },
+                        'onStateChange': (e) => {
+                            if (e.data === window.YT.PlayerState.PLAYING) {
+                                btnPlay.textContent = '⏸';
+                            } else {
+                                btnPlay.textContent = '▶';
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Botões do Player
+            btnPlay.onclick = () => {
+                if (!ytReady) return;
+                const state = ytPlayer.getPlayerState();
+                if (state === window.YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+                else ytPlayer.playVideo();
+            };
+
+            btnNext.onclick = () => {
+                if (!ytReady) return;
+                currentIdx = (currentIdx + 1) % VIDS.length;
+                ytPlayer.loadVideoById(VIDS[currentIdx]);
+            };
+
+            btnPrev.onclick = () => {
+                if (!ytReady) return;
+                currentIdx = (currentIdx - 1 + VIDS.length) % VIDS.length;
+                ytPlayer.loadVideoById(VIDS[currentIdx]);
+            };
+
+            progressBar.addEventListener('input', (e) => {
+                if (!ytReady) return;
+                const d = ytPlayer.getDuration();
+                const seekTo = (e.target.value / 100) * d;
+                ytPlayer.seekTo(seekTo, true);
+            });
+
+            // Limpeza caso a janela seja fechada no desktop
+            const cleanupInterval = setInterval(() => {
+                if (!document.body.contains(wrap)) {
+                    clearInterval(checkInterval);
+                    clearInterval(cleanupInterval);
+                    if (ytPlayer && typeof ytPlayer.destroy === 'function') ytPlayer.destroy();
+                }
+            }, 1000);
 
             return wrap;
         },
