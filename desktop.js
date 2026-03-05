@@ -635,31 +635,64 @@
                     '<span>Inserir</span><span>Formatar</span><span>Ajuda</span>'
             });
 
-            // Format bar mockup
+            // Elementos interativos
+            const fontSelect = h('select', { class: 'xp-wp-select' },
+                h('option', { value: 'Arial' }, 'Arial'),
+                h('option', { value: 'Times New Roman', selected: true }, 'Times New Roman'),
+                h('option', { value: 'Tahoma' }, 'Tahoma'),
+                h('option', { value: 'Comic Sans MS' }, 'Comic Sans MS')
+            );
+
+            // Tamanhos simulados do Word (mapeados para px na interface web para ficar legível)
+            const sizeSelect = h('select', { class: 'xp-wp-select xp-wp-select-size' },
+                h('option', { value: '12px' }, '10'),
+                h('option', { value: '16px', selected: true }, '12'),
+                h('option', { value: '20px' }, '14'),
+                h('option', { value: '26px' }, '18'),
+                h('option', { value: '34px' }, '24')
+            );
+
+            const btnB = h('button', { class: 'xp-wp-btn', title: 'Negrito' }, h('b', {}, 'N'));
+            const btnI = h('button', { class: 'xp-wp-btn', title: 'Itálico' }, h('i', {}, 'I'));
+            const btnU = h('button', { class: 'xp-wp-btn', title: 'Sublinhado' }, h('u', {}, 'S'));
+
             const formatBar = h('div', { class: 'xp-wp-formatbar' },
-                h('select', { class: 'xp-wp-select' },
-                    h('option', {}, 'Arial'),
-                    h('option', { selected: true }, 'Times New Roman'),
-                    h('option', {}, 'Tahoma'),
-                    h('option', {}, 'Comic Sans MS')
-                ),
-                h('select', { class: 'xp-wp-select xp-wp-select-size' },
-                    h('option', {}, '10'),
-                    h('option', { selected: true }, '12'),
-                    h('option', {}, '14'),
-                    h('option', {}, '18'),
-                    h('option', {}, '24')
-                ),
-                h('button', { class: 'xp-wp-btn', title: 'Negrito' }, h('b', {}, 'N')),
-                h('button', { class: 'xp-wp-btn', title: 'Itálico' }, h('i', {}, 'I')),
-                h('button', { class: 'xp-wp-btn', title: 'Sublinhado' }, h('u', {}, 'S')),
+                fontSelect, sizeSelect, btnB, btnI, btnU
             );
 
             const ruler = h('div', { class: 'xp-wp-ruler' });
 
-            const editorArea = h('div', { class: 'xp-wp-editor' },
-                h('textarea', { class: 'xp-wp-textarea', spellcheck: false, placeholder: 'Comece a digitar o seu texto aqui...' })
-            );
+            const textArea = h('textarea', { class: 'xp-wp-textarea', spellcheck: false, placeholder: 'Comece a digitar o seu texto aqui...' });
+
+            const editorArea = h('div', { class: 'xp-wp-editor' }, textArea);
+
+            // ── LÓGICA DE FORMATAÇÃO ──
+            fontSelect.addEventListener('change', e => { textArea.style.fontFamily = e.target.value; });
+            sizeSelect.addEventListener('change', e => { textArea.style.fontSize = e.target.value; });
+
+            let isBold = false, isItalic = false, isUnderline = false;
+
+            const toggleBtnStyle = (btn, active) => {
+                btn.style.borderColor = active ? '#888 #fff #fff #888' : '';
+                btn.style.background = active ? '#b8c8e8' : '';
+                btn.style.padding = active ? '1px 0 0 1px' : '';
+            };
+
+            btnB.addEventListener('click', () => {
+                isBold = !isBold;
+                textArea.style.fontWeight = isBold ? 'bold' : 'normal';
+                toggleBtnStyle(btnB, isBold);
+            });
+            btnI.addEventListener('click', () => {
+                isItalic = !isItalic;
+                textArea.style.fontStyle = isItalic ? 'italic' : 'normal';
+                toggleBtnStyle(btnI, isItalic);
+            });
+            btnU.addEventListener('click', () => {
+                isUnderline = !isUnderline;
+                textArea.style.textDecoration = isUnderline ? 'underline' : 'none';
+                toggleBtnStyle(btnU, isUnderline);
+            });
 
             wrap.appendChild(toolbar);
             wrap.appendChild(formatBar);
