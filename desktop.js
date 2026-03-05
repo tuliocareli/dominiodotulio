@@ -770,8 +770,11 @@
             const VIDS = [
                 'iuJDhFRDx9M', // 1°
                 'Gdp4k77RZGA', // 2°
-                'FgyF70uWNRw', // 3° solicitado
-                'LCDaw0QmQQc', // 4° solicitado
+                'h9mfw8PPBxU', // 3° (Dragon Ball Z - Linkin Park Numb AMV)
+                'gSQjk4YSDDs', // 4° (CS Source Phantasy)
+                'YtpATpMKDkg', // 5° (Naruto AMV)
+                'FgyF70uWNRw',
+                'LCDaw0QmQQc',
                 'oHg5SJYRHA0',
                 'z9XkY84MUls',
                 'VgDgWzBL7s4',
