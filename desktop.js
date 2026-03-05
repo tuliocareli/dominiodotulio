@@ -59,11 +59,13 @@
         { id: 'earth', icon: '🌎', label: 'Tulio Earth' },
         { id: 'burningrom', icon: '💿', label: 'Tulio Burning ROM' },
         { id: 'messenger', icon: '💬', label: 'Tulio Messenger' },
-        { id: 'wordpad', icon: '📝', label: 'Tulio WordPad' },
+        { id: 'wordpad', icon: '📝', label: 'TulioPad' },
         { id: 'mediaplayer', icon: '🎬', label: 'Tulio Media Player' },
         { id: 'imageviewer', icon: '🖼️', label: 'Imagens' },
         { id: 'calculator', icon: '🖩', label: 'Calculadora' },
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
+        { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
+        { id: 'gta_cheats', icon: '📝', label: 'GTA_Cheats.txt' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
@@ -1264,6 +1266,29 @@
                 }
             });
 
+            wrap.appendChild(menu);
+            wrap.appendChild(textarea);
+            return wrap;
+        },
+
+        gta_cheats: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column' } });
+
+            // Menu bar simplificada
+            const menu = h('div', { style: { display: 'flex', gap: '10px', padding: '2px 8px', background: '#ece9d8', borderBottom: '1px solid #aca899', fontSize: '11px', fontFamily: 'Tahoma' } });
+            ['Arquivo', 'Editar', 'Formatar', 'Exibir', 'Ajuda'].forEach(m => {
+                menu.appendChild(h('span', { style: { cursor: 'pointer' } }, m));
+            });
+
+            const textarea = h('textarea', {
+                spellcheck: 'false',
+                style: {
+                    flex: '1', width: '100%', resize: 'none', border: 'none', padding: '10px', outline: 'none',
+                    fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', lineHeight: '1.4',
+                    background: '#fff', color: '#000'
+                }
+            });
+
             textarea.value = `GTA_Cheats.txt - Bloco de Notas
 --------------------------------
 GTA San Andreas Dicas Clássicas:
@@ -1399,6 +1424,7 @@ NUTTERTOOLS - Armas Pesadas
             burningrom: { w: '480px', h: '420px' },
             messenger: { w: '480px', h: '380px' },
             wordpad: { w: '440px', h: '400px' },
+            gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
         };
         const sz = WIN_SIZES[id] || {};
