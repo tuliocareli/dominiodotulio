@@ -1725,13 +1725,63 @@ NUTTERTOOLS - Armas Pesadas
         if (menu) menu.classList.toggle('xp-sm--open');
     }
 
-    // ── CLOCK ─────────────────────────────────────────
+    // ── CLOCK & CALENDAR ──────────────────────────────
+    function toggleCalendar() {
+        const cal = document.getElementById('xpCalendar');
+        if (cal) cal.classList.toggle('xp-cal--open');
+        const menu = document.getElementById('xpStartMenu');
+        if (menu) menu.classList.remove('xp-sm--open');
+    }
+
+    function buildCalendarPopup() {
+        // mock a fixed 2005 calendar specifically for right now 
+        const now = new Date();
+        const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        const daysInMonth = new Date(2005, now.getMonth() + 1, 0).getDate();
+
+        let daysHtml = '';
+        ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].forEach(d => {
+            daysHtml += `<div class="xp-cal-day-name">${d}</div>`;
+        });
+
+        const firstDay = new Date(2005, now.getMonth(), 1).getDay();
+        for (let i = 0; i < firstDay; i++) {
+            daysHtml += `<div class="xp-cal-day" style="background:transparent;border:none"></div>`;
+        }
+
+        for (let i = 1; i <= daysInMonth; i++) {
+            const isToday = i === Math.min(now.getDate(), daysInMonth);
+            daysHtml += `<div class="xp-cal-day ${isToday ? 'xp-cal-today' : ''}">${i}</div>`;
+        }
+
+        const wrap = h('div', { id: 'xpCalendar' },
+            h('div', { class: 'xp-cal-title' }, "Propriedades de Data e Hora"),
+            h('div', { class: 'xp-cal-body' },
+                h('div', { class: 'xp-cal-header' },
+                    h('button', { style: { fontFamily: 'Tahoma' } }, '<'),
+                    h('span', {}, `${monthNames[now.getMonth()]} de 2005`),
+                    h('button', { style: { fontFamily: 'Tahoma' } }, '>')
+                ),
+                h('div', { class: 'xp-cal-grid', html: daysHtml })
+            ),
+            h('div', { class: 'xp-cal-time' }, nowStr())
+        );
+
+        return wrap;
+    }
+
     function startClock() {
         const el = document.getElementById('xpClock');
         if (!el) return;
         clearInterval(clockTimer); // evita clocks duplicados ao reabrir
         el.textContent = nowStr();
-        clockTimer = setInterval(() => { const c = document.getElementById('xpClock'); if (c) c.textContent = nowStr(); else clearInterval(clockTimer); }, 1000);
+        clockTimer = setInterval(() => {
+            const c = document.getElementById('xpClock');
+            if (c) c.textContent = nowStr();
+            else clearInterval(clockTimer);
+            const calTime = document.querySelector('.xp-cal-time');
+            if (calTime) calTime.textContent = nowStr();
+        }, 1000);
     }
 
     // ── DESKTOP MOUNT ─────────────────────────────────
@@ -1751,8 +1801,12 @@ NUTTERTOOLS - Armas Pesadas
         const desk = h('div', {
             id: 'xpDesktop', class: 'xp-desk--open',
             onclick: e => {
-                if (e.target === desk || e.target.id === 'xpDesktopArea') {
+                const target = e.target;
+                if (!target.closest('#xpStartMenu') && target.id !== 'xpStartBtn') {
                     document.getElementById('xpStartMenu')?.classList.remove('xp-sm--open');
+                }
+                if (!target.closest('#xpCalendar') && target.id !== 'xpClock') {
+                    document.getElementById('xpCalendar')?.classList.remove('xp-cal--open');
                 }
             }
         });
@@ -1817,7 +1871,7 @@ NUTTERTOOLS - Armas Pesadas
             ),
             h('div', { id: 'xpTaskbarWindows' }),
             h('div', { id: 'xpSysTray' },
-                h('div', { id: 'xpClock' }, nowStr()),
+                h('div', { id: 'xpClock', onclick: toggleCalendar, style: { cursor: 'pointer' }, title: 'Mostrar calendário' }, nowStr()),
                 h('button', { id: 'xpCloseDesk', onclick: closeDesktop, title: 'Fechar Desktop' }, '✕'),
             )
         );
@@ -1826,6 +1880,10 @@ NUTTERTOOLS - Armas Pesadas
         // START MENU (hidden by default)
         const startMenu = h('div', { id: 'xpStartMenu' });
         desk.appendChild(startMenu);
+
+        // CALENDAR POPUP
+        const calendar = buildCalendarPopup();
+        desk.appendChild(calendar);
 
         document.body.appendChild(desk);
         buildStartMenu();
