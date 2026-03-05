@@ -1321,7 +1321,7 @@
                 { id: 'iCL04cxeMOE', title: 'Usher - Yeah!' }
             ];
 
-            const wrap = h('div', { class: 'winamp-player-wrap', style: { width: '100%', boxSizing: 'border-box', overflow: 'hidden' } });
+            const wrap = h('div', { class: 'winamp-player-wrap', style: { width: '100%', height: '100%', boxSizing: 'border-box', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: '#0a0a0a' } });
 
             // Titlebar
             const titlebar = h('div', { class: 'winamp-titlebar' },
@@ -1386,7 +1386,7 @@
             );
 
             // Playlist
-            const plList = h('ul', { class: 'winamp-pl-list', style: { height: '140px', overflowY: 'auto', listStyle: 'none', padding: '0', margin: '0', background: '#0a0a0a', color: '#888', fontSize: '10px' } });
+            const plList = h('ul', { class: 'winamp-pl-list', style: { flexGrow: 1, minHeight: '140px', overflowY: 'auto', listStyle: 'none', padding: '0', margin: '0', background: '#0a0a0a', color: '#888', fontSize: '10px' } });
 
             const updatePlaylistUI = () => {
                 plList.innerHTML = '';
@@ -1412,7 +1412,7 @@
                 });
             };
 
-            const plSection = h('div', { class: 'winamp-playlist-section' },
+            const plSection = h('div', { class: 'winamp-playlist-section', style: { display: 'flex', flexDirection: 'column', flexGrow: 1, minHeight: 0 } },
                 h('div', { class: 'winamp-eq-titlebar' },
                     h('span', { class: 'winamp-logo' }, '📋 PLAYLIST'),
                     h('span', { style: { color: '#aaa', fontSize: '10px' } }, `${MUSIC_DATA.length} FILES`)
