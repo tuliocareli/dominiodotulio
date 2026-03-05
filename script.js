@@ -807,34 +807,48 @@ document.addEventListener("DOMContentLoaded", () => {
     // ════════════════════════════════════════
     const clippy = document.getElementById('clippyHelper');
     const headerTerm = document.querySelector('.header-main-title');
+    let clippyDismissed = false;
 
-    // Mostra o Clippy depois de 10 segundos
-    setTimeout(() => {
-        if (clippy && !document.getElementById('xpDesktop')) {
-            clippy.classList.add('visible');
-        }
-    }, 10000);
-
-    // Esconde o clippy ao clicar nele ou ao abrir o Desktop
+    // Função de verificação periódica do Clippy
     if (clippy) {
+        let lastClosedTime = Date.now();
+        let wasOpen = false;
+
+        setInterval(() => {
+            const isOpen = !!document.querySelector('.xp-desk--open');
+
+            if (isOpen) {
+                wasOpen = true;
+                clippy.classList.remove('visible');
+            } else {
+                if (wasOpen) {
+                    // Desktop acabou de ser fechado
+                    wasOpen = false;
+                    lastClosedTime = Date.now();
+                }
+
+                // Se estiver fechado há mais de 10s e não foi descartado permanentemente
+                if (!clippyDismissed && (Date.now() - lastClosedTime > 10000)) {
+                    if (!clippy.classList.contains('visible')) {
+                        clippy.classList.add('visible');
+                    }
+                }
+            }
+        }, 1000);
+
+        // Esconde o clippy ao clicar nele
         clippy.addEventListener('click', () => {
             clippy.classList.remove('visible');
+            clippyDismissed = true;
         });
     }
-
-    document.getElementById('headerStartBtn')?.addEventListener('click', () => {
-        if (clippy) clippy.classList.remove('visible');
-    });
-
-    document.getElementById('footerStartBtn')?.addEventListener('click', () => {
-        if (clippy) clippy.classList.remove('visible');
-    });
 
     // Mensagem subliminar no Terminal do Header
     if (headerTerm) {
         setInterval(() => {
-            // Só faz o glitch do aviso se o Desktop não estiver aberto e de vez em quando (30% de chance a cada 4s)
-            if (Math.random() > 0.7 && !document.getElementById('xpDesktop')) {
+            const isOpen = !!document.querySelector('.xp-desk--open');
+            // Glitch do aviso apenas se o Desktop não estiver aberto (30% de chance a cada 4s)
+            if (Math.random() > 0.7 && !isOpen) {
                 const oldRaw = headerTerm.getAttribute('data-text');
                 const oldText = headerTerm.textContent;
                 const subliminal = ">> EXECUTE INICIAR.EXE PARA ACESSAR O SO";
