@@ -65,6 +65,7 @@
         { id: 'calculator', icon: '🖩', label: 'Calculadora' },
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
+        { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
         { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
@@ -121,6 +122,20 @@
             const dy = cy - startY;
             const desk = document.getElementById('xpDesktopArea');
             if (!desk) return;
+
+            // Solitaire Win / IE Crash effect (Window trails)
+            if (win.classList.contains('xp-win--frozen')) {
+                const now = Date.now();
+                if (now - (win.dataset.lastClone || 0) > 20) {
+                    const clone = win.cloneNode(true);
+                    clone.classList.remove('xp-win--active', 'xp-win--frozen');
+                    clone.style.pointerEvents = 'none'; // Clones you can't click
+                    clone.style.zIndex = zTop - 1;
+                    desk.appendChild(clone);
+                    win.dataset.lastClone = now;
+                }
+            }
+
             const maxX = desk.clientWidth - win.offsetWidth;
             const maxY = desk.clientHeight - win.offsetHeight;
             win.style.left = Math.max(0, Math.min(maxX, ox + dx)) + 'px';
@@ -1701,6 +1716,56 @@ NUTTERTOOLS - Armas Pesadas
 
             return wrap;
         },
+
+        accelerator: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#ece9d8', padding: '20px', alignItems: 'center', justifyContent: 'center', fontFamily: 'Tahoma', fontSize: '12px' } });
+
+            wrap.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 20px;">🚀</div>
+                <h3 style="margin: 0 0 10px; font-weight: bold; color: #1c4b9e; font-size: 16px;">Internet Acelerator 2004</h3>
+                <p style="text-align: center; color: #333; margin-bottom: 25px; line-height: 1.4;">Clique no botão abaixo para injetar pacotes TCP/IP otimizados e navegar até <b>10x mais rápido!</b></p>
+                <button id="accelBtn" style="padding: 6px 25px; font-family: Tahoma; font-weight: bold; font-size: 14px; cursor: pointer;">Acelerar Internet!</button>
+                <div id="accelProg" style="width: 80%; height: 15px; border: 1px inset #fff; background: #fff; margin-top: 25px; display: none;">
+                    <div style="width: 25%; height: 100%; background: #0c0;"></div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const btn = wrap.querySelector('#accelBtn');
+                const prog = wrap.querySelector('#accelProg');
+                if (btn) {
+                    btn.onclick = () => {
+                        prog.style.display = 'block';
+                        btn.disabled = true;
+
+                        // Fake Freeze after a bit
+                        setTimeout(() => {
+                            const win = wrap.closest('.xp-win');
+                            if (win) {
+                                win.classList.add('xp-win--frozen');
+                                // update title
+                                const title = win.querySelector('.xp-win-title');
+                                if (title) title.innerText = title.innerText + ' (Não Respondendo)';
+                                // freeze cursor
+                                win.style.cursor = 'wait';
+                                Array.from(win.querySelectorAll('*')).forEach(el => {
+                                    el.style.cursor = 'wait';
+                                    el.style.pointerEvents = 'none'; // disable interaction
+                                });
+                                // Keep titlebar active for dragging
+                                const titlebar = win.querySelector('.xp-win-titlebar');
+                                if (titlebar) {
+                                    titlebar.style.pointerEvents = 'all';
+                                    titlebar.style.cursor = 'wait';
+                                }
+                            }
+                        }, 1200);
+                    };
+                }
+            }, 50);
+
+            return wrap;
+        },
     };
 
 
@@ -1755,6 +1820,7 @@ NUTTERTOOLS - Armas Pesadas
             gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
             tulionet: { w: '380px', h: '360px' },
+            accelerator: { w: '350px', h: '300px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
