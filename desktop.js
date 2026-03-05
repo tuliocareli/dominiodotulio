@@ -219,7 +219,7 @@
             vid.style.height = '100%';
             vid.style.objectFit = 'contain';
 
-            return h('div', { style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } }, vid);
+            return h('div', { style: { width: '100%', height: '100%', minHeight: '300px', background: '#000', display: 'flex', flexDirection: 'column' } }, vid);
         },
 
         books: () => h('div', { class: 'xp-file-view' }, ...DATA.books.map(b =>
