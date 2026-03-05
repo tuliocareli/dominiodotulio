@@ -250,6 +250,8 @@
     width: 440px;
     min-width: 260px;
     min-height: 200px;
+    max-width: calc(100vw - 12px);
+    max-height: calc(100% - 40px);
     background: #ece9d8;
     border: 2px solid var(--xp-blue-dark);
     border-radius: 8px 8px 4px 4px;

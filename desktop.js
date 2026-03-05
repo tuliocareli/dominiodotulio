@@ -1065,14 +1065,26 @@
             const toolbar = h('div', { class: 'xp-paint-toolbar' });
             const drawBtn = h('button', { class: 'xp-paint-btn xp-pb-active', title: 'Lápis' }, '✏️');
             const eraseBtn = h('button', { class: 'xp-paint-btn', title: 'Borracha' }, '🧽');
+            const fillBtn = h('button', { class: 'xp-paint-btn', title: 'Balde de Tinta' }, '🪣');
             const clearBtn = h('button', { class: 'xp-paint-btn', title: 'Limpar Tela' }, '🗑️');
 
-            let isErasing = false;
-            drawBtn.onclick = () => { isErasing = false; drawBtn.classList.add('xp-pb-active'); eraseBtn.classList.remove('xp-pb-active'); };
-            eraseBtn.onclick = () => { isErasing = true; eraseBtn.classList.add('xp-pb-active'); drawBtn.classList.remove('xp-pb-active'); };
+            let mode = 'draw'; // draw, erase, fill
+            let currentColor = '#000000';
+
+            const setMode = (m) => {
+                mode = m;
+                [drawBtn, eraseBtn, fillBtn].forEach(b => b.classList.remove('xp-pb-active'));
+                if (m === 'draw') drawBtn.classList.add('xp-pb-active');
+                if (m === 'erase') eraseBtn.classList.add('xp-pb-active');
+                if (m === 'fill') fillBtn.classList.add('xp-pb-active');
+            };
+            drawBtn.onclick = () => setMode('draw');
+            eraseBtn.onclick = () => setMode('erase');
+            fillBtn.onclick = () => setMode('fill');
 
             toolbar.appendChild(drawBtn);
             toolbar.appendChild(eraseBtn);
+            toolbar.appendChild(fillBtn);
             toolbar.appendChild(clearBtn);
 
             const canvasWrap = h('div', { class: 'xp-paint-canvas-wrap' });
@@ -1080,8 +1092,27 @@
             const canvas = h('canvas', { width: 440, height: 320, class: 'xp-paint-canvas' });
             canvasWrap.appendChild(canvas);
 
+            // Palette
+            const colors = [
+                '#000000', '#7f7f7f', '#880015', '#ed1c24', '#ff7f27', '#fff200', '#22b14c', '#00a2e8', '#3f48cc', '#a349a4',
+                '#ffffff', '#c3c3c3', '#b97a57', '#ffaec9', '#ffc90e', '#efe4b0', '#b5e61d', '#99d9ea', '#7092be', '#c8bfe7'
+            ];
+            const paletteWrap = h('div', { style: { display: 'flex', gap: '2px', padding: '4px', flexWrap: 'wrap', backgroundColor: '#ece9d8', borderTop: '1px solid #888' } });
+
+            let activeColorSpan = h('div', { style: { width: '34px', height: '34px', border: '1px inset #888', marginRight: '10px', backgroundColor: currentColor } });
+            paletteWrap.appendChild(activeColorSpan);
+
+            const gridC = h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: '2px' } });
+            colors.forEach(c => {
+                const cBtn = h('button', { style: { width: '16px', height: '16px', backgroundColor: c, border: '1px outset #fff', cursor: 'pointer', padding: '0' } });
+                cBtn.onclick = () => { currentColor = c; activeColorSpan.style.backgroundColor = c; };
+                gridC.appendChild(cBtn);
+            });
+            paletteWrap.appendChild(gridC);
+
             wrap.appendChild(toolbar);
             wrap.appendChild(canvasWrap);
+            wrap.appendChild(paletteWrap);
 
             // Setup canvas drawing context
             setTimeout(() => {
@@ -1102,21 +1133,91 @@
                     };
                 };
 
+                // FloodFill Algorithm without recursive memory leaks
+                const floodFill = (x, y, fillHex) => {
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    const w = canvas.width;
+                    const h = canvas.height;
+
+                    const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fillHex);
+                    if (!res) return;
+                    const r = parseInt(res[1], 16), g = parseInt(res[2], 16), b = parseInt(res[3], 16), a = 255;
+
+                    x = Math.floor(x); y = Math.floor(y);
+                    if (x < 0 || y < 0 || x >= w || y >= h) return;
+
+                    const px = (y * w + x) * 4;
+                    const startR = data[px], startG = data[px + 1], startB = data[px + 2], startA = data[px + 3];
+
+                    if (startR === r && startG === g && startB === b && startA === a) return;
+
+                    const stack = [[x, y]];
+                    while (stack.length) {
+                        const [cx, cy] = stack.pop();
+                        let currPx = (cy * w + cx) * 4;
+                        let lx = cx;
+
+                        while (lx >= 0 && data[currPx] === startR && data[currPx + 1] === startG && data[currPx + 2] === startB && data[currPx + 3] === startA) {
+                            lx--;
+                            currPx -= 4;
+                        }
+                        lx++;
+                        currPx += 4;
+
+                        let spanAbove = false;
+                        let spanBelow = false;
+
+                        while (lx < w && data[currPx] === startR && data[currPx + 1] === startG && data[currPx + 2] === startB && data[currPx + 3] === startA) {
+                            data[currPx] = r; data[currPx + 1] = g; data[currPx + 2] = b; data[currPx + 3] = a;
+
+                            if (cy > 0) {
+                                const up = currPx - w * 4;
+                                const match = data[up] === startR && data[up + 1] === startG && data[up + 2] === startB && data[up + 3] === startA;
+                                if (!spanAbove && match) {
+                                    stack.push([lx, cy - 1]);
+                                    spanAbove = true;
+                                } else if (spanAbove && !match) {
+                                    spanAbove = false;
+                                }
+                            }
+                            if (cy < h - 1) {
+                                const dn = currPx + w * 4;
+                                const match = data[dn] === startR && data[dn + 1] === startG && data[dn + 2] === startB && data[dn + 3] === startA;
+                                if (!spanBelow && match) {
+                                    stack.push([lx, cy + 1]);
+                                    spanBelow = true;
+                                } else if (spanBelow && !match) {
+                                    spanBelow = false;
+                                }
+                            }
+                            lx++;
+                            currPx += 4;
+                        }
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                };
+
                 const startFormat = (e) => {
+                    const p = getPos(e);
+                    if (mode === 'fill') {
+                        floodFill(p.x, p.y, currentColor);
+                        if (e.cancelable) e.preventDefault();
+                        return;
+                    }
                     painting = true;
                     ctx.beginPath();
-                    const p = getPos(e);
                     ctx.moveTo(p.x, p.y);
                     if (e.cancelable) e.preventDefault();
                 };
 
                 const draw = (e) => {
-                    if (!painting) return;
+                    if (!painting || mode === 'fill') return;
                     if (e.cancelable) e.preventDefault();
                     const p = getPos(e);
                     ctx.lineTo(p.x, p.y);
-                    ctx.strokeStyle = isErasing ? '#ffffff' : '#000000';
-                    ctx.lineWidth = isErasing ? 20 : 2;
+                    ctx.strokeStyle = mode === 'erase' ? '#ffffff' : currentColor;
+                    ctx.lineWidth = mode === 'erase' ? 20 : 2;
                     ctx.lineCap = 'round';
                     ctx.stroke();
                 };
@@ -1192,7 +1293,18 @@
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
         const winH = sz.h || null;
-        const sizeStyle = { left: (80 + offset) + 'px', top: (60 + offset) + 'px', zIndex: ++zTop, width: winW };
+
+        let startLeft = 80 + offset;
+        let startTop = 60 + offset;
+
+        // Mobile layout clamp limit
+        const deskArea = document.getElementById('xpDesktopArea');
+        if (deskArea && deskArea.clientWidth < 600) {
+            startLeft = Math.max(10, (deskArea.clientWidth - parseInt(winW)) / 2 + (offset % 10)); // centralized ish + small offset
+            startTop = 20 + offset % 20;
+        }
+
+        const sizeStyle = { left: startLeft + 'px', top: startTop + 'px', zIndex: ++zTop, width: winW };
         if (winH) sizeStyle.height = winH;
 
         const win = h('div', {
