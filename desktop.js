@@ -186,11 +186,35 @@
         ))),
 
         games: () => h('div', { class: 'xp-file-view' }, ...DATA.games.map(g =>
-            h('div', { class: 'xp-file-item' },
+            h('div', {
+                class: 'xp-file-item',
+                ondblclick: () => {
+                    if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
+                    else alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
+                },
+                ontouchstart: function (e) {
+                    const now = Date.now();
+                    const last = this.dataset.lastTap || 0;
+                    if (now - last < 300) {
+                        if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
+                        else alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
+                        e.preventDefault();
+                    }
+                    this.dataset.lastTap = now;
+                }
+            },
                 h('span', { class: 'xp-fi-icon' }, '🎮'),
                 h('span', { class: 'xp-fi-name' }, g),
             )
         )),
+
+        'Tony Hawk Underground.exe': () => h('div', { style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } },
+            h('video', {
+                src: 'videosjogos/tony hawk underground.mp4',
+                autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
+                style: { width: '100%', height: '100%', objectFit: 'contain' }
+            })
+        ),
 
         books: () => h('div', { class: 'xp-file-view' }, ...DATA.books.map(b =>
             h('div', { class: 'xp-file-item' },
@@ -2238,12 +2262,13 @@ NUTTERTOOLS - Armas Pesadas
 
         const icon = ICONS.find(i => i.id === id);
         const title = icon ? icon.label : id;
+        const fallbackIcon = id.includes('.exe') ? '🎮' : '📁';
 
         // Posição em cascata
         const offset = (Object.keys(openWindows).length % 6) * 24;
 
         const titlebar = h('div', { class: 'xp-win-titlebar' },
-            h('div', { class: 'xp-win-title' }, icon?.icon + ' ' + title),
+            h('div', { class: 'xp-win-title' }, (icon?.icon || fallbackIcon) + ' ' + title),
             h('div', { class: 'xp-win-btns' },
                 h('button', { class: 'xp-btn xp-btn--min', onclick: () => minimizeWin(id) }, '─'),
                 h('button', { class: 'xp-btn xp-btn--max', onclick: () => maximizeWin(id) }, '□'),
@@ -2273,6 +2298,7 @@ NUTTERTOOLS - Armas Pesadas
             tuliowire: { w: '540px', h: '340px' },
             tulionet: { w: '380px', h: '360px' },
             accelerator: { w: '350px', h: '300px' },
+            'Tony Hawk Underground.exe': { w: '600px', h: '480px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
