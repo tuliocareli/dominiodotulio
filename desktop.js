@@ -10,15 +10,13 @@
     // ── DATA ─────────────────────────────────────────
     const DATA = {
         games: [
-            'Tony Hawk Pro Skater 2', 'Tony Hawk Pro Skater 3',
             'Tony Hawk Underground',
-            'GTA San Andreas', 'GTA Vice City',
+            'GTA San Andreas',
             'Tibia', 'The Sims 2', 'Half-Life 2',
             'Rollercoaster Tycoon', 'Counter-Strike 1.6',
             'Need for Speed Underground 2', 'M.U.G.E.N.',
-            'Mafia 1', 'Fallout 2',
-            'Grand Chase', 'MapleStory', 'RPG Maker',
-            'Max Payne', 'Star Wars: Knights of the Old Republic',
+            'Grand Chase',
+            'Star Wars: Knights of the Old Republic',
             'Sim City 2000',
         ],
         books: [
@@ -190,6 +188,8 @@
                 class: 'xp-file-item',
                 ondblclick: () => {
                     if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
+                    else if (g === 'Tibia') openWin('Tibia.exe');
+                    else if (g === 'M.U.G.E.N.') openWin('M.U.G.E.N..exe');
                     else alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
                 },
                 ontouchstart: function (e) {
@@ -197,6 +197,8 @@
                     const last = this.dataset.lastTap || 0;
                     if (now - last < 300) {
                         if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
+                        else if (g === 'Tibia') openWin('Tibia.exe');
+                        else if (g === 'M.U.G.E.N.') openWin('M.U.G.E.N..exe');
                         else alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
                         e.preventDefault();
                     }
@@ -211,6 +213,34 @@
         'Tony Hawk Underground.exe': () => {
             const vid = document.createElement('video');
             vid.src = 'videosjogos/tony%20hawk%20underground.mp4';
+            vid.autoplay = true;
+            vid.loop = true;
+            vid.muted = true;
+            vid.playsInline = true;
+            vid.style.width = '100%';
+            vid.style.height = '100%';
+            vid.style.objectFit = 'contain';
+
+            return h('div', { style: { width: '100%', height: '100%', minHeight: '300px', background: '#000', display: 'flex', flexDirection: 'column' } }, vid);
+        },
+
+        'Tibia.exe': () => {
+            const vid = document.createElement('video');
+            vid.src = 'videosjogos/tibia.mp4';
+            vid.autoplay = true;
+            vid.loop = true;
+            vid.muted = true;
+            vid.playsInline = true;
+            vid.style.width = '100%';
+            vid.style.height = '100%';
+            vid.style.objectFit = 'contain';
+
+            return h('div', { style: { width: '100%', height: '100%', minHeight: '300px', background: '#000', display: 'flex', flexDirection: 'column' } }, vid);
+        },
+
+        'M.U.G.E.N..exe': () => {
+            const vid = document.createElement('video');
+            vid.src = 'videosjogos/mugen.mp4';
             vid.autoplay = true;
             vid.loop = true;
             vid.muted = true;
@@ -2308,6 +2338,8 @@ NUTTERTOOLS - Armas Pesadas
             tulionet: { w: '380px', h: '360px' },
             accelerator: { w: '350px', h: '300px' },
             'Tony Hawk Underground.exe': { w: '600px', h: '480px' },
+            'Tibia.exe': { w: '640px', h: '480px' },
+            'M.U.G.E.N..exe': { w: '640px', h: '480px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
