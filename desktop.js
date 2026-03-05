@@ -1330,85 +1330,182 @@
         messenger: () => {
             const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#f5f5f5', fontFamily: 'Tahoma' } });
 
-            const header = h('div', { style: { padding: '8px', background: '#fff', borderBottom: '1px solid #ccc', display: 'flex', alignItems: 'center', gap: '8px' } });
-            header.innerHTML = `<span style="font-size:20px">💬</span> <div><h3 style="margin:0; font-size:12px; color:#1c4b9e">Lari (Ocupada)</h3><p style="margin:0; font-size:10px; color:#666">"Naquelas longas noites em claro..."</p></div>`;
+            const viewContainer = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' } });
+            wrap.appendChild(viewContainer);
 
-            const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', borderBottom: '1px solid #ccc' } });
-            chatBox.innerHTML = `
-                <div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- Lari acabou de entrar ---</div>
-                <div style="margin-bottom: 5px"><strong style="color: #666">Lari diz:</strong></div>
-                <div style="margin-bottom: 10px; padding-left: 10px; font-family: 'Comic Sans MS'; color: #000080">oioioioi</div>
-            `;
-
-            const inputBox = h('div', { style: { height: '80px', padding: '5px', background: '#ece9d8', display: 'flex', flexDirection: 'column' } });
-
-            // Fake barra de formatação Msn
-            const toolBar = h('div', { style: { display: 'flex', gap: '4px', marginBottom: '4px' } });
-            toolBar.innerHTML = `<span style="cursor:pointer">🅰️</span><span style="cursor:pointer">😊</span><span style="cursor:pointer">🎵</span>`;
-
-            const form = h('form', { style: { display: 'flex', gap: '5px', flex: 1 } });
-            const input = h('input', { type: 'text', style: { flex: 1, border: '1px solid #7f9db9', padding: '4px' }, placeholder: 'Escreva uma mensagem...' });
-            const btn = h('button', { type: 'submit', style: { padding: '0 15px', fontFamily: 'Tahoma' } }, 'Enviar');
-
-            form.appendChild(input);
-            form.appendChild(btn);
-            inputBox.appendChild(toolBar);
-            inputBox.appendChild(form);
-
-            form.onsubmit = (e) => {
-                e.preventDefault();
-                if (!input.value.trim()) return;
-
-                // Add user msg
-                const msgWrap = document.createElement('div');
-                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Tulio diz:</strong></div><div style="padding-left: 10px">${input.value}</div>`;
-                chatBox.appendChild(msgWrap);
-                input.value = '';
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-                // Nudge logic! 2s delay
-                setTimeout(() => {
-                    const notice = document.createElement('div');
-                    notice.style.color = 'red';
-                    notice.style.fontWeight = 'bold';
-                    notice.style.textAlign = 'center';
-                    notice.style.margin = '10px 0';
-                    notice.innerText = "Lari acaba de enviar um chamar a atenção!";
-                    chatBox.appendChild(notice);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-
-                    // Tremer a tela inteira (Nudge effect)
-                    const desk = document.getElementById('xpDesktop');
-                    if (desk) {
-                        desk.classList.add('xp-nudge-shake');
-                        setTimeout(() => desk.classList.remove('xp-nudge-shake'), 400); // tempo que rola na keyframe -> 0.4s
+            const playNudgeSound = () => {
+                try {
+                    const C = window.AudioContext || window.webkitAudioContext;
+                    if (C) {
+                        const c = new C();
+                        const g = c.createGain();
+                        const o = c.createOscillator();
+                        o.type = 'triangle';
+                        o.frequency.setValueAtTime(150, c.currentTime);
+                        o.frequency.exponentialRampToValueAtTime(40, c.currentTime + 0.3);
+                        g.gain.setValueAtTime(1, c.currentTime);
+                        g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.3);
+                        o.connect(g);
+                        g.connect(c.destination);
+                        o.start();
+                        o.stop(c.currentTime + 0.4);
                     }
-
-                    // Som de Nudge (Thud sintético grave via AudioContext)
-                    try {
-                        const C = window.AudioContext || window.webkitAudioContext;
-                        if (C) {
-                            const c = new C();
-                            const g = c.createGain();
-                            const o = c.createOscillator();
-                            o.type = 'triangle';
-                            o.frequency.setValueAtTime(150, c.currentTime);    // freq inicial grave
-                            o.frequency.exponentialRampToValueAtTime(40, c.currentTime + 0.3); // drop rápido pra bater
-                            g.gain.setValueAtTime(1, c.currentTime);
-                            g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.3);
-                            o.connect(g);
-                            g.connect(c.destination);
-                            o.start();
-                            o.stop(c.currentTime + 0.4);
-                        }
-                    } catch (err) { }
-
-                }, 2000);
+                } catch (err) { }
             };
 
-            wrap.appendChild(header);
-            wrap.appendChild(chatBox);
-            wrap.appendChild(inputBox);
+            const renderChat = (contactName, subtitle, isLets) => {
+                viewContainer.innerHTML = '';
+
+                const header = h('div', { style: { padding: '8px', background: '#fff', borderBottom: '1px solid #ccc', display: 'flex', alignItems: 'center', gap: '8px' } });
+
+                const backBtn = h('button', { style: { padding: '2px 5px', fontSize: '10px', cursor: 'pointer' }, onclick: renderContacts }, '◀ Voltar');
+                header.appendChild(backBtn);
+
+                const titleInfo = h('div', { html: `<h3 style="margin:0; font-size:12px; color:#1c4b9e">${contactName}</h3><p style="margin:0; font-size:10px; color:#666">${subtitle}</p>` });
+
+                const iconWrap = h('span', { style: { fontSize: '20px' } }, '💬');
+                header.appendChild(iconWrap);
+                header.appendChild(titleInfo);
+
+                const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', borderBottom: '1px solid #ccc' } });
+                chatBox.innerHTML = `<div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- ${contactName} acabou de entrar ---</div>`;
+
+                if (isLets) {
+                    chatBox.innerHTML += `
+                        <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
+                        <div style="margin-bottom: 10px; padding-left: 10px; font-family: 'Comic Sans MS'; color: #000080">oioioioi</div>
+                    `;
+                } else {
+                    chatBox.innerHTML += `
+                        <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
+                        <div style="margin-bottom: 10px; padding-left: 10px; color: #000080">E aí! Sou a IA assistente no modo clássico. Do que precisa?</div>
+                    `;
+                }
+
+                const inputBox = h('div', { style: { height: '80px', padding: '5px', background: '#ece9d8', display: 'flex', flexDirection: 'column' } });
+
+                const toolBar = h('div', { style: { display: 'flex', gap: '4px', marginBottom: '4px' } });
+                toolBar.innerHTML = `<span style="cursor:pointer">🅰️</span><span style="cursor:pointer">😊</span><span style="cursor:pointer">🎵</span>`;
+
+                const form = h('form', { style: { display: 'flex', gap: '5px', flex: 1 } });
+                const input = h('input', { type: 'text', style: { flex: 1, border: '1px solid #7f9db9', padding: '4px' }, placeholder: 'Escreva uma mensagem...' });
+                const btn = h('button', { type: 'submit', style: { padding: '0 15px', fontFamily: 'Tahoma' } }, 'Enviar');
+
+                form.appendChild(input);
+                form.appendChild(btn);
+                inputBox.appendChild(toolBar);
+                inputBox.appendChild(form);
+
+                let letsNudgeSent = false;
+
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    if (!input.value.trim()) return;
+
+                    const msg = input.value;
+                    const msgWrap = document.createElement('div');
+                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${msg}</div>`;
+                    chatBox.appendChild(msgWrap);
+                    input.value = '';
+                    chatBox.scrollTop = chatBox.scrollHeight;
+
+                    // AI response logic
+                    if (isLets && !letsNudgeSent) {
+                        letsNudgeSent = true;
+                        setTimeout(() => {
+                            const notice = document.createElement('div');
+                            notice.style.color = 'red';
+                            notice.style.fontWeight = 'bold';
+                            notice.style.textAlign = 'center';
+                            notice.style.margin = '10px 0';
+                            notice.innerText = "Lets acaba de enviar um chamar a atenção!";
+                            chatBox.appendChild(notice);
+                            chatBox.scrollTop = chatBox.scrollHeight;
+
+                            const desk = document.getElementById('xpDesktop');
+                            if (desk) {
+                                desk.classList.add('xp-nudge-shake');
+                                setTimeout(() => desk.classList.remove('xp-nudge-shake'), 400);
+                            }
+                            playNudgeSound();
+                        }, 1500);
+                    } else if (!isLets) {
+                        // Tulio bot response
+                        setTimeout(() => {
+                            const responses = [
+                                "Pode crer, interessante isso.",
+                                "Claro, eu trabalho como Product Designer e UX!",
+                                "O fluxo disso dava pra simplificar, hein?",
+                                "Se precisar de um insight de design ou código, só mandar.",
+                                "Hahaha, 2005 ligou e pediu o MSN de volta."
+                            ];
+                            const resp = msg.toLowerCase().includes('?') ? "Hmm, boa pergunta. Como designer, diria que o contexto importa muito!" : responses[Math.floor(Math.random() * responses.length)];
+
+                            const botWrap = document.createElement('div');
+                            botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #666">${contactName} diz:</strong></div><div style="padding-left: 10px; color: #000080">${resp}</div>`;
+                            chatBox.appendChild(botWrap);
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }, 1000 + Math.random() * 1000);
+                    }
+                };
+
+                viewContainer.appendChild(header);
+                viewContainer.appendChild(chatBox);
+                viewContainer.appendChild(inputBox);
+            };
+
+            const renderContacts = () => {
+                viewContainer.innerHTML = '';
+
+                // Contact List UI
+                const topBar = h('div', { style: { background: 'linear-gradient(180deg, #fff, #e4ede6)', borderBottom: '1px solid #7f9db9', padding: '10px', display: 'flex', gap: '10px', alignItems: 'center' } });
+                topBar.innerHTML = `<div style="width:40px; height:40px; border:1px solid #aaa; border-radius:3px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:20px">👤</div>
+                                    <div><strong style="color:#000; font-size:12px; font-weight:bold;">Você (Online) <span style="font-size:10px;color:#008000">▼</span></strong><br><span style="color:#666; font-size:10px">&lt;Digite uma mensagem pessoal&gt;</span></div>`;
+
+                const listWrap = h('div', { style: { flex: 1, background: '#fff', overflowY: 'auto', padding: '10px 0' } });
+
+                // Online Group
+                const grpOnline = h('div', { style: {} });
+                grpOnline.innerHTML = `<div style="padding: 2px 10px; font-weight:bold; color:#1c4b9e; border-bottom: 1px solid #eee; margin-bottom:5px; font-size:11px">Amigos e Família (2/5)</div>`;
+
+                const btnTulio = h('div', { style: { padding: '5px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
+                btnTulio.innerHTML = `<div style="width:10px; height:10px; background:#0c0; border-radius:50%; box-shadow:inset -2px -2px 4px rgba(0,0,0,0.3)"></div> <div><strong style="color:#000">Túlio</strong> <span style="color:#888">- "Bora codar?"</span></div>`;
+                btnTulio.onmouseover = () => btnTulio.style.background = '#eef3fc';
+                btnTulio.onmouseout = () => btnTulio.style.background = 'transparent';
+                btnTulio.onclick = () => renderChat('Túlio', '"Bora codar?"', false);
+
+                const btnLets = h('div', { style: { padding: '5px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
+                btnLets.innerHTML = `<div style="width:10px; height:10px; background:#0c0; border-radius:50%; box-shadow:inset -2px -2px 4px rgba(0,0,0,0.3)"></div> <div><strong style="color:#000">Lets</strong> <span style="color:#888">- "Naquelas longas noites em claro..."</span></div>`;
+                btnLets.onmouseover = () => btnLets.style.background = '#eef3fc';
+                btnLets.onmouseout = () => btnLets.style.background = 'transparent';
+                btnLets.onclick = () => renderChat('Lets', '"Naquelas longas noites em claro..."', true);
+
+                grpOnline.appendChild(btnTulio);
+                grpOnline.appendChild(btnLets);
+
+                // Offline Group
+                const grpOffline = h('div', { style: { marginTop: '10px' } });
+                grpOffline.innerHTML = `<div style="padding: 2px 10px; font-weight:bold; color:#888; border-bottom: 1px solid #eee; margin-bottom:5px; font-size:11px">Offline (3)</div>`;
+
+                ['Gui', 'Mãe', 'Bruno'].forEach(name => {
+                    const offC = h('div', { style: { padding: '5px 15px', display: 'flex', alignItems: 'center', gap: '8px', color: '#888', fontSize: '11px' } });
+                    offC.innerHTML = `<div style="width:10px; height:10px; background:#ccc; border-radius:50%"></div> <span>${name}</span>`;
+                    grpOffline.appendChild(offC);
+                });
+
+                listWrap.appendChild(grpOnline);
+                listWrap.appendChild(grpOffline);
+
+                const botBar = h('div', { style: { background: '#ece9d8', borderTop: '1px solid #c0c0c0', padding: '5px', textAlign: 'center', fontSize: '10px', color: '#1c4b9e', cursor: 'pointer' } });
+                botBar.textContent = "MSN Today -> Descubra seu horóscopo!";
+
+                viewContainer.appendChild(topBar);
+                viewContainer.appendChild(listWrap);
+                viewContainer.appendChild(botBar);
+            };
+
+            // Start up with Contacts View
+            renderContacts();
 
             return wrap;
         },
