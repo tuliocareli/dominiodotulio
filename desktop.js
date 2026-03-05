@@ -65,7 +65,7 @@
         { id: 'calculator', icon: '🖩', label: 'Calculadora' },
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
-        { id: 'gta_cheats', icon: '📝', label: 'GTA_Cheats.txt' },
+        { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
@@ -1369,8 +1369,8 @@ NUTTERTOOLS - Armas Pesadas
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="border-bottom:1px solid #eee; cursor: pointer" title="Duplo clique para abrir..." onclick="alert('⚠️ ALERTA DO ANTIVÍRUS AVAST:\\n\\nAmeaça detectada: Trojan.Win32.Generic\\O arquivo Linkin_Park_Numb_Oficial.mp3.exe tentou infectar seu computador.\\n\\nBrincadeira! Isso só rodou no seu navegador.\\nMas cuidado com o que você baixava no Limewire/eMule em 2004!')">
-                        <td style="padding:4px; color:blue; text-decoration: underline">Linkin_Park_Numb_Oficial.mp3.exe</td>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">Linkin_Park_Numb_Oficial.mp3.exe</td>
                         <td style="padding:4px; color:#666">32 KB</td>
                         <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:99%;background:#0c0;height:100%"></div></div></td>
                         <td style="padding:4px; color:#666">0.2 kb/s</td>
