@@ -1451,12 +1451,12 @@
         const boot = h('div', { id: 'xpBoot' },
             h('div', { class: 'xp-boot-wordmark' },
                 h('div', { class: 'xp-boot-os' },
-                    'Microsoft',
+                    'Tulio',
                     h('sup', { style: { fontSize: '10px', verticalAlign: 'super', marginLeft: '2px', fontStyle: 'normal' } }, '®'),
-                    ' Windows',
-                    h('span', { class: 'xp-colored' }, 'xp')
+                    ' Underground ',
+                    h('span', { class: 'xp-colored' }, 'OS')
                 ),
-                h('div', { class: 'xp-boot-version' }, 'TC Underground Edition')
+                h('div', { class: 'xp-boot-version' }, 'Bem vindo a 2004')
             ),
             h('div', { class: 'xp-boot-bar' },
                 h('div', { class: 'xp-boot-fill' })
@@ -1579,6 +1579,8 @@
             // Remove a tela de desligamento logo depois do OS ter sumido transparente
             setTimeout(() => {
                 shutdown.remove();
+                desk.remove();
+                mounted = false;
                 shuttingDown = false;
             }, 300);
 
