@@ -149,10 +149,16 @@
             document.body.style.userSelect = '';
         };
 
-        handle.addEventListener('mousedown', e => { if (e.button === 0) { focusWin(win); start(e.clientX, e.clientY); e.preventDefault(); } });
+        handle.addEventListener('mousedown', e => {
+            if (e.target.closest('button')) return;
+            if (e.button === 0) { focusWin(win); start(e.clientX, e.clientY); e.preventDefault(); }
+        });
         window.addEventListener('mousemove', e => move(e.clientX, e.clientY));
         window.addEventListener('mouseup', stop);
-        handle.addEventListener('touchstart', e => { focusWin(win); start(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+        handle.addEventListener('touchstart', e => {
+            if (e.target.closest('button')) return;
+            focusWin(win); start(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
         window.addEventListener('touchmove', e => { if (dragging) { move(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); } }, { passive: false });
         window.addEventListener('touchend', stop);
     }
@@ -1268,63 +1274,243 @@
         },
 
         winamp: () => {
-            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#1c1c1c', border: '2px solid #333', color: '#00ff00', fontFamily: 'Courier New' } });
+            const MUSIC_DATA = [
+                { id: 'jT_2WIzOs5w', title: 'Linkin Park - Faint' },
+                { id: 'A9wLowpiWWs', title: 'Evanescence - Going Under' },
+                { id: 'GrD3dDUKxYY', title: 'Three Days Grace - I Hate Everything About You' },
+                { id: 'NWi4eavotFk', title: 'Soulja Boy - Crank Dat' },
+                { id: '51XzW98wEDg', title: 'Green Day - Boulevard of Broken Dreams' },
+                { id: 'y9Kqb2z9Lzs', title: 'Edward Maya & Vika Jigulina - Stereo Love' },
+                { id: 'n4S5-nRUWbE', title: 'Sean Kingston, Justin Bieber - Eenie Meenie' },
+                { id: 'VXPvpK2ct4M', title: 'Nelly Furtado - Promiscuous' },
+                { id: 'iCL04cxeMOE', title: 'Usher - Yeah!' }
+            ];
 
-            // Layout bem old-school
-            const head = h('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '2px 4px', background: '#0a0a0a', borderBottom: '1px solid #333', fontSize: '10px' } });
-            head.innerHTML = `<span>TULIOAMP</span> <span>kbps: 128 kHz: 44</span>`;
+            const wrap = h('div', { class: 'winamp-player-wrap', style: { width: '100%', boxSizing: 'border-box', overflow: 'hidden' } });
 
-            const display = h('div', { style: { padding: '10px', textAlign: 'center', fontSize: '14px', flex: '1', borderBottom: '1px solid #333' } });
-            display.textContent = '01. Cant get over you, tell me you will come back baby.mp3';
+            // Titlebar
+            const titlebar = h('div', { class: 'winamp-titlebar' },
+                h('span', { class: 'winamp-logo' }, '⚡ TULIOAMP'),
+                h('div', { class: 'winamp-tb-buttons' },
+                    h('span', { class: 'winamp-tb-btn' }, '_'),
+                    h('span', { class: 'winamp-tb-btn' }, '□'),
+                    h('span', { class: 'winamp-tb-btn' }, '✕')
+                )
+            );
 
-            const spectrum = h('div', { style: { display: 'flex', height: '30px', margin: '5px auto', width: '80%', alignItems: 'flex-end', justifyContent: 'center', gap: '2px', opacity: 0.5 } });
-
-            // Barrinhas do spectro
-            const bars = [];
-            for (let i = 0; i < 15; i++) {
-                const b = h('div', { style: { width: '8px', background: '#00ff00', height: (Math.random() * 80 + 20) + '%' } });
-                bars.push(b);
-                spectrum.appendChild(b);
+            // Display
+            const viz = h('div', { class: 'winamp-visualizer', style: { display: 'flex', gap: '2px', alignItems: 'flex-end', height: '40px', padding: '5px' } });
+            for (let i = 0; i < 12; i++) {
+                viz.appendChild(h('div', { style: { flex: 1, background: '#0f0', borderTop: '1px solid #fff', height: '10%', transition: 'height 0.1s' } }));
             }
-            display.appendChild(spectrum);
 
-            const controls = h('div', { style: { display: 'flex', gap: '5px', padding: '10px', justifyContent: 'center', background: '#111' } });
-            const playBtn = h('button', { style: { background: '#333', color: '#00ff00', border: '1px outset #555', cursor: 'pointer', padding: '4px 12px', fontWeight: 'bold' } }, '▶ PLAY');
-            const stopBtn = h('button', { style: { background: '#333', color: '#00ff00', border: '1px outset #555', cursor: 'pointer', padding: '4px 12px', fontWeight: 'bold' } }, '◼ STOP');
+            const trackNameLabel = h('div', { class: 'winamp-track-name', style: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '10px' } }, MUSIC_DATA[0].title);
+            const timeLabel = h('div', { class: 'winamp-time', style: { fontSize: '20px' } }, '0:00');
 
-            let animInterval = null;
+            const infoPanel = h('div', { class: 'winamp-info-panel', style: { minWidth: 0, overflow: 'hidden', padding: '5px' } },
+                trackNameLabel,
+                h('div', { class: 'winamp-meta-row', style: { display: 'flex', gap: '4px', fontSize: '9px', margin: '4px 0' } },
+                    h('span', { class: 'winamp-meta-tag' }, 'BITRATE'), h('span', { class: 'winamp-meta-val', style: { color: '#0f0' } }, '128'), h('span', { class: 'winamp-meta-tag' }, 'kbps'),
+                    h('span', { class: 'winamp-meta-tag' }, 'SRATE'), h('span', { class: 'winamp-meta-val', style: { color: '#0f0' } }, '44'), h('span', { class: 'winamp-meta-tag' }, 'kHz')
+                ),
+                h('div', { class: 'winamp-meta-row', style: { display: 'flex', gap: '4px', fontSize: '9px', marginBottom: '4px' } },
+                    h('span', { class: 'winamp-meta-tag' }, 'MONO'), h('span', { class: 'winamp-meta-val stereo', style: { color: '#fff', fontWeight: 'bold' } }, 'STEREO')
+                ),
+                timeLabel
+            );
 
-            playBtn.onclick = () => {
-                spectrum.style.opacity = 1;
-                clearInterval(animInterval);
-                animInterval = setInterval(() => {
-                    bars.forEach(b => b.style.height = (Math.random() * 90 + 10) + '%');
-                }, 150);
+            const display = h('div', { class: 'winamp-display', style: { display: 'flex', flexDirection: 'column' } }, viz, infoPanel);
 
-                // "Winamp, it really whips the llama's ass!" via TTS
-                if ('speechSynthesis' in window) {
-                    const u = new SpeechSynthesisUtterance("Tulioamp. It really whips the llama's ass.");
-                    u.lang = 'en-US';
-                    u.pitch = 0.5; // voz mais grave/comprimida
-                    u.rate = 1.2;
-                    window.speechSynthesis.cancel();
-                    window.speechSynthesis.speak(u);
+            // Controls
+            const btnPrev = h('button', { class: 'wbtn', title: 'Anterior' }, '⏮');
+            const btnPlay = h('button', { class: 'wbtn play', title: 'Play' }, '▶');
+            const btnPause = h('button', { class: 'wbtn', title: 'Pause' }, '⏸');
+            const btnNext = h('button', { class: 'wbtn', title: 'Próximo' }, '⏭');
+
+            const controls = h('div', { class: 'winamp-controls' },
+                btnPrev, btnPlay, btnPause, h('button', { class: 'wbtn' }, '⏹'), btnNext,
+                h('button', { class: 'wbtn shuffle' }, '⇀⇁'), h('button', { class: 'wbtn' }, '↻')
+            );
+
+            // Playlist
+            const plList = h('ul', { class: 'winamp-pl-list', style: { height: '140px', overflowY: 'auto', listStyle: 'none', padding: '0', margin: '0', background: '#0a0a0a', color: '#888', fontSize: '10px' } });
+
+            const updatePlaylistUI = () => {
+                plList.innerHTML = '';
+                MUSIC_DATA.forEach((m, idx) => {
+                    const li = h('li', {
+                        style: {
+                            color: idx === currentIdx ? '#0f0' : '#888',
+                            backgroundColor: idx === currentIdx ? '#1c1c1c' : 'transparent',
+                            cursor: 'pointer',
+                            padding: '4px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                        },
+                        onclick: () => {
+                            if (!ytReady) return;
+                            currentIdx = idx;
+                            ytPlayer.loadVideoById(MUSIC_DATA[currentIdx].id);
+                            updateTrackInfo();
+                        }
+                    }, `${String(idx + 1).padStart(2, '0')}. ${m.title}`);
+                    plList.appendChild(li);
+                });
+            };
+
+            const plSection = h('div', { class: 'winamp-playlist-section' },
+                h('div', { class: 'winamp-eq-titlebar' },
+                    h('span', { class: 'winamp-logo' }, '📋 PLAYLIST'),
+                    h('span', { style: { color: '#aaa', fontSize: '10px' } }, `${MUSIC_DATA.length} FILES`)
+                ),
+                plList
+            );
+
+            const ytFooter = h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px', background: '#1c1c1c', borderTop: '2px solid #555' } },
+                h('span', { style: { color: '#888', fontSize: '9px', paddingLeft: '5px' } }, 'Powered by YouTube')
+            );
+
+            // Mini YouTube iframe wrapper - Visible to prevent API invisible embed blocks
+            const iframeId = 'yt-winamp-' + Date.now();
+            const playerContainer = h('div', {
+                style: { width: '120px', height: '68px', border: '1px solid #333', background: '#000', overflow: 'hidden' }
+            });
+            const innerDiv = h('div', { id: iframeId });
+            playerContainer.appendChild(innerDiv);
+
+            ytFooter.appendChild(playerContainer);
+
+            wrap.appendChild(titlebar);
+            wrap.appendChild(display);
+            wrap.appendChild(controls);
+            wrap.appendChild(plSection);
+            wrap.appendChild(ytFooter);
+
+            let ytPlayer;
+            let ytReady = false;
+            let currentIdx = 0;
+            let checkInterval;
+
+            const updateTrackInfo = (err) => {
+                if (err) {
+                    trackNameLabel.style.color = 'red';
+                    trackNameLabel.textContent = "ERRO: Faixa Bloqueada (Copyright)";
+                } else {
+                    trackNameLabel.style.color = '';
+                    trackNameLabel.textContent = MUSIC_DATA[currentIdx].title;
+                }
+                updatePlaylistUI();
+                viz.childNodes.forEach(b => b.style.height = '10%');
+            };
+
+            const formatTime = (secs) => {
+                if (!secs) return '0:00';
+                secs = Math.floor(secs);
+                const m = Math.floor(secs / 60);
+                const s = String(secs % 60).padStart(2, '0');
+                return `${m}:${s}`;
+            };
+
+            const ensureAPIReady = (callback) => {
+                if (window.YT && window.YT.Player) {
+                    callback();
+                } else {
+                    if (!document.getElementById('yt-iframe-api')) {
+                        const script = document.createElement('script');
+                        script.id = 'yt-iframe-api';
+                        script.src = 'https://www.youtube.com/iframe_api';
+                        document.head.appendChild(script);
+                    }
+                    const checkYT = setInterval(() => {
+                        if (window.YT && window.YT.Player) {
+                            clearInterval(checkYT);
+                            callback();
+                        }
+                    }, 100);
                 }
             };
 
-            stopBtn.onclick = () => {
-                spectrum.style.opacity = 0.5;
-                clearInterval(animInterval);
-                bars.forEach(b => b.style.height = '10%');
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            ensureAPIReady(() => {
+                ytPlayer = new window.YT.Player(iframeId, {
+                    height: '68',
+                    width: '120',
+                    videoId: MUSIC_DATA[currentIdx].id,
+                    playerVars: {
+                        'autoplay': 1,
+                        'controls': 0,
+                        'disablekb': 1,
+                        'modestbranding': 1,
+                        'rel': 0,
+                        'playsinline': 1,
+                        'origin': window.location.origin
+                    },
+                    events: {
+                        'onReady': () => {
+                            ytReady = true;
+                            updateTrackInfo();
+                            timeLabel.textContent = "0:00";
+
+                            checkInterval = setInterval(() => {
+                                if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+                                    const t = ytPlayer.getCurrentTime();
+                                    const state = ytPlayer.getPlayerState();
+                                    timeLabel.textContent = formatTime(t);
+
+                                    // Visualizer animation
+                                    if (state === window.YT.PlayerState.PLAYING) {
+                                        viz.childNodes.forEach(b => b.style.height = (Math.random() * 80 + 20) + '%');
+                                    } else {
+                                        viz.childNodes.forEach(b => b.style.height = '10%');
+                                    }
+                                }
+                            }, 150);
+                        },
+                        'onStateChange': (e) => {
+                            if (e.data === window.YT.PlayerState.PLAYING) {
+                                btnPlay.style.color = '#0f0';
+                            } else {
+                                btnPlay.style.color = '';
+                            }
+                            if (e.data === window.YT.PlayerState.ENDED) {
+                                currentIdx = (currentIdx + 1) % MUSIC_DATA.length;
+                                ytPlayer.loadVideoById(MUSIC_DATA[currentIdx].id);
+                                updateTrackInfo();
+                            }
+                        },
+                        'onError': (e) => {
+                            updateTrackInfo(true);
+                            viz.childNodes.forEach(b => b.style.height = '10%');
+                            timeLabel.textContent = "ERROR";
+                        }
+                    }
+                });
+            });
+
+            btnPlay.onclick = () => { if (ytReady) ytPlayer.playVideo(); };
+            btnPause.onclick = () => { if (ytReady) ytPlayer.pauseVideo(); };
+            btnPrev.onclick = () => {
+                if (!ytReady) return;
+                currentIdx = (currentIdx - 1 + MUSIC_DATA.length) % MUSIC_DATA.length;
+                ytPlayer.loadVideoById(MUSIC_DATA[currentIdx].id);
+                updateTrackInfo();
+            };
+            btnNext.onclick = () => {
+                if (!ytReady) return;
+                currentIdx = (currentIdx + 1) % MUSIC_DATA.length;
+                ytPlayer.loadVideoById(MUSIC_DATA[currentIdx].id);
+                updateTrackInfo();
             };
 
-            controls.appendChild(playBtn);
-            controls.appendChild(stopBtn);
+            const cleanup = setInterval(() => {
+                if (!document.body.contains(wrap)) {
+                    clearInterval(checkInterval);
+                    clearInterval(cleanup);
+                    if (ytPlayer && typeof ytPlayer.destroy === 'function') ytPlayer.destroy();
+                }
+            }, 1000);
 
-            wrap.appendChild(head);
-            wrap.appendChild(display);
-            wrap.appendChild(controls);
+            updatePlaylistUI();
 
             return wrap;
         },
@@ -1993,7 +2179,7 @@ NUTTERTOOLS - Armas Pesadas
             minesweeper: { w: '300px', h: '360px' },
             burningrom: { w: '480px', h: '420px' },
             messenger: { w: '480px', h: '380px' },
-            winamp: { w: '280px', h: '160px' },
+            winamp: { w: '280px', h: null },
             wordpad: { w: '440px', h: '400px' },
             gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
