@@ -1722,6 +1722,28 @@ body {
     /* Essencial para o CSS Grid (1fr) não expandir com o conteúdo interno e quebrar o layout lateral */
 }
 
+.main-context-log {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--neon-green);
+    opacity: 0.8;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 10px 14px;
+    border-left: 3px solid var(--neon-green);
+    border-bottom: 1px solid rgba(0, 228, 77, 0.2);
+    box-shadow: inset 0 0 10px rgba(0, 228, 77, 0.05);
+    border-radius: 0 4px 4px 0;
+    text-shadow: 0 0 3px rgba(0, 228, 77, 0.5);
+    margin-bottom: 2px;
+}
+
+.main-context-log .log-cursor {
+    display: inline-block;
+    width: 8px;
+    animation: terminalBlink 1s infinite alternate;
+}
+
 .content-panel {
     position: relative;
     background: linear-gradient(180deg, #1e2023 0%, #161819 100%);
