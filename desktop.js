@@ -708,8 +708,9 @@
             const wrap = h('div', { class: 'xp-wmp' });
 
             const VIDS = [
-                'iuJDhFRDx9M', // O usuário pediu esse primeiro
-                '8W-cOhcPfY4',
+                'iuJDhFRDx9M', // 1° solicitado anteriormente
+                'Gdp4k77RZGA', // 2° solicitado agora
+                'oHg5SJYRHA0', // Novo solicitado
                 'z9XkY84MUls',
                 'VgDgWzBL7s4',
                 'Ro7yHf_pU14',
