@@ -1257,6 +1257,19 @@
                 menu.appendChild(h('span', { style: { cursor: 'pointer' } }, m));
             });
 
+            // Toolbar com controle de texto real
+            const toolbar = h('div', { style: { display: 'flex', gap: '4px', padding: '4px 8px', background: '#ece9d8', borderBottom: '1px solid #aca899', alignItems: 'center' } });
+
+            const fontSelect = h('select', { style: { fontFamily: 'Tahoma', fontSize: '11px' } });
+            ['Courier New', 'Tahoma', 'Comic Sans MS', 'Times New Roman', 'Arial'].forEach(f => {
+                const opt = h('option', { value: f }, f);
+                fontSelect.appendChild(opt);
+            });
+
+            const boldBtn = h('button', { style: { fontWeight: 'bold', width: '24px', height: '22px', fontSize: '12px', background: '#ece9d8', border: '1px outset #fff', cursor: 'pointer' } }, 'B');
+            const italBtn = h('button', { style: { fontStyle: 'italic', width: '24px', height: '22px', fontSize: '12px', background: '#ece9d8', border: '1px outset #fff', cursor: 'pointer' } }, 'I');
+            const strkBtn = h('button', { style: { textDecoration: 'line-through', width: '24px', height: '22px', fontSize: '12px', background: '#ece9d8', border: '1px outset #fff', cursor: 'pointer' } }, 'S');
+
             const textarea = h('textarea', {
                 spellcheck: 'false',
                 style: {
@@ -1266,7 +1279,20 @@
                 }
             });
 
+            fontSelect.onchange = (e) => textarea.style.fontFamily = e.target.value;
+
+            let isBold = false, isItal = false, isStrk = false;
+            boldBtn.onclick = () => { isBold = !isBold; textarea.style.fontWeight = isBold ? 'bold' : 'normal'; boldBtn.style.borderStyle = isBold ? 'inset' : 'outset'; };
+            italBtn.onclick = () => { isItal = !isItal; textarea.style.fontStyle = isItal ? 'italic' : 'normal'; italBtn.style.borderStyle = isItal ? 'inset' : 'outset'; };
+            strkBtn.onclick = () => { isStrk = !isStrk; textarea.style.textDecoration = isStrk ? 'line-through' : 'none'; strkBtn.style.borderStyle = isStrk ? 'inset' : 'outset'; };
+
+            toolbar.appendChild(fontSelect);
+            toolbar.appendChild(boldBtn);
+            toolbar.appendChild(italBtn);
+            toolbar.appendChild(strkBtn);
+
             wrap.appendChild(menu);
+            wrap.appendChild(toolbar);
             wrap.appendChild(textarea);
             return wrap;
         },
@@ -1343,8 +1369,8 @@ NUTTERTOOLS - Armas Pesadas
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="border-bottom:1px solid #eee">
-                        <td style="padding:4px; color:#333">Linkin_Park_Numb_Oficial.mp3.exe</td>
+                    <tr style="border-bottom:1px solid #eee; cursor: pointer" title="Duplo clique para abrir..." onclick="alert('⚠️ ALERTA DO ANTIVÍRUS AVAST:\\n\\nAmeaça detectada: Trojan.Win32.Generic\\O arquivo Linkin_Park_Numb_Oficial.mp3.exe tentou infectar seu computador.\\n\\nBrincadeira! Isso só rodou no seu navegador.\\nMas cuidado com o que você baixava no Limewire/eMule em 2004!')">
+                        <td style="padding:4px; color:blue; text-decoration: underline">Linkin_Park_Numb_Oficial.mp3.exe</td>
                         <td style="padding:4px; color:#666">32 KB</td>
                         <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:99%;background:#0c0;height:100%"></div></div></td>
                         <td style="padding:4px; color:#666">0.2 kb/s</td>
@@ -1358,11 +1384,18 @@ NUTTERTOOLS - Armas Pesadas
                         <td style="padding:4px; color:#666">8 anos</td>
                     </tr>
                     <tr style="border-bottom:1px solid #eee">
-                        <td style="padding:4px; color:#333">Keygen_Photoshop_CS2.zip</td>
+                        <td style="padding:4px; color:#333">Keygen_Phototulio_CS23.zip</td>
                         <td style="padding:4px; color:#666">1.1 MB</td>
                         <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:98%;background:#0c0;height:100%"></div></div></td>
                         <td style="padding:4px; color:#666">0.0 kb/s</td>
                         <td style="padding:4px; color:#666">Infinito</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">needforspeedug2NOMUSICRIP.rar</td>
+                        <td style="padding:4px; color:#666">2.1 GB</td>
+                        <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:1%;background:#0c0;height:100%"></div></div></td>
+                        <td style="padding:4px; color:#666">0.1 kb/s</td>
+                        <td style="padding:4px; color:#666">32 meses</td>
                     </tr>
                 </tbody>
             `;
