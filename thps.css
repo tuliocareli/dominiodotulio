@@ -1,0 +1,271 @@
+/* ═══════════════════════════════════════════════════
+   THPS SCORE WIDGET — TONY HAWK PRO SKATER STYLE
+   ═══════════════════════════════════════════════════ */
+
+.thps-score-widget {
+    width: 100%;
+    box-sizing: border-box;
+    background:
+        linear-gradient(180deg,
+            #1a1a2a 0%,
+            #0d0d18 60%,
+            #050508 100%);
+    border: 2px solid #333;
+    border-top-color: #555;
+    border-left-color: #555;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Scanline overlay retro */
+.thps-score-widget::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.18) 2px,
+            rgba(0, 0, 0, 0.18) 4px);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* ── HEADER (skater + score) ── */
+.thps-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px 6px;
+    background: linear-gradient(90deg,
+            rgba(0, 0, 80, 0.6) 0%,
+            rgba(0, 0, 40, 0.4) 100%);
+    border-bottom: 1px solid rgba(100, 100, 255, 0.2);
+}
+
+.thps-skater-icon {
+    font-size: 22px;
+    filter: drop-shadow(0 0 6px rgba(100, 200, 255, 0.8));
+    animation: thpsSkaterFloat 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes thpsSkaterFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-5deg);
+    }
+
+    50% {
+        transform: translateY(-4px) rotate(5deg);
+    }
+}
+
+.thps-score-block {
+    flex: 1;
+    min-width: 0;
+}
+
+.thps-score-label {
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.thps-score-value {
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow:
+        0 0 10px rgba(255, 255, 255, 0.9),
+        0 0 20px rgba(180, 220, 255, 0.7),
+        0 0 40px rgba(100, 180, 255, 0.4),
+        2px 2px 0 rgba(0, 0, 80, 0.8);
+    letter-spacing: 1px;
+    line-height: 1;
+    animation: thpsScoreGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes thpsScoreGlow {
+
+    0%,
+    100% {
+        text-shadow:
+            0 0 10px rgba(255, 255, 255, 0.9),
+            0 0 20px rgba(180, 220, 255, 0.7),
+            0 0 40px rgba(100, 180, 255, 0.4),
+            2px 2px 0 rgba(0, 0, 80, 0.8);
+    }
+
+    50% {
+        text-shadow:
+            0 0 15px rgba(255, 255, 255, 1),
+            0 0 30px rgba(180, 220, 255, 0.9),
+            0 0 60px rgba(100, 180, 255, 0.6),
+            0 0 80px rgba(80, 150, 255, 0.3),
+            2px 2px 0 rgba(0, 0, 80, 0.8);
+    }
+}
+
+/* ── SPECIAL BAR ── */
+.thps-special-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: linear-gradient(90deg,
+            rgba(0, 0, 0, 0.8) 0%,
+            rgba(20, 0, 40, 0.9) 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.thps-special-text {
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    color: #00ff88;
+    letter-spacing: 3px;
+    text-shadow:
+        0 0 6px rgba(0, 255, 136, 1),
+        0 0 12px rgba(0, 255, 136, 0.8),
+        0 0 24px rgba(0, 255, 136, 0.5),
+        0 0 40px rgba(0, 200, 100, 0.3);
+    animation: thpsSpecialPulse 0.8s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes thpsSpecialPulse {
+
+    0%,
+    100% {
+        text-shadow:
+            0 0 6px rgba(0, 255, 136, 1),
+            0 0 12px rgba(0, 255, 136, 0.8),
+            0 0 24px rgba(0, 255, 136, 0.5);
+        color: #00ff88;
+    }
+
+    50% {
+        text-shadow:
+            0 0 10px rgba(100, 255, 180, 1),
+            0 0 20px rgba(0, 255, 136, 1),
+            0 0 40px rgba(0, 255, 136, 0.8),
+            0 0 60px rgba(0, 200, 100, 0.5);
+        color: #88ffcc;
+    }
+}
+
+.thps-special-bar {
+    flex: 1;
+    height: 12px;
+    background: #0a0a0a;
+    border: 1px solid #333;
+    border-top-color: #111;
+    border-left-color: #111;
+    position: relative;
+    overflow: hidden;
+}
+
+.thps-special-fill {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    background: linear-gradient(90deg,
+            #00aa44 0%,
+            #00dd66 30%,
+            #00ff88 60%,
+            #66ffbb 80%,
+            #aaffdd 100%);
+    animation: thpsBarShimmer 1.2s linear infinite;
+}
+
+@keyframes thpsBarShimmer {
+    0% {
+        box-shadow: inset 0 0 8px rgba(0, 255, 136, 0.8), 0 0 12px rgba(0, 255, 136, 0.6);
+    }
+
+    50% {
+        box-shadow: inset 0 0 16px rgba(0, 255, 200, 1), 0 0 24px rgba(0, 255, 136, 0.9);
+    }
+
+    100% {
+        box-shadow: inset 0 0 8px rgba(0, 255, 136, 0.8), 0 0 12px rgba(0, 255, 136, 0.6);
+    }
+}
+
+.thps-special-shine {
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.5) 50%,
+            transparent 100%);
+    animation: thpsShine 1.4s linear infinite;
+}
+
+@keyframes thpsShine {
+    0% {
+        left: -60%;
+    }
+
+    100% {
+        left: 120%;
+    }
+}
+
+/* ── COMBO ROW ── */
+.thps-combo-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px 8px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.thps-combo-label {
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
+}
+
+.thps-combo-val {
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    color: #ffcc00;
+    text-shadow: 0 0 8px rgba(255, 200, 0, 0.8), 1px 1px 0 #663300;
+    min-width: 30px;
+}
+
+.thps-trick-name {
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    font-size: 10px;
+    color: rgba(200, 220, 255, 0.85);
+    letter-spacing: 1px;
+    text-shadow: 0 0 6px rgba(150, 180, 255, 0.6);
+    animation: thpsTrickBlink 3s ease-in-out infinite;
+    text-transform: uppercase;
+}
+
+@keyframes thpsTrickBlink {
+
+    0%,
+    80%,
+    100% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0.3;
+    }
+}

@@ -1,0 +1,901 @@
+/* ═══════════════════════════════════════════════════
+   desktop.js — TC UNDERGROUND OS INTERFACE v1.0
+   Windows XP-inspired interactive desktop mockup
+   Lazy-mounted: only renders when Start is clicked.
+   ═══════════════════════════════════════════════════ */
+
+(function () {
+    'use strict';
+
+    // ── DATA ─────────────────────────────────────────
+    const DATA = {
+        games: [
+            'Tony Hawk Pro Skater 2', 'Tony Hawk Pro Skater 3',
+            'Tony Hawk Underground',
+            'GTA San Andreas', 'GTA Vice City',
+            'Tibia', 'The Sims 2', 'Half-Life 2',
+            'Silent Hill 2', 'Counter-Strike 1.6',
+            'Need for Speed Underground 2', 'Burnout 3: Takedown',
+            'Mafia 1', 'Fallout 2',
+            'Grand Chase', 'MapleStory', 'RPG Maker',
+            'Max Payne', 'Star Wars: Knights of the Old Republic',
+            'Tekken 5',
+        ],
+        books: [
+            'SPRINT – Jake Knapp',
+            'Estratégia de UX – Eric Goodman',
+            'Lean UX – Jeff Gothelf',
+            'Redação Estratégica para UX',
+            'Não Me Faça Pensar – Steve Krug',
+            'Leis da Psicologia Aplicadas a UX',
+            'Design para a Internet – Felipe Memória',
+            'Cultura da Interface – Steven Johnson',
+        ],
+        music: [
+            '505 – Arctic Monkeys (4:14)',
+            'Face – Brockhampton (4:19)',
+            'Ceremony – New Order (4:39)',
+            'Preciso me Encontrar – Cartola (2:59)',
+            'Headup – Deftones (6:13)',
+            'Rotten Apple – Alice in Chains (6:53)',
+            'Jesus Chorou – Racionais (7:51)',
+            'Feel – Robbie Williams (4:23)',
+            'Unretrofied – Dillinger Escape Plan (5:38)',
+            'Até que Durou – Péricles (5:13)',
+            'Lying from You – Linkin Park (2:55)',
+        ],
+        trash: [],
+    };
+
+    // ── ICON DEFINITIONS ─────────────────────────────
+    const ICONS = [
+        { id: 'mycomputer', icon: '🖥️', label: 'Meu Computador' },
+        { id: 'games', icon: '🎮', label: 'Meus Games' },
+        { id: 'books', icon: '📚', label: 'Livros' },
+        { id: 'music', icon: '🎵', label: 'Músicas' },
+        { id: 'ie', icon: '🌐', label: 'TC Explorer' },
+        { id: 'winamp', icon: '🎧', label: 'Tulioamp' },
+        { id: 'paint', icon: '🎨', label: 'Tulio Paint' },
+        { id: 'earth', icon: '🌎', label: 'Tulio Earth' },
+        { id: 'burningrom', icon: '💿', label: 'Tulio Burning ROM' },
+        { id: 'messenger', icon: '💬', label: 'Tulio Messenger' },
+        { id: 'trash', icon: '🗑️', label: 'Lixeira' },
+    ];
+
+    // ── STATE ─────────────────────────────────────────
+    let zTop = 100;
+    let mounted = false;
+    let clockTimer = null;
+    const openWindows = {}; // id → window el
+
+    // ── HELPERS ───────────────────────────────────────
+    const h = (tag, attrs = {}, ...children) => {
+        const el = document.createElement(tag);
+        Object.entries(attrs).forEach(([k, v]) => {
+            if (k === 'class') el.className = v;
+            else if (k === 'html') el.innerHTML = v;
+            else if (k === 'style') Object.assign(el.style, v);
+            else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+            else el.setAttribute(k, v);
+        });
+        children.flat().forEach(c => {
+            if (c == null) return;
+            el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+        });
+        return el;
+    };
+
+    const fmt2 = n => String(n).padStart(2, '0');
+    const nowStr = () => {
+        const d = new Date();
+        return `${fmt2(d.getHours())}:${fmt2(d.getMinutes())}:${fmt2(d.getSeconds())}`;
+    };
+
+    // ── DRAG ─────────────────────────────────────────
+    function makeDraggable(win, handle) {
+        let ox = 0, oy = 0, startX = 0, startY = 0, dragging = false;
+
+        const start = (cx, cy) => {
+            startX = cx;
+            startY = cy;
+            ox = parseInt(win.style.left) || 0;
+            oy = parseInt(win.style.top) || 0;
+            dragging = true;
+            win.style.transition = 'none';
+            document.body.style.userSelect = 'none';
+        };
+
+        const move = (cx, cy) => {
+            if (!dragging) return;
+            const dx = cx - startX;
+            const dy = cy - startY;
+            const desk = document.getElementById('xpDesktopArea');
+            if (!desk) return;
+            const maxX = desk.clientWidth - win.offsetWidth;
+            const maxY = desk.clientHeight - win.offsetHeight;
+            win.style.left = Math.max(0, Math.min(maxX, ox + dx)) + 'px';
+            win.style.top = Math.max(0, Math.min(maxY, oy + dy)) + 'px';
+        };
+
+        const stop = () => {
+            dragging = false;
+            document.body.style.userSelect = '';
+        };
+
+        handle.addEventListener('mousedown', e => { if (e.button === 0) { focusWin(win); start(e.clientX, e.clientY); e.preventDefault(); } });
+        window.addEventListener('mousemove', e => move(e.clientX, e.clientY));
+        window.addEventListener('mouseup', stop);
+        handle.addEventListener('touchstart', e => { focusWin(win); start(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+        window.addEventListener('touchmove', e => { if (dragging) { move(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); } }, { passive: false });
+        window.addEventListener('touchend', stop);
+    }
+
+    // ── FOCUS WINDOW ─────────────────────────────────
+    function focusWin(win) {
+        zTop++;
+        win.style.zIndex = zTop;
+        Object.values(openWindows).forEach(w => w && w.classList.remove('xp-win--active'));
+        win.classList.add('xp-win--active');
+        updateTaskbar();
+    }
+
+    // ── WINDOW CONTENT BUILDERS ──────────────────────
+    const CONTENT = {
+        mycomputer: () => h('div', { class: 'xp-file-view' }, ...[
+            { icon: '💾', name: 'Disco Local (C:)', detail: '80 GB' },
+            { icon: '📀', name: 'CD-ROM (D:)', detail: 'Vazio' },
+            { icon: '🖨️', name: 'Impressora HP', detail: 'Online' },
+            { icon: '🖥️', name: 'Monitor LG', detail: '1024×768' },
+        ].map(f => h('div', { class: 'xp-file-item' },
+            h('span', { class: 'xp-fi-icon' }, f.icon),
+            h('span', { class: 'xp-fi-name' }, f.name),
+            h('span', { class: 'xp-fi-detail' }, f.detail),
+        ))),
+
+        games: () => h('div', { class: 'xp-file-view' }, ...DATA.games.map(g =>
+            h('div', { class: 'xp-file-item' },
+                h('span', { class: 'xp-fi-icon' }, '🎮'),
+                h('span', { class: 'xp-fi-name' }, g),
+            )
+        )),
+
+        books: () => h('div', { class: 'xp-file-view' }, ...DATA.books.map(b =>
+            h('div', { class: 'xp-file-item' },
+                h('span', { class: 'xp-fi-icon' }, '📖'),
+                h('span', { class: 'xp-fi-name' }, b),
+            )
+        )),
+
+        music: () => h('div', { class: 'xp-file-view' }, ...DATA.music.map(m =>
+            h('div', { class: 'xp-file-item' },
+                h('span', { class: 'xp-fi-icon' }, '🎵'),
+                h('span', { class: 'xp-fi-name' }, m),
+            )
+        )),
+
+        ie: () => {
+            // ── TABS DATA — extraído dos nomes de arquivo ─────
+            const TABS = [
+                { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', img: 'telas pro tulio explorer/tonyhawkundegroundgame.com.png' },
+                { name: 'Xbox.com', url: 'http://www.xbox.com', img: 'telas pro tulio explorer/xbox.com.png' },
+                { name: 'NFS Underground', url: 'http://www.needforspeedunderground.com', img: 'telas pro tulio explorer/needforspeedunderground.com.png' },
+                { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', img: 'telas pro tulio explorer/needforspeedunderground2.com.png' },
+                { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com', img: 'telas pro tulio explorer/cartoonnetwork.com.png' },
+                { name: 'Submarino', url: 'http://www.submarino.com.br', img: 'telas pro tulio explorer/submarino.com.br.png' },
+                { name: 'Naruto Project', url: 'http://www.narutoproject.com.br', img: 'telas pro tulio explorer/narutoproject.com.br.jpg' },
+                { name: 'Magazine Luiza', url: 'http://www.magazineluiza.com.br', img: 'telas pro tulio explorer/magazineluiza.com.br.png' },
+                { name: 'MySpace', url: 'http://www.myspace.com', img: 'telas pro tulio explorer/myspace.com.jpg' },
+                { name: 'Orkut', url: 'http://www.orkut.com.br', img: 'telas pro tulio explorer/orkut.com.br.jpeg' },
+            ];
+
+            let activeIdx = 0; // Tony Hawk abre como aba ativa
+
+            const wrap = h('div', { class: 'xp-browser xp-browser--tabbed' });
+            const toolbar = h('div', {
+                class: 'xp-ie-toolbar', html:
+                    '<span>Arquivo</span><span>Editar</span><span>Exibir</span>' +
+                    '<span>Favoritos</span><span>Ferramentas</span><span>Ajuda</span>'
+            });
+            const tabBar = h('div', { class: 'xp-tab-bar' });
+            const addrBar = h('div', { class: 'xp-browser-bar' },
+                h('span', { class: 'xp-browser-label' }, '🌐'),
+            );
+            const addrUrl = h('div', { class: 'xp-browser-url' });
+            addrBar.appendChild(addrUrl);
+
+            const body = h('div', { class: 'xp-browser-body xp-browser-scroll' });
+            const siteImg = h('img', { class: 'xp-browser-site-img', alt: '' });
+            body.appendChild(siteImg);
+
+            const status = h('div', { class: 'xp-ie-status' });
+
+            // Render tabs
+            const tabEls = TABS.map((tab, i) => {
+                const el = h('div', {
+                    class: 'xp-tab' + (i === activeIdx ? ' xp-tab--active' : ''),
+                    onclick: () => switchTab(i),
+                }, tab.name);
+                tabBar.appendChild(el);
+                return el;
+            });
+
+            function switchTab(idx) {
+                activeIdx = idx;
+                const tab = TABS[idx];
+                tabEls.forEach((el, i) => el.classList.toggle('xp-tab--active', i === idx));
+                siteImg.src = tab.img;
+                siteImg.alt = tab.name;
+                addrUrl.textContent = tab.url;
+                status.textContent = '✔ Concluído — ' + tab.url;
+            }
+
+            // Inicializa aba ativa
+            switchTab(activeIdx);
+
+            wrap.appendChild(toolbar);
+            wrap.appendChild(tabBar);
+            wrap.appendChild(addrBar);
+            wrap.appendChild(body);
+            wrap.appendChild(status);
+            return wrap;
+        },
+
+        winamp: () => h('div', { class: 'xp-winamp' },
+            h('div', { class: 'xp-wa-display' },
+                h('div', { class: 'xp-wa-title' }, '⚡ TULIOAMP — Now Spinning'),
+                h('div', { class: 'xp-wa-track' }, DATA.music[0]),
+                h('div', { class: 'xp-wa-viz' }, ...Array.from({ length: 20 }, () =>
+                    h('div', { class: 'xp-wa-bar' })
+                )),
+            ),
+        ),
+
+        // ── TULIO PAINT ─────────────────────────
+        paint: () => {
+            const PALETTE = [
+                '#000', '#fff', '#808080', '#c0c0c0', '#800000', '#ff0000', '#ff6600',
+                '#ffff00', '#808000', '#00ff00', '#008000', '#00ffff', '#008080',
+                '#0000ff', '#000080', '#ff00ff', '#800080', '#ff69b4', '#8b4513', '#a0522d'
+            ];
+            let color = '#000000';
+            let brushSize = 3;
+            let drawing = false;
+
+            const wrap = h('div', { class: 'xp-paint' });
+            const toolbar = h('div', { class: 'xp-paint-toolbar' });
+            const canvas = h('canvas', { class: 'xp-paint-canvas', width: 560, height: 320 });
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 560, 320);
+
+            // Toolbar tools
+            const tools = [{ id: 'pencil', icon: '✏️' }, { id: 'eraser', icon: '🧹' }, { id: 'fill', icon: '🪣' }];
+            let activeTool = 'pencil';
+            const toolBtns = {};
+            tools.forEach(t => {
+                const btn = h('button', {
+                    class: 'xp-paint-tool' + (t.id === activeTool ? ' active' : ''),
+                    title: t.id,
+                    onclick: () => {
+                        activeTool = t.id;
+                        Object.values(toolBtns).forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    }
+                }, t.icon);
+                toolBtns[t.id] = btn;
+                toolbar.appendChild(btn);
+            });
+
+            // Brush size
+            const sizeLabel = h('span', { class: 'xp-paint-label' }, 'Tam:');
+            const sizeInput = h('input', { type: 'range', min: 1, max: 20, value: 3, class: 'xp-paint-range' });
+            sizeInput.addEventListener('input', () => { brushSize = +sizeInput.value; });
+            toolbar.appendChild(sizeLabel);
+            toolbar.appendChild(sizeInput);
+
+            // Clear
+            const clearBtn = h('button', {
+                class: 'xp-paint-tool', onclick: () => {
+                    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            }, '🗑️');
+            toolbar.appendChild(clearBtn);
+
+            // Palette
+            const palette = h('div', { class: 'xp-paint-palette' });
+            let colorSwatch;
+            PALETTE.forEach(c => {
+                const sw = h('div', {
+                    class: 'xp-paint-swatch', style: { background: c }, onclick: () => {
+                        color = c;
+                        if (colorSwatch) colorSwatch.style.outline = '';
+                        sw.style.outline = '2px solid #000';
+                        colorSwatch = sw;
+                    }
+                });
+                palette.appendChild(sw);
+            });
+
+            // ── Flood fill ──────────────────────────────────
+            function hexToRgb(hex) {
+                const h = hex.replace('#', '');
+                return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+            }
+            function floodFill(startX, startY, fillHex) {
+                const [fr, fg, fb] = hexToRgb(fillHex);
+                const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = img.data;
+                const w = canvas.width;
+                const h = canvas.height;
+                const idx = (startY * w + startX) * 4;
+                const tr = data[idx], tg = data[idx + 1], tb = data[idx + 2];
+                if (tr === fr && tg === fg && tb === fb) return;
+                const tolerance = 30;
+                const matches = (i) => Math.abs(data[i] - tr) <= tolerance && Math.abs(data[i + 1] - tg) <= tolerance && Math.abs(data[i + 2] - tb) <= tolerance;
+                const stack = [startX + startY * w];
+                const visited = new Uint8Array(w * h);
+                while (stack.length) {
+                    const pos = stack.pop();
+                    if (visited[pos]) continue;
+                    visited[pos] = 1;
+                    const pi = pos * 4;
+                    if (!matches(pi)) continue;
+                    data[pi] = fr; data[pi + 1] = fg; data[pi + 2] = fb; data[pi + 3] = 255;
+                    const x = pos % w, y = (pos / w) | 0;
+                    if (x > 0) stack.push(pos - 1);
+                    if (x < w - 1) stack.push(pos + 1);
+                    if (y > 0) stack.push(pos - w);
+                    if (y < h - 1) stack.push(pos + w);
+                }
+                ctx.putImageData(img, 0, 0);
+            }
+
+            // ── Draw events ─────────────────────────────────
+            const getPos = (e) => {
+                const r = canvas.getBoundingClientRect();
+                const cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+                const cy = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+                return { x: cx * (canvas.width / r.width), y: cy * (canvas.height / r.height) };
+            };
+
+            canvas.addEventListener('mousedown', e => {
+                const p = getPos(e);
+                if (activeTool === 'fill') {
+                    floodFill(Math.round(p.x), Math.round(p.y), color);
+                    return;
+                }
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                if (activeTool === 'eraser') {
+                    ctx.fillStyle = '#fff';
+                    ctx.arc(p.x, p.y, brushSize, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(p.x, p.y);
+                }
+            });
+            canvas.addEventListener('mousemove', e => {
+                if (!drawing) return;
+                const p = getPos(e);
+                if (activeTool === 'eraser') {
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, brushSize, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = brushSize;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.lineTo(p.x, p.y);
+                    ctx.stroke();
+                }
+            });
+            canvas.addEventListener('mouseup', () => drawing = false);
+            canvas.addEventListener('mouseleave', () => drawing = false);
+
+            wrap.appendChild(toolbar);
+            wrap.appendChild(canvas);
+            wrap.appendChild(palette);
+            return wrap;
+        },
+
+        // ── TULIO EARTH ──────────────────────
+        earth: () => {
+            const wrap = h('div', { class: 'xp-earth' });
+            const sidebar = h('div', { class: 'xp-earth-sidebar' },
+                h('div', { class: 'xp-earth-title' }, '\ud83c\udf0e TULIO EARTH v1.0'),
+                h('div', { class: 'xp-earth-search-label' }, 'Buscar local:'),
+                h('input', { type: 'text', class: 'xp-earth-search', placeholder: 'ex: S\u00e3o Paulo, BR...' }),
+                h('button', { class: 'xp-earth-btn' }, '\ud83d\udd0d Ir'),
+                h('hr', {}),
+                h('div', { class: 'xp-earth-coords', html: '\ud83d\udccd Lat: -23.5505\u00b0<br>\ud83d\udccd Lng: -46.6333\u00b0<br>\ud83d\udcc8 Alt: 800 km' }),
+                h('div', { class: 'xp-earth-zoom' },
+                    h('button', { class: 'xp-earth-btn' }, '+ Zoom'),
+                    h('button', { class: 'xp-earth-btn' }, '\u2212 Zoom'),
+                ),
+                h('div', { class: 'xp-earth-layers' },
+                    h('div', {}, '\ud83d\udda8 Camadas:'),
+                    ...['Sat\u00e9lite', 'Fronteiras', 'Relevo', 'Nuvens'].map(l =>
+                        h('label', { class: 'xp-earth-chk' },
+                            h('input', { type: 'checkbox', checked: true }),
+                            ' ' + l
+                        )
+                    )
+                ),
+            );
+            const globe = h('div', { class: 'xp-earth-globe-wrap' },
+                h('div', { class: 'xp-earth-globe' },
+                    h('div', { class: 'xp-earth-globe-inner' }),
+                    h('div', { class: 'xp-earth-grid' }),
+                    h('div', { class: 'xp-earth-clouds' }),
+                )
+            );
+            wrap.appendChild(sidebar);
+            wrap.appendChild(globe);
+            return wrap;
+        },
+
+
+        // ── TULIO BURNING ROM ─────────────
+        burningrom: () => {
+            const TRACKS = [
+                '01 - 505 - Arctic Monkeys.mp3',
+                '02 - Ceremony - New Order.mp3',
+                '03 - Headup - Deftones.mp3',
+                '04 - Jesus Chorou - Racionais.mp3',
+                '05 - Feel - Robbie Williams.mp3',
+                '06 - Lying from You - Linkin Park.mp3',
+                '07 - Rotten Apple - Alice in Chains.mp3',
+                '08 - Preciso me Encontrar - Cartola.mp3',
+            ];
+
+            let burning = false;
+            const wrap = h('div', { class: 'xp-burn' });
+
+            const header = h('div', { class: 'xp-burn-header' },
+                h('span', { class: 'xp-burn-logo' }, '💿 TULIO BURNING ROM 2005'),
+            );
+
+            const config = h('div', { class: 'xp-burn-config' },
+                h('label', {}, 'Tipo: '),
+                h('select', { class: 'xp-burn-select' },
+                    h('option', {}, 'CD de Áudio'),
+                    h('option', {}, 'CD de Dados'),
+                    h('option', {}, 'DVD-R'),
+                ),
+                h('label', {}, '  Velocidade: '),
+                h('select', { class: 'xp-burn-select' },
+                    h('option', {}, '52x'),
+                    h('option', {}, '32x'),
+                    h('option', {}, '16x'),
+                    h('option', {}, '1x'),
+                ),
+            );
+
+            const trackList = h('div', { class: 'xp-burn-tracklist' }, ...TRACKS.map((t, i) =>
+                h('div', { class: 'xp-burn-track' },
+                    h('span', { class: 'xp-burn-tracknum' }, String(i + 1).padStart(2, '0')),
+                    h('span', { class: 'xp-burn-trackname' }, t),
+                    h('span', { class: 'xp-burn-tracksize' }, (2.8 + Math.random() * 5).toFixed(1) + ' MB'),
+                )
+            ));
+
+            const totalBar = h('div', { class: 'xp-burn-total' },
+                h('span', {}, '🔵 Usado: 42.8 MB / 703 MB'),
+                h('div', { class: 'xp-burn-usage-bar' },
+                    h('div', { class: 'xp-burn-usage-fill', style: { width: '6%' } })
+                ),
+            );
+
+            const progressLabel = h('div', { class: 'xp-burn-progress-label' }, 'Pronto para gravar.');
+            const progressBar = h('div', { class: 'xp-burn-prog-bar' },
+                h('div', { class: 'xp-burn-prog-fill', id: 'burnFill', style: { width: '0%' } }));
+
+            const burnBtn = h('button', {
+                class: 'xp-burn-btn', onclick: () => {
+                    if (burning) return;
+                    burning = true;
+                    burnBtn.disabled = true;
+                    progressLabel.textContent = '🔴 Gravando...';
+                    const fill = wrap.querySelector('.xp-burn-prog-fill');
+                    let pct = 0;
+                    const iv = setInterval(() => {
+                        pct = Math.min(100, pct + (Math.random() * 4 + 0.5));
+                        fill.style.width = pct + '%';
+                        progressLabel.textContent = '🔴 Gravando... ' + Math.round(pct) + '%';
+                        if (pct >= 100) {
+                            clearInterval(iv);
+                            progressLabel.textContent = '✅ Gravação concluída!';
+                            burning = false;
+                            burnBtn.disabled = false;
+                        }
+                    }, 120);
+                }
+            }, '🔥 QUEIMAR CD');
+
+            wrap.appendChild(header);
+            wrap.appendChild(config);
+            wrap.appendChild(trackList);
+            wrap.appendChild(totalBar);
+            wrap.appendChild(progressLabel);
+            wrap.appendChild(progressBar);
+            wrap.appendChild(burnBtn);
+            return wrap;
+        },
+
+        // ── TULIO MESSENGER ─────────────
+        messenger: () => {
+            const TULIO_REPLIES = [
+                'que bom cara, valeu por aparecer',
+                'tudo certo por aí?',
+                'com certeza, qualquer coisa é só falar',
+                'muito obrigado mesmo, fico feliz',
+                'show de bola, fico contente em saber',
+                'é isso, abraço pra você',
+                'boa, espero que goste',
+                'valeu demais pelo apoio',
+                'de nada, sempre que quiser',
+                'boa pergunta, vou pensar nisso',
+                'cara é um prazer conversar contigo',
+                'seguimos em frente, obrigado',
+            ];
+            let replyIdx = 0;
+
+            const wrap = h('div', { class: 'xp-msn' });
+
+            // Contact list panel
+            const contacts = h('div', { class: 'xp-msn-contacts' },
+                h('div', { class: 'xp-msn-my-status' },
+                    h('span', { class: 'xp-msn-dot online' }),
+                    h('span', { class: 'xp-msn-me' }, 'Você'),
+                    h('span', { class: 'xp-msn-status-label' }, 'Disponível'),
+                ),
+                h('div', { class: 'xp-msn-group-label' }, '👥 Online (1)'),
+                h('div', {
+                    class: 'xp-msn-contact',
+                    onclick: () => chatPanel.style.display = 'flex',
+                },
+                    h('span', { class: 'xp-msn-dot online' }),
+                    h('img', { src: 'TC UNDERGROUND.png', class: 'xp-msn-avatar', alt: 'Tulio' }),
+                    h('div', { class: 'xp-msn-contact-info' },
+                        h('div', { class: 'xp-msn-contact-name' }, 'Tulio Careli'),
+                        h('div', { class: 'xp-msn-contact-status' }, 'já é \o/'),
+                    ),
+                ),
+                h('div', { class: 'xp-msn-group-label' }, '👤 Offline (3)'),
+                ...['Beto_Doido', 'xXx_Gamer_xXx', 'Zed_THPS'].map(n =>
+                    h('div', { class: 'xp-msn-contact offline' },
+                        h('span', { class: 'xp-msn-dot' }),
+                        h('span', { class: 'xp-msn-contact-name offline' }, n),
+                    )
+                ),
+            );
+
+            const messages = [];
+
+            const chatPanel = h('div', { class: 'xp-msn-chat', style: { display: 'none' } });
+            const chatHeader = h('div', { class: 'xp-msn-chat-header' },
+                h('span', {}, '💬 Chat com Tulio Careli'),
+                h('button', { class: 'xp-msn-close-chat', onclick: () => chatPanel.style.display = 'none' }, '×'),
+            );
+            const msgArea = h('div', { class: 'xp-msn-messages' });
+            const inputArea = h('div', { class: 'xp-msn-input-area' });
+            const input = h('input', { type: 'text', class: 'xp-msn-input', placeholder: 'Digite uma mensagem...' });
+            const sendBtn = h('button', { class: 'xp-msn-send', onclick: sendMsg }, 'Enviar');
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+
+            function addMsg(text, from) {
+                const row = h('div', { class: 'xp-msn-msg xp-msn-msg--' + from },
+                    h('span', { class: 'xp-msn-msg-author' }, from === 'me' ? 'Eu' : 'Tulio'),
+                    h('span', { class: 'xp-msn-msg-text' }, text),
+                );
+                msgArea.appendChild(row);
+                msgArea.scrollTop = msgArea.scrollHeight;
+            }
+
+            function sendMsg() {
+                const txt = input.value.trim();
+                if (!txt) return;
+                addMsg(txt, 'me');
+                input.value = '';
+                // Auto-reply do Tulio com delay
+                const reply = TULIO_REPLIES[replyIdx % TULIO_REPLIES.length];
+                replyIdx++;
+                setTimeout(() => addMsg(reply, 'tulio'), 1200 + Math.random() * 800);
+            }
+
+            // Mensagem inicial do Tulio
+            setTimeout(() => addMsg('e aí, tudo bem? que bom ver você por aqui', 'tulio'), 800);
+
+            inputArea.appendChild(input);
+            inputArea.appendChild(sendBtn);
+            chatPanel.appendChild(chatHeader);
+            chatPanel.appendChild(msgArea);
+            chatPanel.appendChild(inputArea);
+
+            wrap.appendChild(contacts);
+            wrap.appendChild(chatPanel);
+            return wrap;
+        },
+
+        trash: () => h('div', { class: 'xp-file-view xp-empty' },
+            h('div', { class: 'xp-empty-msg' }, '🗑️ A Lixeira está vazia.'),
+        ),
+    };
+
+
+    // ── OPEN / CLOSE WINDOW ───────────────────────────
+    function openWin(id) {
+        if (openWindows[id]) {
+            // Já existe: só traz pro foco ou desfaz minimizar
+            const w = openWindows[id];
+            w.classList.remove('xp-win--minimized');
+            focusWin(w);
+            return;
+        }
+
+        const icon = ICONS.find(i => i.id === id);
+        const title = icon ? icon.label : id;
+
+        // Posição em cascata
+        const offset = (Object.keys(openWindows).length % 6) * 24;
+
+        const titlebar = h('div', { class: 'xp-win-titlebar' },
+            h('div', { class: 'xp-win-title' }, icon?.icon + ' ' + title),
+            h('div', { class: 'xp-win-btns' },
+                h('button', { class: 'xp-btn xp-btn--min', onclick: () => minimizeWin(id) }, '─'),
+                h('button', { class: 'xp-btn xp-btn--max', onclick: () => maximizeWin(id) }, '□'),
+                h('button', { class: 'xp-btn xp-btn--close', onclick: () => closeWin(id) }, '✕'),
+            )
+        );
+
+        // Barra de endereço mockada
+        const addrbar = h('div', { class: 'xp-win-addrbar' },
+            h('span', { class: 'xp-addr-label' }, 'Endereço:'),
+            h('div', { class: 'xp-addr-val' }, `C:\\TULIO\\${title.toUpperCase().replace(' ', '_')}`),
+        );
+
+        const body = h('div', { class: 'xp-win-body' }, (CONTENT[id] || CONTENT.mycomputer)());
+
+        const WIN_SIZES = {
+            ie: { w: '620px', h: '440px' },
+            paint: { w: '600px', h: '420px' },
+            earth: { w: '600px', h: '380px' },
+            burningrom: { w: '480px', h: '420px' },
+            messenger: { w: '480px', h: '380px' },
+        };
+        const sz = WIN_SIZES[id] || {};
+        const winW = sz.w || '440px';
+        const winH = sz.h || null;
+        const sizeStyle = { left: (80 + offset) + 'px', top: (60 + offset) + 'px', zIndex: ++zTop, width: winW };
+        if (winH) sizeStyle.height = winH;
+
+        const win = h('div', {
+            class: 'xp-win xp-win--active',
+            style: sizeStyle,
+            'data-id': id,
+            onclick: () => focusWin(win),
+        }, titlebar, addrbar, body);
+
+
+        document.getElementById('xpDesktopArea').appendChild(win);
+        openWindows[id] = win;
+        makeDraggable(win, titlebar);
+        focusWin(win);
+        updateTaskbar();
+
+        // Animação de abertura
+        requestAnimationFrame(() => win.classList.add('xp-win--open'));
+    }
+
+    function closeWin(id) {
+        const w = openWindows[id];
+        if (!w) return;
+        w.classList.remove('xp-win--open');
+        w.style.opacity = '0';
+        w.style.transform = 'scale(0.9)';
+        setTimeout(() => { w.remove(); delete openWindows[id]; updateTaskbar(); }, 150);
+    }
+
+    function minimizeWin(id) {
+        const w = openWindows[id];
+        if (w) w.classList.toggle('xp-win--minimized');
+        updateTaskbar();
+    }
+
+    let maximized = {};
+    function maximizeWin(id) {
+        const w = openWindows[id];
+        if (!w) return;
+        if (maximized[id]) {
+            Object.assign(w.style, maximized[id]);
+            delete maximized[id];
+        } else {
+            maximized[id] = { left: w.style.left, top: w.style.top, width: w.style.width, height: w.style.height };
+            Object.assign(w.style, { left: '0px', top: '0px', width: '100%', height: 'calc(100% - 40px)' });
+        }
+    }
+
+    // ── TASKBAR ───────────────────────────────────────
+    function updateTaskbar() {
+        const bar = document.getElementById('xpTaskbarWindows');
+        if (!bar) return;
+        bar.innerHTML = '';
+        Object.entries(openWindows).forEach(([id, w]) => {
+            const icon = ICONS.find(i => i.id === id);
+            const btn = h('button', {
+                class: 'xp-taskbar-app' + (w.classList.contains('xp-win--active') && !w.classList.contains('xp-win--minimized') ? ' xp-tb--active' : ''),
+                onclick: () => {
+                    if (w.classList.contains('xp-win--minimized')) {
+                        w.classList.remove('xp-win--minimized');
+                        focusWin(w);
+                    } else if (w.classList.contains('xp-win--active')) {
+                        w.classList.add('xp-win--minimized');
+                    } else {
+                        focusWin(w);
+                    }
+                },
+            }, (icon?.icon || '🗂️') + ' ' + (icon?.label || id));
+            bar.appendChild(btn);
+        });
+    }
+
+    // ── START MENU ────────────────────────────────────
+    function buildStartMenu() {
+        const menu = document.getElementById('xpStartMenu');
+        if (!menu) return;
+        const items = [
+            ...ICONS.map(ic => ({
+                icon: ic.icon,
+                label: ic.label,
+                action: () => { toggleStart(); openWin(ic.id); }
+            })),
+            { icon: '🔒', label: 'Desligar OS', action: closeDesktop },
+        ];
+
+        menu.innerHTML = '';
+        menu.appendChild(h('div', { class: 'xp-sm-header' },
+            h('span', { class: 'xp-sm-user' }, '👤 TULIO CARELI'),
+        ));
+        const list = h('div', { class: 'xp-sm-list' }, ...items.map(it =>
+            h('button', { class: 'xp-sm-item', onclick: it.action },
+                h('span', { class: 'xp-sm-icon' }, it.icon),
+                h('span', {}, it.label),
+            )
+        ));
+        menu.appendChild(list);
+    }
+
+    function toggleStart() {
+        const menu = document.getElementById('xpStartMenu');
+        if (menu) menu.classList.toggle('xp-sm--open');
+    }
+
+    // ── CLOCK ─────────────────────────────────────────
+    function startClock() {
+        const el = document.getElementById('xpClock');
+        if (!el) return;
+        clearInterval(clockTimer); // evita clocks duplicados ao reabrir
+        el.textContent = nowStr();
+        clockTimer = setInterval(() => { const c = document.getElementById('xpClock'); if (c) c.textContent = nowStr(); else clearInterval(clockTimer); }, 1000);
+    }
+
+    // ── DESKTOP MOUNT ─────────────────────────────────
+    function buildDesktop() {
+        if (mounted) {
+            // Fecha qualquer janela aberta antes de reexibir
+            Object.keys(openWindows).forEach(id => closeWin(id));
+            const desk = document.getElementById('xpDesktop');
+            desk.classList.add('xp-desk--open');
+            buildStartMenu(); // atualiza menu iniciar
+            startClock();
+            return;
+        }
+        mounted = true;
+
+        // DESKTOP ROOT
+        const desk = h('div', {
+            id: 'xpDesktop', class: 'xp-desk--open',
+            onclick: e => {
+                if (e.target === desk || e.target.id === 'xpDesktopArea') {
+                    document.getElementById('xpStartMenu')?.classList.remove('xp-sm--open');
+                }
+            }
+        });
+
+        // BOOT SCREEN (briefly shown)
+        const boot = h('div', { id: 'xpBoot' },
+            h('div', { class: 'xp-boot-logo' }, '⊞'),
+            h('div', { class: 'xp-boot-text' }, 'TC UNDERGROUND OS\nCarregando...'),
+            h('div', { class: 'xp-boot-bar' },
+                h('div', { class: 'xp-boot-fill' })
+            )
+        );
+        desk.appendChild(boot);
+
+        // WALLPAPER AREA
+        const area = h('div', { id: 'xpDesktopArea' },
+            // ICONS GRID
+            h('div', { class: 'xp-icons-grid' }, ...ICONS.map(ic =>
+                h('div', {
+                    class: 'xp-desk-icon',
+                    ondblclick: () => openWin(ic.id),
+                    onclick: e => {
+                        document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
+                        e.currentTarget.classList.add('xp-icon--selected');
+                    },
+                },
+                    h('div', { class: 'xp-di-img' }, ic.icon),
+                    h('div', { class: 'xp-di-label' }, ic.label),
+                )
+            ))
+        );
+        desk.appendChild(area);
+
+        // TASKBAR
+        const taskbar = h('div', { id: 'xpTaskbar' },
+            h('button', { id: 'xpStartBtn', onclick: toggleStart },
+                h('span', { class: 'xp-start-orb' }),
+                'INICIAR'
+            ),
+            h('div', { id: 'xpTaskbarWindows' }),
+            h('div', { id: 'xpSysTray' },
+                h('div', { id: 'xpClock' }, nowStr()),
+                h('button', { id: 'xpCloseDesk', onclick: closeDesktop, title: 'Fechar Desktop' }, '✕'),
+            )
+        );
+        desk.appendChild(taskbar);
+
+        // START MENU (hidden by default)
+        const startMenu = h('div', { id: 'xpStartMenu' });
+        desk.appendChild(startMenu);
+
+        document.body.appendChild(desk);
+        buildStartMenu();
+        startClock();
+
+        // Boot animation: after 1.2s, show the desktop
+        setTimeout(() => {
+            boot.style.opacity = '0';
+            setTimeout(() => {
+                boot.remove();
+                area.style.opacity = '1';
+            }, 400);
+        }, 1200);
+    }
+
+    // ── CLOSE DESKTOP ─────────────────────────────────────────────────────
+    function closeDesktop() {
+        const desk = document.getElementById('xpDesktop');
+        if (!desk) return;
+
+        // Remove janelas de forma síncrona (sem animação, o desktop vai sumir junto)
+        Object.keys(openWindows).forEach(id => {
+            const w = openWindows[id];
+            if (w) w.remove();
+            delete openWindows[id];
+        });
+
+        // Reseta estados de maximização
+        Object.keys(maximized).forEach(k => delete maximized[k]);
+
+        document.getElementById('xpStartMenu')?.classList.remove('xp-sm--open');
+        desk.classList.remove('xp-desk--open');
+        clearInterval(clockTimer);
+        clockTimer = null;
+        updateTaskbar();
+    }
+
+    // ── PUBLIC API ────────────────────────────────────
+    window.tcDesktop = { open: buildDesktop, close: closeDesktop };
+
+    // ── INIT: wire up Start buttons (footer + header) ──
+    document.addEventListener('DOMContentLoaded', () => {
+        ['footerStartBtn', 'headerStartBtn'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.addEventListener('click', buildDesktop);
+        });
+    });
+
+})();
