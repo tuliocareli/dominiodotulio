@@ -62,6 +62,8 @@
         { id: 'wordpad', icon: '📝', label: 'Tulio WordPad' },
         { id: 'mediaplayer', icon: '🎬', label: 'Tulio Media Player' },
         { id: 'imageviewer', icon: '🖼️', label: 'Imagens' },
+        { id: 'calculator', icon: '🖩', label: 'Calculadora' },
+        { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
@@ -947,6 +949,201 @@
 
             return wrap;
         },
+
+        calculator: () => {
+            const wrap = h('div', { class: 'xp-calc' });
+            const display = h('div', { class: 'xp-calc-display' }, '0');
+            const grid = h('div', { class: 'xp-calc-grid' });
+
+            let current = '0';
+            let stored = null;
+            let op = null;
+
+            const update = () => {
+                // Limita para caber no display
+                display.textContent = current.length > 12 ? current.substring(0, 12) : current;
+            };
+
+            const btn = (label, action, cls = '') => h('button', {
+                class: 'xp-calc-btn ' + cls,
+                onclick: () => { action(); update(); }
+            }, label);
+
+            const num = (n) => btn(n, () => {
+                if (current === '0' || current === 'Error') current = n;
+                else current += n;
+            });
+
+            const operate = (newOp) => btn(newOp, () => {
+                if (stored !== null && op) {
+                    try { current = String(eval(stored + op + current)); }
+                    catch (e) { current = 'Error'; }
+                }
+                stored = current;
+                current = '0';
+                op = newOp === 'x' ? '*' : newOp;
+            }, 'op');
+
+            const eq = btn('=', () => {
+                if (stored !== null && op) {
+                    try { current = String(eval(stored + op + current)); }
+                    catch (e) { current = 'Error'; }
+                    stored = null;
+                    op = null;
+                }
+            }, 'eq');
+
+            const c = btn('C', () => { current = '0'; stored = null; op = null; }, 'clear');
+
+            const buttons = [
+                '7', '8', '9', '/',
+                '4', '5', '6', '*',
+                '1', '2', '3', '-',
+                'C', '0', '=', '+'
+            ];
+
+            buttons.forEach(b => {
+                if (/\d/.test(b)) grid.appendChild(num(b));
+                else if (b === 'C') grid.appendChild(c);
+                else if (b === '=') grid.appendChild(eq);
+                else grid.appendChild(operate(b));
+            });
+
+            wrap.appendChild(display);
+            wrap.appendChild(grid);
+            return wrap;
+        },
+
+        minesweeper: () => {
+            const wrap = h('div', { class: 'xp-minesweeper' });
+            const header = h('div', { class: 'xp-ms-header' });
+            const p1 = h('div', { class: 'xp-ms-counter' }, '010');
+            const face = h('button', { class: 'xp-ms-face' }, '🙂');
+            const p2 = h('div', { class: 'xp-ms-counter' }, '000');
+            header.appendChild(p1); header.appendChild(face); header.appendChild(p2);
+
+            const grid = h('div', { class: 'xp-ms-grid' });
+            let gameOver = false;
+
+            const cells = [];
+            for (let i = 0; i < 64; i++) {
+                const cell = h('button', { class: 'xp-ms-cell' });
+                cell.onclick = () => {
+                    if (gameOver) return;
+                    gameOver = true;
+                    face.textContent = '😵';
+                    cell.style.backgroundColor = 'red';
+                    // Reveal all troll
+                    cells.forEach(c => {
+                        c.classList.add('xp-ms-revealed');
+                        c.textContent = Math.random() > 0.7 ? '💣' : (Math.floor(Math.random() * 3) || '');
+                    });
+                    cell.textContent = '💣';
+                    setTimeout(() => alert('ERRO FATAL. VOCÊ PISOU NA MINA! KABOOM!'), 100);
+                };
+                cells.push(cell);
+                grid.appendChild(cell);
+            }
+
+            face.onclick = () => {
+                gameOver = false;
+                face.textContent = '🙂';
+                cells.forEach(c => {
+                    c.classList.remove('xp-ms-revealed');
+                    c.textContent = '';
+                    c.style.backgroundColor = '';
+                });
+            };
+
+            wrap.appendChild(header);
+            wrap.appendChild(grid);
+            return wrap;
+        },
+
+        paint: () => {
+            const wrap = h('div', { class: 'xp-paint' });
+            const toolbar = h('div', { class: 'xp-paint-toolbar' });
+            const drawBtn = h('button', { class: 'xp-paint-btn xp-pb-active', title: 'Lápis' }, '✏️');
+            const eraseBtn = h('button', { class: 'xp-paint-btn', title: 'Borracha' }, '🧽');
+            const clearBtn = h('button', { class: 'xp-paint-btn', title: 'Limpar Tela' }, '🗑️');
+
+            let isErasing = false;
+            drawBtn.onclick = () => { isErasing = false; drawBtn.classList.add('xp-pb-active'); eraseBtn.classList.remove('xp-pb-active'); };
+            eraseBtn.onclick = () => { isErasing = true; eraseBtn.classList.add('xp-pb-active'); drawBtn.classList.remove('xp-pb-active'); };
+
+            toolbar.appendChild(drawBtn);
+            toolbar.appendChild(eraseBtn);
+            toolbar.appendChild(clearBtn);
+
+            const canvasWrap = h('div', { class: 'xp-paint-canvas-wrap' });
+            // Paint canvas default dimensions
+            const canvas = h('canvas', { width: 440, height: 320, class: 'xp-paint-canvas' });
+            canvasWrap.appendChild(canvas);
+
+            wrap.appendChild(toolbar);
+            wrap.appendChild(canvasWrap);
+
+            // Setup canvas drawing context
+            setTimeout(() => {
+                if (!canvas.getContext) return;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                let painting = false;
+
+                const getPos = (e) => {
+                    const rect = canvas.getBoundingClientRect();
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    return {
+                        x: (clientX - rect.left) * (canvas.width / rect.width),
+                        y: (clientY - rect.top) * (canvas.height / rect.height)
+                    };
+                };
+
+                const startFormat = (e) => {
+                    painting = true;
+                    ctx.beginPath();
+                    const p = getPos(e);
+                    ctx.moveTo(p.x, p.y);
+                    if (e.cancelable) e.preventDefault();
+                };
+
+                const draw = (e) => {
+                    if (!painting) return;
+                    if (e.cancelable) e.preventDefault();
+                    const p = getPos(e);
+                    ctx.lineTo(p.x, p.y);
+                    ctx.strokeStyle = isErasing ? '#ffffff' : '#000000';
+                    ctx.lineWidth = isErasing ? 20 : 2;
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+                };
+
+                const stopFormat = () => {
+                    painting = false;
+                    ctx.closePath();
+                };
+
+                canvas.addEventListener('mousedown', startFormat);
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', stopFormat);
+                canvas.addEventListener('mouseleave', stopFormat);
+
+                // Mobile
+                canvas.addEventListener('touchstart', startFormat, { passive: false });
+                canvas.addEventListener('touchmove', draw, { passive: false });
+                canvas.addEventListener('touchend', stopFormat, { passive: false });
+
+                clearBtn.onclick = () => {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                };
+            }, 50); // delay allows UI to mount
+
+            return wrap;
+        },
     };
 
 
@@ -985,8 +1182,10 @@
 
         const WIN_SIZES = {
             ie: { w: '620px', h: '440px' },
-            paint: { w: '600px', h: '420px' },
+            paint: { w: '500px', h: '420px' },
             earth: { w: '600px', h: '380px' },
+            calculator: { w: '260px', h: '340px' },
+            minesweeper: { w: '300px', h: '360px' },
             burningrom: { w: '480px', h: '420px' },
             messenger: { w: '480px', h: '380px' },
         };
@@ -1146,6 +1345,15 @@
                 h('div', {
                     class: 'xp-desk-icon',
                     ondblclick: () => openWin(ic.id),
+                    ontouchstart: function (e) {
+                        const now = Date.now();
+                        const last = this.dataset.lastTap || 0;
+                        if (now - last < 300) {
+                            openWin(ic.id);
+                            e.preventDefault();
+                        }
+                        this.dataset.lastTap = now;
+                    },
                     onclick: e => {
                         document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
                         e.currentTarget.classList.add('xp-icon--selected');

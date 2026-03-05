@@ -1337,3 +1337,205 @@
     border-style: solid;
     border-color: #000 transparent transparent transparent;
 }
+
+/* ── CALCULADORA MOCK ─────────────────────── */
+.xp-calc {
+    background: #e4e2d5;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.xp-calc-display {
+    background: #fff;
+    border: 2px inset #fff;
+    border-right-color: #ccc;
+    border-bottom-color: #ccc;
+    font-family: 'Share Tech Mono', Tahoma, sans-serif;
+    font-size: 24px;
+    text-align: right;
+    padding: 4px 8px;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+.xp-calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    flex-grow: 1;
+}
+
+.xp-calc-btn {
+    background: #f0f0ea;
+    border: 1px solid #fff;
+    border-right-color: #888;
+    border-bottom-color: #888;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    font-family: Tahoma, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.xp-calc-btn:active {
+    border: 1px inset #888;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    background: #e0e0d5;
+}
+
+.xp-calc-btn.op {
+    color: #d00;
+}
+
+.xp-calc-btn.clear {
+    color: #c00;
+    font-size: 12px;
+}
+
+.xp-calc-btn.eq {
+    color: #008;
+}
+
+/* ── MINESWEEPER MOCK ─────────────────────── */
+.xp-minesweeper {
+    background: #c0c0c0;
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border-left: 2px solid #fff;
+    border-top: 2px solid #fff;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+}
+
+.xp-ms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #c0c0c0;
+    border: 2px inset #fff;
+    border-right-color: #dfdfdf;
+    border-bottom-color: #dfdfdf;
+    padding: 4px 6px;
+    margin-bottom: 10px;
+}
+
+.xp-ms-counter {
+    background: #000;
+    color: #f00;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 22px;
+    padding: 2px 4px;
+    line-height: 1;
+    border: 1px inset #808080;
+}
+
+.xp-ms-face {
+    width: 26px;
+    height: 26px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #c0c0c0;
+    border: 2px solid #fff;
+    border-right-color: #808080;
+    border-bottom-color: #808080;
+    cursor: pointer;
+    padding: 0;
+}
+
+.xp-ms-face:active {
+    border: 2px inset #808080;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+}
+
+.xp-ms-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    flex-grow: 1;
+    border: 2px inset #fff;
+    border-right-color: #dfdfdf;
+    border-bottom-color: #dfdfdf;
+    background: #808080;
+}
+
+.xp-ms-cell {
+    background: #c0c0c0;
+    border: 2px outset #fff;
+    border-right-color: #808080;
+    border-bottom-color: #808080;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.xp-ms-cell:active,
+.xp-ms-revealed {
+    border: 1px solid #808080;
+    border-right-color: #dfdfdf;
+    border-bottom-color: #dfdfdf;
+    background: #c0c0c0;
+}
+
+/* ── PAINT MOCK ─────────────────────── */
+.xp-paint {
+    background: #c0c0c0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.xp-paint-toolbar {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    background: #ece9d8;
+    border-bottom: 1px solid #888;
+}
+
+.xp-paint-btn {
+    width: 30px;
+    height: 30px;
+    background: #f0f0ea;
+    border: 1px solid #fff;
+    border-right-color: #888;
+    border-bottom-color: #888;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.xp-paint-btn.xp-pb-active {
+    background: #fff;
+    border: 1px inset #888;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+}
+
+.xp-paint-canvas-wrap {
+    flex-grow: 1;
+    padding: 4px;
+    background: #808080;
+    overflow: auto;
+    position: relative;
+}
+
+.xp-paint-canvas {
+    background: #fff;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    cursor: crosshair;
+    touch-action: none;
+}
