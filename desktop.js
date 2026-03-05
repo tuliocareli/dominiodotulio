@@ -61,7 +61,7 @@
         { id: 'messenger', icon: '💬', label: 'Tulio Messenger' },
         { id: 'wordpad', icon: '📝', label: 'Tulio WordPad' },
         { id: 'mediaplayer', icon: '🎬', label: 'Tulio Media Player' },
-        { id: 'imageviewer', icon: '🖼️', label: 'Vis. de Imagens do Windows' },
+        { id: 'imageviewer', icon: '🖼️', label: 'Imagens' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
