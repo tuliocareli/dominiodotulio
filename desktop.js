@@ -712,7 +712,11 @@
                 '8W-cOhcPfY4',
                 'z9XkY84MUls',
                 'VgDgWzBL7s4',
-                'Ro7yHf_pU14'
+                'Ro7yHf_pU14',
+                'qnexXNl24cE',
+                'psLGf9eKOAQ',
+                'k85mRPqvMbE',
+                'pFlcqWQVVuU'
             ];
             let currentIdx = 0;
             let ytPlayer;
