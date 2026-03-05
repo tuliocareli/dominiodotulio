@@ -98,6 +98,43 @@
     }
 }
 
+/* ── SHUTDOWN SCREEN ─────────────────────────────────── */
+#xpShutdown {
+    position: absolute;
+    inset: 0;
+    z-index: 10002;
+    background: #396eba;
+    /* Azul clássico de desligamento do XP */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+#xpShutdown.xp-sd--active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.xp-shutdown-logo {
+    font-size: 90px;
+    color: #fff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.3);
+}
+
+.xp-shutdown-text {
+    font-family: 'Tahoma', sans-serif;
+    font-size: 18px;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    letter-spacing: 1px;
+}
+
 /* ── DESKTOP AREA (wallpaper + icons) ─────────────── */
 #xpDesktopArea {
     flex: 1;

@@ -65,6 +65,7 @@
     // ── STATE ─────────────────────────────────────────
     let zTop = 100;
     let mounted = false;
+    let shuttingDown = false;
     let clockTimer = null;
     const openWindows = {}; // id → window el
 
@@ -868,23 +869,51 @@
     // ── CLOSE DESKTOP ─────────────────────────────────────────────────────
     function closeDesktop() {
         const desk = document.getElementById('xpDesktop');
-        if (!desk) return;
+        if (!desk || shuttingDown) return;
+        shuttingDown = true;
 
-        // Remove janelas de forma síncrona (sem animação, o desktop vai sumir junto)
-        Object.keys(openWindows).forEach(id => {
-            const w = openWindows[id];
-            if (w) w.remove();
-            delete openWindows[id];
+        // Fecha menu iniciar se aberto
+        document.getElementById('xpStartMenu')?.classList.remove('xp-sm--open');
+
+        // Cria a tela de desligamento (Shutdown azul do OS)
+        const shutdown = h('div', { id: 'xpShutdown' },
+            h('div', { class: 'xp-shutdown-logo' }, '⊞'),
+            h('div', { class: 'xp-shutdown-text' }, 'Tulio OS está desligando...')
+        );
+        desk.appendChild(shutdown);
+
+        // Dispara transição (fade in)
+        // Usamos requestAnimationFrame duplo para o navegador registrar a classe e dar tempo ao CSS de transicionar init -> ativa
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                shutdown.classList.add('xp-sd--active');
+            });
         });
 
-        // Reseta estados de maximização
-        Object.keys(maximized).forEach(k => delete maximized[k]);
+        // Aguarda a tela ficar exposta (ex. 2.5s)
+        setTimeout(() => {
+            // Remove janelas de forma síncrona
+            Object.keys(openWindows).forEach(id => {
+                const w = openWindows[id];
+                if (w) w.remove();
+                delete openWindows[id];
+            });
 
-        document.getElementById('xpStartMenu')?.classList.remove('xp-sm--open');
-        desk.classList.remove('xp-desk--open');
-        clearInterval(clockTimer);
-        clockTimer = null;
-        updateTaskbar();
+            // Reseta estados de maximização
+            Object.keys(maximized).forEach(k => delete maximized[k]);
+
+            desk.classList.remove('xp-desk--open');
+            clearInterval(clockTimer);
+            clockTimer = null;
+            updateTaskbar();
+
+            // Remove a tela de desligamento logo depois do OS ter sumido transparente
+            setTimeout(() => {
+                shutdown.remove();
+                shuttingDown = false;
+            }, 300);
+
+        }, 2200); // 2.2s visualizando o "Tulio OS está desligando..."
     }
 
     // ── PUBLIC API ────────────────────────────────────
