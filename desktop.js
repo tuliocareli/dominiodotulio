@@ -208,13 +208,19 @@
             )
         )),
 
-        'Tony Hawk Underground.exe': () => h('div', { style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } },
-            h('video', {
-                src: 'videosjogos/tony hawk underground.mp4',
-                autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
-                style: { width: '100%', height: '100%', objectFit: 'contain' }
-            })
-        ),
+        'Tony Hawk Underground.exe': () => {
+            const vid = document.createElement('video');
+            vid.src = 'videosjogos/tony%20hawk%20underground.mp4';
+            vid.autoplay = true;
+            vid.loop = true;
+            vid.muted = true;
+            vid.playsInline = true;
+            vid.style.width = '100%';
+            vid.style.height = '100%';
+            vid.style.objectFit = 'contain';
+
+            return h('div', { style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } }, vid);
+        },
 
         books: () => h('div', { class: 'xp-file-view' }, ...DATA.books.map(b =>
             h('div', { class: 'xp-file-item' },
