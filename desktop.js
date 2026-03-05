@@ -1278,9 +1278,13 @@
                 { id: 'jT_2WIzOs5w', title: 'Linkin Park - Faint' },
                 { id: 'A9wLowpiWWs', title: 'Evanescence - Going Under' },
                 { id: 'GrD3dDUKxYY', title: 'Three Days Grace - I Hate Everything About You' },
+                { id: 'qV7IhHFnhJc', title: 'Paramore - Misery Business' },
                 { id: 'NWi4eavotFk', title: 'Soulja Boy - Crank Dat' },
+                { id: 'H3axP4norfk', title: '50 Cent - In Da Club' },
                 { id: '51XzW98wEDg', title: 'Green Day - Boulevard of Broken Dreams' },
+                { id: 'IbpOfzrNjTY', title: 'Gorillaz - Feel Good Inc.' },
                 { id: 'y9Kqb2z9Lzs', title: 'Edward Maya & Vika Jigulina - Stereo Love' },
+                { id: 'g_osW9OINIA', title: 'Cascada - Everytime We Touch' },
                 { id: 'n4S5-nRUWbE', title: 'Sean Kingston, Justin Bieber - Eenie Meenie' },
                 { id: 'VXPvpK2ct4M', title: 'Nelly Furtado - Promiscuous' },
                 { id: 'iCL04cxeMOE', title: 'Usher - Yeah!' }
