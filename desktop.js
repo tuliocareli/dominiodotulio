@@ -1287,6 +1287,7 @@
                 { id: 'g_osW9OINIA', title: 'Cascada - Everytime We Touch' },
                 { id: 'n4S5-nRUWbE', title: 'Sean Kingston, Justin Bieber - Eenie Meenie' },
                 { id: 'VXPvpK2ct4M', title: 'Nelly Furtado - Promiscuous' },
+                { id: 'rQ2bIzanCEU', title: 'Kasino - Can\'t Get Over' },
                 { id: 'iCL04cxeMOE', title: 'Usher - Yeah!' }
             ];
 
