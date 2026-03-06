@@ -1587,11 +1587,11 @@
                 { id: 'jT_2WIzOs5w', title: 'Linkin Park - Faint' },
                 { id: 'A9wLowpiWWs', title: 'Evanescence - Going Under' },
                 { id: 'GrD3dDUKxYY', title: 'Three Days Grace - I Hate Everything About You' },
-                { id: 'qV7IhHFnhJc', title: 'Paramore - Misery Business' },
+                { id: 'w4RXGsLyfXU', title: 'Akon - Lonely' },
                 { id: 'NWi4eavotFk', title: 'Soulja Boy - Crank Dat' },
                 { id: 'H3axP4norfk', title: '50 Cent - In Da Club' },
                 { id: '51XzW98wEDg', title: 'Green Day - Boulevard of Broken Dreams' },
-                { id: 'IbpOfzrNjTY', title: 'Gorillaz - Feel Good Inc.' },
+                { id: 'VyZeqzWvR7w', title: 'Bon Jovi - It\'s My Life' },
                 { id: 'y9Kqb2z9Lzs', title: 'Edward Maya & Vika Jigulina - Stereo Love' },
                 { id: 'g_osW9OINIA', title: 'Cascada - Everytime We Touch' },
                 { id: 'n4S5-nRUWbE', title: 'Sean Kingston, Justin Bieber - Eenie Meenie' },
@@ -1665,7 +1665,7 @@
             );
 
             // Playlist
-            const plList = h('ul', { class: 'winamp-pl-list', style: { flexGrow: '1', minHeight: '140px', overflowY: 'auto', listStyle: 'none', padding: '0', margin: '0', background: '#0a0a0a', color: '#888', fontSize: '10px' } });
+            const plList = h('ul', { class: 'winamp-pl-list', style: { flexGrow: '1', minHeight: '0', overflowY: 'auto', listStyle: 'none', padding: '0', margin: '0', background: '#0a0a0a', color: '#888', fontSize: '10px' } });
 
             const updatePlaylistUI = () => {
                 plList.innerHTML = '';
