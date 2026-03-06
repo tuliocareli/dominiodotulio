@@ -444,15 +444,21 @@
                 ];
 
                 const friends = [
-                    'BetoLol', 'ZedTHPS', 'Calazadroid',
-                    'Lets', 'Jubajubs86', 'Rick_Gamer',
-                    'NiNa_2004', 'Dark_Lord_S2', 'XuxaS2'
+                    { name: 'BetoLol', img: 'imagens/orkut_amigo_1.png' },
+                    { name: 'ZedTHPS', img: 'imagens/orkut_amigo_2.png' },
+                    { name: 'Calazadroid', img: 'imagens/orkut_amigo_3.png' },
+                    { name: 'Lets', img: 'imagens/orkut_amigo_4.png' },
+                    { name: 'Jubajubs86', img: 'imagens/orkut_amigo_5.png' },
+                    { name: 'Rick_Gamer', img: 'imagens/orkut_amigo_6.png' },
+                    { name: 'NiNa_2004', img: 'imagens/orkut_amigo_7.png' },
+                    { name: 'Dark_Lord_S2', img: 'imagens/orkut_amigo_8.png' },
+                    { name: 'XuxaS2', img: 'imagens/orkut_amigo_9.png' }
                 ];
 
                 const communities = [
-                    { name: 'Eu odeio acordar cedo', icon: '🐱' },
-                    { name: 'Eu já entrei na internt e queria sorvete mais era feijao', icon: '🍦' },
-                    { name: 'Sorvete ou Feijão?', icon: '💻' }
+                    { name: 'Eu odeio acordar cedo', img: 'imagens/orkut_communities.png', pos: '0%' },
+                    { name: 'Eu já entrei na internet e queria sorvete', img: 'imagens/orkut_communities.png', pos: '50%' },
+                    { name: 'Sorvete ou Feijão?', img: 'imagens/orkut_communities.png', pos: '100%' }
                 ];
 
                 return h('div', { class: 'xp-orkut-wrap' },
@@ -509,18 +515,12 @@
                             h('div', { class: 'xp-orkut-box' },
                                 h('h4', {}, 'amigos ', h('span', {}, '(51)')),
                                 h('div', { class: 'xp-orkut-grid-9' },
-                                    ...friends.map((name, i) => h('div', { class: 'xp-orkut-grid-item' },
-                                        h('div', {
+                                    ...friends.map((f, i) => h('div', { class: 'xp-orkut-grid-item' },
+                                        h('img', {
                                             class: 'xp-orkut-grid-img',
-                                            style: {
-                                                background: `hsl(${i * 40}, 60%, 70%)`,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                fontSize: '20px'
-                                            }
-                                        }, '👤'),
-                                        name
+                                            src: f.img
+                                        }),
+                                        f.name
                                     ))
                                 ),
                                 h('div', { style: { textAlign: 'right', fontSize: '10px', marginTop: '5px', color: '#5d7cae', cursor: 'pointer' } }, 'ver todos')
@@ -532,13 +532,12 @@
                                         h('div', {
                                             class: 'xp-orkut-grid-img',
                                             style: {
-                                                background: '#eee',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                fontSize: '20px'
+                                                backgroundImage: `url(${com.img})`,
+                                                backgroundSize: '300% 100%',
+                                                backgroundPosition: com.pos,
+                                                backgroundRepeat: 'no-repeat'
                                             }
-                                        }, com.icon),
+                                        }),
                                         com.name
                                     ))
                                 ),
