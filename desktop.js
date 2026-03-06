@@ -2020,6 +2020,32 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                     setTimeout(() => clippySpeak("Expansão de Domínio inicializada."), 500);
                 } else if (c === 'open experiments') {
                     res = 'Access Denied. You need Level 4 Clearance.';
+                } else if (c === 'goldfinger') {
+                    res = 'YEAH! Tony Hawk mode activated! 🛹🤘\n(Loading GOLDEN ERA soundtrack...)';
+
+                    // Music from YouTube (ID: rSInO7yG390 is Superman by Goldfinger)
+                    const ytId = "rSInO7yG390";
+                    const hiddenPlayer = h('iframe', {
+                        class: 'xp-hidden-tv',
+                        src: `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&controls=0`
+                    });
+                    document.body.appendChild(hiddenPlayer);
+
+                    // Shake all windows like they are on a skate
+                    document.querySelectorAll('.xp-win').forEach(win => {
+                        win.classList.add('xp-skate-wiggle');
+                    });
+
+                    clippySpeak("SO TEENAGE ANGST HAS PAID OFF WELL! 🛹");
+
+                    // Stop after 2 min (length of the song approx)
+                    setTimeout(() => {
+                        hiddenPlayer.remove();
+                        document.querySelectorAll('.xp-win').forEach(win => {
+                            win.classList.remove('xp-skate-wiggle');
+                        });
+                    }, 120000);
+
                 } else if (c === 'exit') {
                     closeWin('terminal');
                     return;

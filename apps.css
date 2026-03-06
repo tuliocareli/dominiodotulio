@@ -785,3 +785,43 @@
         opacity: 1;
     }
 }
+
+/* TONY HAWK EASTER EGG */
+.xp-skate-wiggle {
+    animation: skateWiggle 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes skateWiggle {
+    from {
+        transform: rotate(-1deg) translateX(-2px);
+    }
+
+    to {
+        transform: rotate(1deg) translateX(2px);
+    }
+}
+
+.xp-skate-slide {
+    animation: skateSlide 4s linear infinite alternate;
+}
+
+@keyframes skateSlide {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(50px);
+    }
+}
+
+.xp-hidden-tv {
+    position: fixed;
+    bottom: -500px;
+    right: -500px;
+    width: 200px;
+    height: 150px;
+    opacity: 0.01;
+    pointer-events: none;
+    z-index: -1;
+}
