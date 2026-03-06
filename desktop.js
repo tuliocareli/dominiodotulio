@@ -446,8 +446,8 @@
                 const friends = [
                     { name: 'BetoLol', img: 'imagens/orkut_amigo_1.png' },
                     { name: 'ZedTHPS', img: 'imagens/orkut_amigo_2.png' },
-                    { name: 'Calazadroid', img: 'imagens/orkut_amigo_3.png' },
-                    { name: 'Lets', img: 'imagens/orkut_amigo_4.png' },
+                    { name: 'Calazadroid', img: 'imagens/orkut_amigo_4.png' },
+                    { name: 'Lets', img: 'imagens/orkut_amigo_3.png' },
                     { name: 'Jubajubs86', img: 'imagens/orkut_amigo_5.png' },
                     { name: 'Rick_Gamer', img: 'imagens/orkut_amigo_6.png' },
                     { name: 'NiNa_2004', img: 'imagens/orkut_amigo_7.png' },
