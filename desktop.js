@@ -1975,7 +1975,7 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                 let res = '';
 
                 if (c === 'help') {
-                    res = 'Available commands:\n  ls                - List files\n  open experiments  - ???\n  about             - System info\n  whoami            - Current user\n  domain            - Trigger command\n  exit              - Close terminal';
+                    res = 'Available commands:\n  ls                - List files\n  open experiments  - ???\n  about             - System info\n  whoami            - Current user\n  domain            - Trigger command\n  goldfinger        - so here i am\n  exit              - Close terminal';
                 } else if (c === 'ls') {
                     res = 'experiments/  src/  secrets.txt  readme.txt  gta_cheats.txt  winamp.exe';
                 } else if (c === 'whoami') {
@@ -2021,7 +2021,7 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                 } else if (c === 'open experiments') {
                     res = 'Access Denied. You need Level 4 Clearance.';
                 } else if (c === 'goldfinger') {
-                    res = 'goldfinger - so here i am 🛹🤘';
+                    res = 'YEAH! Tony Hawk mode activated! 🛹🤘\n(Loading GOLDEN ERA soundtrack...)';
 
                     // Open the visible video window
                     openWin('goldfinger_video');
