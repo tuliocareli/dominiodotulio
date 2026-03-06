@@ -1985,7 +1985,7 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                 let res = '';
 
                 if (c === 'help') {
-                    res = 'Available commands:\n  ls                - List files\n  open experiments  - ???\n  about             - System info\n  whoami            - Current user\n  domain            - Trigger command\n  goldfinger        - so here i am\n  exit              - Close terminal';
+                    res = 'Available commands:\n  ls                - List files\n  open experiments  - ???\n  about             - System info\n  whoami            - Current user\n  domain            - Trigger command\n  exit              - Close terminal';
                 } else if (c === 'ls') {
                     res = 'experiments/  src/  secrets.txt  readme.txt  gta_cheats.txt  winamp.exe';
                 } else if (c === 'whoami') {
@@ -2030,19 +2030,6 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                     setTimeout(() => clippySpeak("Expansão de Domínio inicializada."), 500);
                 } else if (c === 'open experiments') {
                     res = 'Access Denied. You need Level 4 Clearance.';
-                } else if (c === 'goldfinger') {
-                    res = 'YEAH! Tony Hawk mode activated! 🛹🤘\n(Loading GOLDEN ERA soundtrack...)';
-
-                    // Open the visible video window
-                    openWin('goldfinger_video');
-
-                    // Shake all windows like they are on a skate
-                    document.querySelectorAll('.xp-win').forEach(win => {
-                        win.classList.add('xp-skate-wiggle');
-                    });
-
-                    setTimeout(() => clippySpeak("SO HERE I AM, DOING EVERYTHING I CAN! 🛹", true), 200);
-
                 } else if (c === 'exit') {
                     closeWin('terminal');
                     return;
@@ -2529,27 +2516,6 @@ NUTTERTOOLS - Armas Pesadas
 
             return wrap;
         },
-
-        goldfinger_video: () => {
-            const wrap = h('div', { style: { height: '100%', background: '#000' } });
-            const ytId = "_d4j5H-M6ZQ"; // Lyric Video
-            const iframe = h('iframe', {
-                style: { width: '100%', height: '100%', border: 'none' },
-                src: `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&start=14&enablejsapi=1`,
-                allow: 'autoplay; encrypted-media; picture-in-picture'
-            });
-            wrap.appendChild(iframe);
-
-            // Cleanup function for when window closes
-            wrap.onClose = () => {
-                document.querySelectorAll('.xp-win').forEach(win => {
-                    win.classList.remove('xp-skate-wiggle');
-                });
-                clippyHide();
-            };
-
-            return wrap;
-        },
     };
 
 
@@ -2619,10 +2585,8 @@ NUTTERTOOLS - Armas Pesadas
             terminal: { w: '500px', h: '320px' },
             gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
-            goldfinger_video: { w: '360px', h: '260px' },
             tulionet: { w: '380px', h: '360px' },
             accelerator: { w: '350px', h: '300px' },
-            'Tony Hawk Underground.exe': { w: '600px', h: '480px' },
             'Tibia.exe': { w: '640px', h: '480px' },
             'M.U.G.E.N..exe': { w: '640px', h: '480px' },
             'GTA San Andreas.exe': { w: '640px', h: '480px' },
