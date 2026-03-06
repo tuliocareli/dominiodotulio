@@ -19,16 +19,6 @@
             'Star Wars: Knights of the Old Republic',
             'Sim City 2000',
         ],
-        books: [
-            'SPRINT – Jake Knapp',
-            'Estratégia de UX – Eric Goodman',
-            'Lean UX – Jeff Gothelf',
-            'Redação Estratégica para UX',
-            'Não Me Faça Pensar – Steve Krug',
-            'Leis da Psicologia Aplicadas a UX',
-            'Design para a Internet – Felipe Memória',
-            'Cultura da Interface – Steven Johnson',
-        ],
         music: [
             '505 – Arctic Monkeys (4:14)',
             'Face – Brockhampton (4:19)',
@@ -49,8 +39,6 @@
     const ICONS = [
         { id: 'mycomputer', icon: '🖥️', label: 'Meu Computador' },
         { id: 'games', icon: '🎮', label: 'Meus Games' },
-        { id: 'books', icon: '📚', label: 'Livros' },
-        { id: 'music', icon: '🎵', label: 'Músicas' },
         { id: 'ie', icon: '🌐', label: 'TC Explorer' },
         { id: 'winamp', icon: '🎧', label: 'Tulioamp' },
         { id: 'paint', icon: '🎨', label: 'Tulio Paint' },
@@ -189,11 +177,25 @@
     // ── WINDOW CONTENT BUILDERS ──────────────────────
     const CONTENT = {
         mycomputer: () => h('div', { class: 'xp-file-view' }, ...[
-            { icon: '💾', name: 'Disco Local (C:)', detail: '80 GB' },
-            { icon: '📀', name: 'CD-ROM (D:)', detail: 'Vazio' },
-            { icon: '🖨️', name: 'Impressora HP', detail: 'Online' },
-            { icon: '🖥️', name: 'Monitor LG', detail: '1024×768' },
-        ].map(f => h('div', { class: 'xp-file-item' },
+            { id: 'c', icon: '💾', name: 'Disco Local (C:)', detail: '80 GB' },
+            { id: 'd', icon: '📀', name: 'CD-ROM (D:)', detail: 'Lista de Músicas' },
+            { id: 'p', icon: '🖨️', name: 'Impressora HP', detail: 'Online' },
+            { id: 'm', icon: '🖥️', name: 'Monitor LG', detail: '1024×768' },
+        ].map(f => h('div', {
+            class: 'xp-file-item',
+            ondblclick: () => {
+                if (f.id === 'd') openWin('music');
+            },
+            ontouchstart: function (e) {
+                const now = Date.now();
+                const last = this.dataset.lastTap || 0;
+                if (now - last < 300) {
+                    if (f.id === 'd') openWin('music');
+                    e.preventDefault();
+                }
+                this.dataset.lastTap = now;
+            }
+        },
             h('span', { class: 'xp-fi-icon' }, f.icon),
             h('span', { class: 'xp-fi-name' }, f.name),
             h('span', { class: 'xp-fi-detail' }, f.detail),
@@ -305,13 +307,6 @@
 
             return h('div', { style: { width: '100%', height: '100%', minHeight: '300px', background: '#000', display: 'flex', flexDirection: 'column' } }, vid);
         },
-
-        books: () => h('div', { class: 'xp-file-view' }, ...DATA.books.map(b =>
-            h('div', { class: 'xp-file-item' },
-                h('span', { class: 'xp-fi-icon' }, '📖'),
-                h('span', { class: 'xp-fi-name' }, b),
-            )
-        )),
 
         music: () => h('div', { class: 'xp-file-view' }, ...DATA.music.map(m =>
             h('div', { class: 'xp-file-item' },
