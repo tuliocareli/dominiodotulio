@@ -392,21 +392,17 @@
         )),
 
         ie: () => {
-            // ── TABS DATA — extraído dos nomes de arquivo ─────
             const TABS = [
                 { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', img: 'telas pro tulio explorer/tonyhawkundegroundgame.com.png' },
-                { name: 'Xbox.com', url: 'http://www.xbox.com', img: 'telas pro tulio explorer/xbox.com.png' },
-                { name: 'NFS Underground', url: 'http://www.needforspeedunderground.com', img: 'telas pro tulio explorer/needforspeedunderground.com.png' },
+                { name: 'Orkut', url: 'http://www.orkut.com.br', type: 'mockup', id: 'orkut' },
+                { name: 'Flogão', url: 'http://www.flogao.com.br/tuliocareli', type: 'mockup', id: 'flogao' },
                 { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', img: 'telas pro tulio explorer/needforspeedunderground2.com.png' },
                 { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com', img: 'telas pro tulio explorer/cartoonnetwork.com.png' },
-                { name: 'Submarino', url: 'http://www.submarino.com.br', img: 'telas pro tulio explorer/submarino.com.br.png' },
                 { name: 'Naruto Project', url: 'http://www.narutoproject.com.br', img: 'telas pro tulio explorer/narutoproject.com.br.jpg' },
-                { name: 'Magazine Luiza', url: 'http://www.magazineluiza.com.br', img: 'telas pro tulio explorer/magazineluiza.com.br.png' },
                 { name: 'MySpace', url: 'http://www.myspace.com', img: 'telas pro tulio explorer/myspace.com.jpg' },
-                { name: 'Orkut', url: 'http://www.orkut.com.br', img: 'telas pro tulio explorer/orkut.com.br.jpeg' },
             ];
 
-            let activeIdx = 0; // Tony Hawk abre como aba ativa
+            let activeIdx = 0;
 
             const wrap = h('div', { class: 'xp-browser xp-browser--tabbed' });
             const toolbar = h('div', {
@@ -422,12 +418,94 @@
             addrBar.appendChild(addrUrl);
 
             const body = h('div', { class: 'xp-browser-body xp-browser-scroll' });
-            const siteImg = h('img', { class: 'xp-browser-site-img', alt: '' });
-            body.appendChild(siteImg);
-
             const status = h('div', { class: 'xp-ie-status' });
 
-            // Render tabs
+            const renderOrkut = () => {
+                const luckyQuotes = [
+                    "Seu horóscopo diz: Hoje é um ótimo dia para baixar músicas no Kazaa.",
+                    "A sorte sorri para quem tem 256MB de RAM.",
+                    "Você encontrará um segredo no GTA San Andreas hoje.",
+                    "Alguém vai te 'Chamar Atenção' no MSN em breve.",
+                    "Não aceite doces de estranhos, aceite apenas Scraps."
+                ];
+                let currentQuote = luckyQuotes[Math.floor(Math.random() * luckyQuotes.length)];
+
+                return h('div', { class: 'xp-orkut-wrap' },
+                    h('header', { class: 'xp-orkut-header' },
+                        h('div', { class: 'xp-orkut-logo' }, 'orkut'),
+                        h('div', { style: { fontSize: '11px', color: '#5d7cae' } }, 'Página inicial | Perfil | Comunidades | Jogos')
+                    ),
+                    h('main', { class: 'xp-orkut-main' },
+                        h('aside', { class: 'xp-orkut-sidebar' },
+                            h('div', { class: 'xp-orkut-box' },
+                                h('img', { src: 'TC UNDERGROUND.png', class: 'xp-orkut-profile-pic' }),
+                                h('div', { style: { textAlign: 'center', marginTop: '5px', fontWeight: 'bold' } }, 'Túlio Careli'),
+                                h('div', { class: 'xp-orkut-badge-row', style: { justifyContent: 'center' } },
+                                    h('span', { title: 'Legal', style: { color: '#f0ad4e' } }, '🟡🟡🟡'),
+                                    h('span', { title: 'Legal', style: { color: '#5bc0de' } }, '🔵🔵'),
+                                    h('span', { title: 'Legal', style: { color: '#d9534f' } }, '🔴')
+                                )
+                            ),
+                            h('div', { class: 'xp-orkut-box' },
+                                h('h4', {}, 'Menu'),
+                                h('ul', { class: 'xp-orkut-nav' },
+                                    h('li', {}, 'Recados (12)'),
+                                    h('li', {}, 'Fotos (42)'),
+                                    h('li', {}, 'Vídeos (0)'),
+                                    h('li', {}, 'Depoimentos (8)')
+                                )
+                            ),
+                            h('div', { class: 'xp-orkut-lucky' },
+                                h('b', {}, 'Sorte do dia:'),
+                                h('p', { id: 'orkut-lucky-text', style: { margin: '5px 0 0 0' } }, currentQuote)
+                            )
+                        ),
+                        h('section', { class: 'xp-orkut-content' },
+                            h('h1', { class: 'xp-orkut-h1' }, 'Olá, Túlio!'),
+                            h('div', { class: 'xp-orkut-box', style: { border: 'none', background: '#eef2f9' } },
+                                h('b', {}, 'Seu mural de recados:'),
+                                h('div', { style: { marginTop: '10px', fontSize: '11px' } },
+                                    h('div', { style: { padding: '5px', borderBottom: '1px solid #fff' } },
+                                        h('b', { style: { color: '#ed2c91' } }, 'Clippy: '), 'Passando pra deixar um kkk e desejar boa semana!! add ai'
+                                    ),
+                                    h('div', { style: { padding: '5px' } },
+                                        h('b', { style: { color: '#ed2c91' } }, 'Beto_Doido: '), 'amanhã tem corujão na lan house??? vmo cs'
+                                    )
+                                )
+                            ),
+                            h('div', { style: { marginTop: '15px' } },
+                                h('h4', { style: { color: '#5d7cae', fontSize: '12px' } }, 'Suas Comunidades (142)'),
+                                h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginTop: '10px' } },
+                                    ['Eu Odeio Acordar Cedo', 'Eu Amo Chocolate', 'Tocava a Campainha e Corria', 'Sou Legal, Não Tô Te Dando Mole'].map(c =>
+                                        h('div', { style: { textAlign: 'center', fontSize: '9px' } },
+                                            h('div', { style: { width: '40px', height: '40px', background: '#ccc', margin: '0 auto 4px', borderRadius: '4px' } }),
+                                            c
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                );
+            };
+
+            const renderFlogao = () => {
+                return h('div', { class: 'xp-flogao-wrap' },
+                    h('header', { class: 'xp-flogao-header' }, 'FLOGÃO :: tuliocareli'),
+                    h('div', { class: 'xp-flogao-photo-box' },
+                        h('img', { src: 'imagens/THUG_11.jpg', class: 'xp-flogao-img' }),
+                        h('div', { style: { marginTop: '10px', fontSize: '12px', textAlign: 'center' } }, 'manobrinha basica no project 8 kkkk')
+                    ),
+                    h('div', { class: 'xp-flogao-comments' },
+                        h('div', { style: { fontWeight: 'bold', fontSize: '12px', borderBottom: '1px solid #ccc', marginBottom: '5px' } }, 'Livro de Visitas:'),
+                        h('div', { class: 'xp-flogao-comment' }, h('b', {}, 'xXx_Gamer_xXx:'), ' mto loko o print!! dpois passa no meu e comenta tbm vlw f-f'),
+                        h('div', { class: 'xp-flogao-comment' }, h('b', {}, 'Gatinha_XP:'), ' lindo!! dpois te chamo no msn bjss'),
+                        h('div', { class: 'xp-flogao-comment' }, h('b', {}, 'Zed_THPS:'), ' essa manobra eh foda :D')
+                    ),
+                    h('footer', { style: { margin: '20px 0', fontSize: '10px', color: '#999' } }, 'Flogão © 2004 - O maior portal de fotos do Brasil')
+                );
+            };
+
             const tabEls = TABS.map((tab, i) => {
                 const el = h('div', {
                     class: 'xp-tab' + (i === activeIdx ? ' xp-tab--active' : ''),
@@ -441,13 +519,19 @@
                 activeIdx = idx;
                 const tab = TABS[idx];
                 tabEls.forEach((el, i) => el.classList.toggle('xp-tab--active', i === idx));
-                siteImg.src = tab.img;
-                siteImg.alt = tab.name;
                 addrUrl.textContent = tab.url;
                 status.textContent = '✔ Concluído — ' + tab.url;
+
+                body.innerHTML = '';
+                if (tab.type === 'mockup') {
+                    if (tab.id === 'orkut') body.appendChild(renderOrkut());
+                    else if (tab.id === 'flogao') body.appendChild(renderFlogao());
+                } else {
+                    const siteImg = h('img', { src: tab.img, class: 'xp-browser-site-img', alt: tab.name });
+                    body.appendChild(siteImg);
+                }
             }
 
-            // Inicializa aba ativa
             switchTab(activeIdx);
 
             wrap.appendChild(toolbar);
