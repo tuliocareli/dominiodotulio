@@ -2031,7 +2031,7 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                         win.classList.add('xp-skate-wiggle');
                     });
 
-                    clippySpeak("SO HERE I AM, DOING EVERYTHING I CAN! 🛹");
+                    setTimeout(() => clippySpeak("SO HERE I AM, DOING EVERYTHING I CAN! 🛹"), 200);
 
                 } else if (c === 'exit') {
                     closeWin('terminal');
@@ -2522,10 +2522,11 @@ NUTTERTOOLS - Armas Pesadas
 
         goldfinger_video: () => {
             const wrap = h('div', { style: { height: '100%', background: '#000' } });
-            const ytId = "_d4j5H-M6ZQ"; // New Lyric Video
+            const ytId = "_d4j5H-M6ZQ"; // Lyric Video
             const iframe = h('iframe', {
                 style: { width: '100%', height: '100%', border: 'none' },
-                src: `https://www.youtube.com/embed/${ytId}?autoplay=1&start=14`
+                src: `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&start=14&enablejsapi=1`,
+                allow: 'autoplay; encrypted-media; picture-in-picture'
             });
             wrap.appendChild(iframe);
 
