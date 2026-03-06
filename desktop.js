@@ -48,12 +48,12 @@
         { id: 'wordpad', icon: '📝', label: 'TulioPad' },
         { id: 'mediaplayer', icon: '🎬', label: 'Tulio Media Player' },
         { id: 'imageviewer', icon: '🖼️', label: 'Imagens' },
-        { id: 'calculator', icon: '🖩', label: 'Calculadora' },
+        { id: 'calculator', icon: '📟', label: 'Calculadora' },
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
         { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
-        { id: 'terminal', icon: '💻', label: 'terminal.exe' },
+        { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'bsod', icon: '💽', label: 'Limpar_Cache_Rapido.exe' },
@@ -1983,8 +1983,13 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                 } else if (c === 'about') {
                     res = 'TulioOS Experimental Kernel v1.0.42\nMemory focus initialized.';
                 } else if (c === 'domain') {
-                    res = 'Domain Expansion: UNLIMITED VOID.\n(A blue hue flickers on the screen)';
-                    setTimeout(() => clippySpeak("Domain Expansion initialized."), 500);
+                    res = 'Expansão de Domínio: VAZIO ILIMITADO.\n(O sistema começa a brilhar intensamente...)';
+
+                    const overlay = h('div', { class: 'xp-void-overlay' });
+                    document.body.appendChild(overlay);
+                    setTimeout(() => overlay.remove(), 10000);
+
+                    setTimeout(() => clippySpeak("Expansão de Domínio inicializada."), 500);
                 } else if (c === 'open experiments') {
                     res = 'Access Denied. You need Level 4 Clearance.';
                 } else if (c === 'exit') {
@@ -2034,13 +2039,13 @@ Inspiração máxima no portfólio do Ryo Lu.`;
             );
         },
         secret_readme: () => {
-            const text = `Welcome to the hidden layer.
+            const text = `Bem-vindo à camada oculta.
 
-If you found this, you are curious enough.
+Se você encontrou isto, você é curioso o suficiente.
 
-Most people never reach this folder.
+A maioria das pessoas nunca chega a esta pasta.
 
-The internet was built by people like you.`;
+A internet foi construída por pessoas como você.`;
             const wrap = h('div', { style: { height: '100%', background: '#fff', padding: '15px', fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', lineHeight: '1.4', whiteSpace: 'pre-wrap' } });
             wrap.innerText = text;
             setTimeout(() => clippySpeak("Eu disse para não abrir isso..."), 1000);

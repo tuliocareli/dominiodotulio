@@ -752,3 +752,36 @@
         transform: translateY(-5px);
     }
 }
+
+/* UNLIMITED VOID EFFECT (BLUE HUE) */
+.xp-void-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999999;
+    background: rgba(0, 50, 255, 0.15);
+    pointer-events: none;
+    animation: voidPulse 4s ease-in-out infinite, voidFlicker 0.4s ease-in-out infinite alternate;
+    mix-blend-mode: multiply;
+}
+
+@keyframes voidPulse {
+
+    0%,
+    100% {
+        background: rgba(0, 50, 255, 0.1);
+    }
+
+    50% {
+        background: rgba(0, 100, 255, 0.25);
+    }
+}
+
+@keyframes voidFlicker {
+    from {
+        opacity: 0.7;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
