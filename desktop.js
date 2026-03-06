@@ -1983,11 +1983,39 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                 } else if (c === 'about') {
                     res = 'TulioOS Experimental Kernel v1.0.42\nMemory focus initialized.';
                 } else if (c === 'domain') {
-                    res = 'Expansão de Domínio: VAZIO ILIMITADO.\n(O sistema começa a brilhar intensamente...)';
+                    res = 'Expansão de Domínio: VAZIO ILIMITADO.\n(O Seis Olhos observa através do vazio...)';
 
                     const overlay = h('div', { class: 'xp-void-overlay' });
                     document.body.appendChild(overlay);
                     setTimeout(() => overlay.remove(), 10000);
+
+                    // Rikugan ASCII Animation
+                    const rikugan = h('div', {
+                        style: {
+                            textAlign: 'center', margin: '20px 0', color: '#00ffff',
+                            fontSize: '24px', fontWeight: 'bold', textShadow: '0 0 15px #00ffff',
+                            fontFamily: 'monospace', lineHeight: '1'
+                        }
+                    });
+                    output.appendChild(rikugan);
+
+                    const frames = [
+                        "(  ◎  )   (  ◎  )", // Open
+                        "(  -  )   (  -  )", // Blink
+                        "(  ◎  )   (  ◎  )", // Open
+                        "(  ◎  )   (  ◎  )",
+                        "(  -  )   (  -  )", // Blink
+                    ];
+
+                    let f = 0;
+                    const animInterval = setInterval(() => {
+                        if (f >= frames.length * 3) { // Let it repeat a bit
+                            clearInterval(animInterval);
+                            return;
+                        }
+                        rikugan.innerText = frames[f % frames.length];
+                        f++;
+                    }, 600);
 
                     setTimeout(() => clippySpeak("Expansão de Domínio inicializada."), 500);
                 } else if (c === 'open experiments') {

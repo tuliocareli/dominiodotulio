@@ -758,27 +758,27 @@
     position: fixed;
     inset: 0;
     z-index: 9999999;
-    background: rgba(0, 50, 255, 0.15);
+    background: rgba(0, 191, 255, 0.25);
     pointer-events: none;
-    animation: voidPulse 4s ease-in-out infinite, voidFlicker 0.4s ease-in-out infinite alternate;
-    mix-blend-mode: multiply;
+    animation: voidPulse 4s ease-in-out infinite, voidFlicker 0.3s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
 }
 
 @keyframes voidPulse {
 
     0%,
     100% {
-        background: rgba(0, 50, 255, 0.1);
+        background: rgba(0, 160, 255, 0.2);
     }
 
     50% {
-        background: rgba(0, 100, 255, 0.25);
+        background: rgba(0, 220, 255, 0.45);
     }
 }
 
 @keyframes voidFlicker {
     from {
-        opacity: 0.7;
+        opacity: 0.8;
     }
 
     to {
