@@ -190,6 +190,8 @@
                     if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
                     else if (g === 'Tibia') openWin('Tibia.exe');
                     else if (g === 'M.U.G.E.N.') openWin('M.U.G.E.N..exe');
+                    else if (g === 'GTA San Andreas') openWin('GTA San Andreas.exe');
+                    else if (g === 'Grand Chase') openWin('Grand Chase.exe');
                     else alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
                 },
                 ontouchstart: function (e) {
@@ -199,6 +201,8 @@
                         if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
                         else if (g === 'Tibia') openWin('Tibia.exe');
                         else if (g === 'M.U.G.E.N.') openWin('M.U.G.E.N..exe');
+                        else if (g === 'GTA San Andreas') openWin('GTA San Andreas.exe');
+                        else if (g === 'Grand Chase') openWin('Grand Chase.exe');
                         else alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
                         e.preventDefault();
                     }
@@ -241,6 +245,34 @@
         'M.U.G.E.N..exe': () => {
             const vid = document.createElement('video');
             vid.src = 'videosjogos/mugen.mp4';
+            vid.autoplay = true;
+            vid.loop = true;
+            vid.muted = true;
+            vid.playsInline = true;
+            vid.style.width = '100%';
+            vid.style.height = '100%';
+            vid.style.objectFit = 'contain';
+
+            return h('div', { style: { width: '100%', height: '100%', minHeight: '300px', background: '#000', display: 'flex', flexDirection: 'column' } }, vid);
+        },
+
+        'GTA San Andreas.exe': () => {
+            const vid = document.createElement('video');
+            vid.src = 'videosjogos/gta%20san%20andreas.mp4';
+            vid.autoplay = true;
+            vid.loop = true;
+            vid.muted = true;
+            vid.playsInline = true;
+            vid.style.width = '100%';
+            vid.style.height = '100%';
+            vid.style.objectFit = 'contain';
+
+            return h('div', { style: { width: '100%', height: '100%', minHeight: '300px', background: '#000', display: 'flex', flexDirection: 'column' } }, vid);
+        },
+
+        'Grand Chase.exe': () => {
+            const vid = document.createElement('video');
+            vid.src = 'videosjogos/grand%20chase.mp4';
             vid.autoplay = true;
             vid.loop = true;
             vid.muted = true;
@@ -2340,6 +2372,8 @@ NUTTERTOOLS - Armas Pesadas
             'Tony Hawk Underground.exe': { w: '600px', h: '480px' },
             'Tibia.exe': { w: '640px', h: '480px' },
             'M.U.G.E.N..exe': { w: '640px', h: '480px' },
+            'GTA San Andreas.exe': { w: '640px', h: '480px' },
+            'Grand Chase.exe': { w: '640px', h: '480px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
