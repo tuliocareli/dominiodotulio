@@ -53,6 +53,7 @@
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
         { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
+        { id: 'terminal', icon: '💻', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'bsod', icon: '💽', label: 'Limpar_Cache_Rapido.exe' },
@@ -1906,6 +1907,75 @@ Inspiração máxima no portfólio do Ryo Lu.`;
             return wrap;
         },
 
+        terminal: () => {
+            const wrap = h('div', { id: 'termWrap', style: { height: '100%', background: '#000', color: '#0f0', fontFamily: 'monospace', fontSize: '13px', display: 'flex', flexDirection: 'column', padding: '10px', boxSizing: 'border-box' } });
+            const output = h('div', { id: 'termOut', style: { flex: 1, overflowY: 'auto', marginBottom: '10px', whiteSpace: 'pre-wrap', scrollbarWidth: 'none' } });
+            output.innerText = 'TulioOS Terminal [Versão 1.0.2024]\n(c) 2004 Tulio Corp. Todos os direitos reservados.\n\nDigite "help" para começar.\n\n';
+
+            const line = h('div', { style: { display: 'flex', gap: '8px' } });
+            line.appendChild(h('span', { style: { color: '#0f0', whiteSpace: 'nowrap' } }, 'tulio@lab:~$'));
+
+            const input = h('input', {
+                type: 'text',
+                spellcheck: 'false',
+                style: {
+                    background: 'transparent', border: 'none', color: '#fff', outline: 'none',
+                    flex: 1, fontFamily: 'monospace', fontSize: '13px', padding: 0
+                }
+            });
+            line.appendChild(input);
+
+            const exec = (cmd) => {
+                const echo = h('div', { style: { color: '#fff', marginBottom: '4px' } });
+                echo.innerHTML = `<span style="color:#0f0">tulio@lab:~$</span> ${cmd}`;
+                output.appendChild(echo);
+
+                const c = cmd.trim().toLowerCase();
+                let res = '';
+
+                if (c === 'help') {
+                    res = 'Available commands:\n  ls                - List files\n  open experiments  - ???\n  about             - System info\n  whoami            - Current user\n  domain            - Trigger command\n  exit              - Close terminal';
+                } else if (c === 'ls') {
+                    res = 'experiments/  src/  secrets.txt  readme.txt  gta_cheats.txt  winamp.exe';
+                } else if (c === 'whoami') {
+                    res = 'visitor@tulio_os';
+                } else if (c === 'about') {
+                    res = 'TulioOS Experimental Kernel v1.0.42\nMemory focus initialized.';
+                } else if (c === 'domain') {
+                    res = 'Domain Expansion: UNLIMITED VOID.\n(A blue hue flickers on the screen)';
+                } else if (c === 'open experiments') {
+                    res = 'Access Denied. You need Level 4 Clearance.';
+                } else if (c === 'exit') {
+                    closeWin('terminal');
+                    return;
+                } else if (c !== '') {
+                    res = `Command not found: ${c}`;
+                }
+
+                if (res) {
+                    const rDiv = h('div', { style: { color: '#0c0', marginBottom: '10px' } }, res);
+                    output.appendChild(rDiv);
+                }
+                output.scrollTop = output.scrollHeight;
+            };
+
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    exec(input.value);
+                    input.value = '';
+                }
+            };
+
+            wrap.appendChild(output);
+            wrap.appendChild(line);
+
+            // Auto-focus logic
+            wrap.onclick = () => input.focus();
+            setTimeout(() => input.focus(), 200);
+
+            return wrap;
+        },
+
         wordpad: () => {
             const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column' } });
 
@@ -2393,6 +2463,7 @@ NUTTERTOOLS - Armas Pesadas
             winamp: { w: '280px', h: '580px' },
             wordpad: { w: '440px', h: '400px' },
             readme: { w: '440px', h: '340px' },
+            terminal: { w: '500px', h: '320px' },
             gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
             tulionet: { w: '380px', h: '360px' },
