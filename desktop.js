@@ -81,6 +81,7 @@
     // ── AUDIO EFFECTS ─────────────────────────────────
     const SFX = {
         startup: new Audio('sons/startup.mp3'),
+        shutdown: new Audio('sons/shutdown.mp3'),
         error: new Audio('sons/error.mp3'),
         click: new Audio('sons/click.mp3'),
         stop: new Audio('sons/critical_stop.mp3')
@@ -2726,6 +2727,8 @@ NUTTERTOOLS - Armas Pesadas
         const desk = document.getElementById('xpDesktop');
         if (!desk || shuttingDown) return;
         shuttingDown = true;
+
+        playSfx('shutdown');
 
         // Fecha menu iniciar se aberto
         document.getElementById('xpStartMenu')?.classList.remove('xp-sm--open');
