@@ -85,6 +85,10 @@
     // ── YOUTUBE API LOADER ───────────────────────────
     let ytAPILoading = false;
     const ytCallbacks = [];
+    window.onYouTubeIframeAPIReady = () => {
+        while (ytCallbacks.length) ytCallbacks.shift()();
+    };
+
     const ensureYT = (cb) => {
         if (window.YT && window.YT.Player) return cb();
         ytCallbacks.push(cb);
@@ -96,13 +100,10 @@
             script.src = 'https://www.youtube.com/iframe_api';
             document.head.appendChild(script);
         }
-        const check = setInterval(() => {
-            if (window.YT && window.YT.Player) {
-                clearInterval(check);
-                while (ytCallbacks.length) ytCallbacks.shift()();
-            }
-        }, 100);
     };
+
+    let ytCounter = 0;
+    const getUniqueYtId = (prefix) => prefix + '-' + (++ytCounter) + '-' + Date.now();
 
     // ── HELPERS ───────────────────────────────────────
     const h = (tag, attrs = {}, ...children) => {
@@ -930,7 +931,8 @@
                 return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             };
 
-            const playerDivId = 'yt-player-' + Date.now();
+            // Criar ID unico pro iframe para a API do Google mapear corretamente
+            const playerDivId = getUniqueYtId('yt-player');
             playerContainer.id = playerDivId;
 
             ensureYT(() => {
@@ -1007,15 +1009,6 @@
                 const seekTo = (e.target.value / 100) * d;
                 ytPlayer.seekTo(seekTo, true);
             });
-
-            // Limpeza caso a janela seja fechada no desktop
-            const cleanupInterval = setInterval(() => {
-                if (!document.body.contains(wrap)) {
-                    clearInterval(checkInterval);
-                    clearInterval(cleanupInterval);
-                    if (ytPlayer && typeof ytPlayer.destroy === 'function') ytPlayer.destroy();
-                }
-            }, 1000);
 
             return wrap;
         },
@@ -1511,7 +1504,7 @@
             );
 
             // Mini YouTube iframe wrapper - Visible to prevent API invisible embed blocks
-            const iframeId = 'yt-winamp-' + Date.now();
+            const iframeId = getUniqueYtId('yt-winamp');
             const playerContainer = h('div', {
                 style: { width: '120px', height: '68px', border: '1px solid #333', background: '#000', overflow: 'hidden' }
             });
