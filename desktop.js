@@ -53,6 +53,7 @@
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
         { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
+        { id: 'readme', icon: '📝', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'bsod', icon: '💽', label: 'Limpar_Cache_Rapido.exe' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
@@ -1873,6 +1874,29 @@
             return wrap;
         },
 
+        readme: () => {
+            const text = `Bem vindo ao TúlioOS.
+
+Esse sistema foi construído para ser o lar das minhas idéias estranhas, experimentos pequenos e interfaces não finalizadas (e nostálgicas.)
+
+Algumas coisas funcionam e outras se quebram, e é intencional.
+
+Inspiração máxima no portfólio do Ryo Lu.`;
+
+            const wrap = h('div', { style: { height: '100%', background: '#fff', display: 'flex', flexDirection: 'column' } });
+            const textarea = h('textarea', {
+                readonly: true,
+                spellcheck: 'false',
+                style: {
+                    flex: 1, width: '100%', resize: 'none', border: 'none', padding: '15px',
+                    fontFamily: 'Tahoma, sans-serif', fontSize: '12px', lineHeight: '1.6',
+                    outline: 'none', color: '#333', background: '#fff'
+                }
+            }, text);
+            wrap.appendChild(textarea);
+            return wrap;
+        },
+
         wordpad: () => {
             const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column' } });
 
@@ -2625,8 +2649,8 @@ NUTTERTOOLS - Armas Pesadas
         // WALLPAPER AREA
         const area = h('div', { id: 'xpDesktopArea' },
             // ICONS GRID
-            h('div', { class: 'xp-icons-grid' }, ...ICONS.map(ic =>
-                h('div', {
+            h('div', { class: 'xp-icons-grid' }, ...ICONS.map(ic => {
+                const el = h('div', {
                     class: 'xp-desk-icon',
                     ondblclick: () => openWin(ic.id),
                     ontouchstart: function (e) {
@@ -2644,10 +2668,17 @@ NUTTERTOOLS - Armas Pesadas
                     },
                 },
                     h('div', { class: 'xp-di-img' }, ic.icon),
-                    h('div', { class: 'xp-di-label' }, ic.label),
-                )
-            ))
+                    h('div', { class: 'xp-di-label' }, ic.label)
+                );
+
+                if (ic.id === 'readme') {
+                    el.classList.add('xp-icon--readme');
+                }
+
+                return el;
+            }))
         );
+
         desk.appendChild(area);
 
         // TASKBAR
@@ -2691,6 +2722,9 @@ NUTTERTOOLS - Armas Pesadas
                     setTimeout(() => {
                         welcome.remove();
                         area.style.opacity = '1'; // Show actual desktop
+
+                        // Auto-open README
+                        setTimeout(() => openWin('readme'), 300);
                     }, 400); // 400ms transition
                 }, 1500); // 1.5s welcome duration
 
