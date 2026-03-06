@@ -936,46 +936,51 @@
             playerContainer.id = playerDivId;
 
             ensureYT(() => {
-                ytPlayer = new window.YT.Player(playerDivId, {
-                    height: '100%',
-                    width: '100%',
-                    videoId: VIDS[currentIdx],
-                    playerVars: {
-                        'playsinline': 1,
-                        'controls': 0,
-                        'disablekb': 1,
-                        'fs': 0,
-                        'modestbranding': 1,
-                        'rel': 0,
-                        'origin': window.location.origin
-                    },
-                    events: {
-                        'onReady': () => {
-                            ytReady = true;
-                            blocker.onclick = () => {
-                                const state = ytPlayer.getPlayerState();
-                                if (state === window.YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
-                                else ytPlayer.playVideo();
-                            };
-                            checkInterval = setInterval(() => {
-                                if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') return;
-                                const c = ytPlayer.getCurrentTime();
-                                const d = ytPlayer.getDuration();
-                                if (d > 0) {
-                                    progressBar.value = (c / d) * 100;
-                                    timeLabel.textContent = `${formatTime(c)} / ${formatTime(d)}`;
-                                }
-                            }, 300);
+                const waitDom = setInterval(() => {
+                    if (!document.getElementById(playerDivId)) return;
+                    clearInterval(waitDom);
+
+                    ytPlayer = new window.YT.Player(playerDivId, {
+                        height: '100%',
+                        width: '100%',
+                        videoId: VIDS[currentIdx],
+                        playerVars: {
+                            'playsinline': 1,
+                            'controls': 0,
+                            'disablekb': 1,
+                            'fs': 0,
+                            'modestbranding': 1,
+                            'rel': 0,
+                            'origin': window.location.origin
                         },
-                        'onStateChange': (e) => {
-                            if (e.data === window.YT.PlayerState.PLAYING) {
-                                btnPlay.textContent = '⏸';
-                            } else {
-                                btnPlay.textContent = '▶';
+                        events: {
+                            'onReady': () => {
+                                ytReady = true;
+                                blocker.onclick = () => {
+                                    const state = ytPlayer.getPlayerState();
+                                    if (state === window.YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+                                    else ytPlayer.playVideo();
+                                };
+                                checkInterval = setInterval(() => {
+                                    if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') return;
+                                    const c = ytPlayer.getCurrentTime();
+                                    const d = ytPlayer.getDuration();
+                                    if (d > 0) {
+                                        progressBar.value = (c / d) * 100;
+                                        timeLabel.textContent = `${formatTime(c)} / ${formatTime(d)}`;
+                                    }
+                                }, 300);
+                            },
+                            'onStateChange': (e) => {
+                                if (e.data === window.YT.PlayerState.PLAYING) {
+                                    btnPlay.textContent = '⏸';
+                                } else {
+                                    btnPlay.textContent = '▶';
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }, 50);
             });
 
             wrap.onClose = () => {
@@ -1602,55 +1607,60 @@
             };
 
             ensureYT(() => {
-                ytPlayer = new window.YT.Player(iframeId, {
-                    height: '68',
-                    width: '120',
-                    videoId: MUSIC_DATA[currentIdx].id,
-                    playerVars: {
-                        'autoplay': 1,
-                        'controls': 0,
-                        'disablekb': 1,
-                        'modestbranding': 1,
-                        'rel': 0,
-                        'playsinline': 1,
-                        'origin': window.location.origin
-                    },
-                    events: {
-                        'onReady': () => {
-                            ytReady = true;
-                            updateTrackInfo();
-                            timeLabel.textContent = "0:00";
+                const waitDom = setInterval(() => {
+                    if (!document.getElementById(iframeId)) return;
+                    clearInterval(waitDom);
 
-                            checkInterval = setInterval(() => {
-                                if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
-                                    const t = ytPlayer.getCurrentTime();
-                                    const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
-                                    const state = ytPlayer.getPlayerState();
-                                    timeLabel.textContent = formatTime(t);
-
-                                    if (dur > 0) {
-                                        progFill.style.width = `${(t / dur) * 100}%`;
-                                    }
-
-                                    // Visualizer animation
-                                    if (state === window.YT.PlayerState.PLAYING) {
-                                        vizActive = true;
-                                        viz.childNodes.forEach(b => b.style.height = (Math.random() * 80 + 20) + '%');
-                                    } else {
-                                        vizActive = false;
-                                        viz.childNodes.forEach(b => b.style.height = '10%');
-                                    }
-                                }
-                            }, 150);
+                    ytPlayer = new window.YT.Player(iframeId, {
+                        height: '68',
+                        width: '120',
+                        videoId: MUSIC_DATA[currentIdx].id,
+                        playerVars: {
+                            'autoplay': 1,
+                            'controls': 0,
+                            'disablekb': 1,
+                            'modestbranding': 1,
+                            'rel': 0,
+                            'playsinline': 1,
+                            'origin': window.location.origin
                         },
-                        'onStateChange': (e) => {
-                            if (e.data === window.YT.PlayerState.ENDED) {
-                                currentIdx = (currentIdx + 1) % MUSIC_DATA.length;
-                                ytPlayer.loadVideoById(MUSIC_DATA[currentIdx].id);
+                        events: {
+                            'onReady': () => {
+                                ytReady = true;
+                                updateTrackInfo();
+                                timeLabel.textContent = "0:00";
+
+                                checkInterval = setInterval(() => {
+                                    if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+                                        const t = ytPlayer.getCurrentTime();
+                                        const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+                                        const state = ytPlayer.getPlayerState();
+                                        timeLabel.textContent = formatTime(t);
+
+                                        if (dur > 0) {
+                                            progFill.style.width = `${(t / dur) * 100}%`;
+                                        }
+
+                                        // Visualizer animation
+                                        if (state === window.YT.PlayerState.PLAYING) {
+                                            vizActive = true;
+                                            viz.childNodes.forEach(b => b.style.height = (Math.random() * 80 + 20) + '%');
+                                        } else {
+                                            vizActive = false;
+                                            viz.childNodes.forEach(b => b.style.height = '10%');
+                                        }
+                                    }
+                                }, 150);
+                            },
+                            'onStateChange': (e) => {
+                                if (e.data === window.YT.PlayerState.ENDED) {
+                                    currentIdx = (currentIdx + 1) % MUSIC_DATA.length;
+                                    ytPlayer.loadVideoById(MUSIC_DATA[currentIdx].id);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }, 50);
             });
 
             btnPlay.onclick = () => { if (ytReady) ytPlayer.playVideo(); };
