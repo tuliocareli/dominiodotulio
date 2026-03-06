@@ -855,11 +855,13 @@
 }
 
 .xp-orkut-box h4 {
-    margin: 0 0 5px 0;
+    margin: 0 0 8px 0;
     color: #5d7cae;
     font-size: 11px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #d8e4f5;
     display: flex;
+    padding-bottom: 2px;
+    font-weight: bold;
     justify-content: space-between;
 }
 
@@ -946,16 +948,24 @@
     text-align: center;
     font-size: 9px;
     color: #5d7cae;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
 }
 
 .xp-orkut-grid-img {
     width: 100%;
     aspect-ratio: 1;
     background: #ddd;
-    border: 1px solid #ccc;
+    border: 1px solid #5d7cae;
     display: block;
-    margin-bottom: 3px;
     object-fit: cover;
+    border-radius: 4px;
+    /* Xbox 360 style */
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
 }
 
 .xp-orkut-top-meta {

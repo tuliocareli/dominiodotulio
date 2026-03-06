@@ -422,25 +422,37 @@
 
             const renderOrkut = () => {
                 const infoRows = [
-                    { label: 'relacionamento:', val: 'solteiro(a)' },
-                    { label: 'aniversário:', val: '21 março' },
-                    { label: 'idade:', val: '20' },
-                    { label: 'interesses no orkut:', val: 'amigos, companheiros para atividades, namoro (mulheres)' },
-                    { label: 'quem sou eu:', val: 'nao sei tentando descobri! o>O as vezes so retardado as vezes chato pra cacete as vezes legl' },
+                    { label: 'relacionamento:', val: 'compromissado' },
+                    { label: 'aniversário:', val: '23 de abril' },
+                    { label: 'idade:', val: '28' },
+                    { label: 'interesses no orkut:', val: 'amigos' },
+                    { label: 'quem sou eu:', val: 'tecnicamente impressionante, esteticamente horrivel O_o' },
                     { label: 'filhos:', val: 'não' },
                     { label: 'etnia:', val: 'caucasiano (branco)' },
-                    { label: 'humor:', val: 'extrovertido/extravagante' },
+                    { label: 'humor:', val: 'introvertido' },
                     { label: 'orientação sexual:', val: 'heterossexual' },
                     { label: 'estilo:', val: 'urbano' },
                     { label: 'fumo:', val: 'não' },
                     { label: 'bebo:', val: 'não' },
-                    { label: 'animais de estimação:', val: 'não gosto de animais de estimação' },
-                    { label: 'moro:', val: 'com meus pais' },
-                    { label: 'cidade natal:', val: 'tangara da serra' },
-                    { label: 'página web:', val: 'http://ryl2phoenix.com/' },
-                    { label: 'paixões:', val: 'nada lol' },
-                    { label: 'esportes:', val: 'nenhum =S' },
-                    { label: 'atividades:', val: 'lol n tenh XD' }
+                    { label: 'animais de estimação:', val: 'sim' },
+                    { label: 'moro:', val: 'no momento' },
+                    { label: 'cidade natal:', val: 'BH' },
+                    { label: 'página web:', val: 'tuliocareli.com' },
+                    { label: 'paixões:', val: 'musica' },
+                    { label: 'esportes:', val: 'basquete, skate' },
+                    { label: 'atividades:', val: 'design' }
+                ];
+
+                const friends = [
+                    'BetoLol', 'ZedTHPS', 'Calazadroid',
+                    'Lets', 'Jubajubs86', 'Rick_Gamer',
+                    'NiNa_2004', 'Dark_Lord_S2', 'XuxaS2'
+                ];
+
+                const communities = [
+                    { name: 'Eu odeio acordar cedo', icon: '🐱' },
+                    { name: 'Eu já entrei na internt e queria sorvete mais era feijao', icon: '🍦' },
+                    { name: 'Sorvete ou Feijão?', icon: '💻' }
                 ];
 
                 return h('div', { class: 'xp-orkut-wrap' },
@@ -466,7 +478,7 @@
                         h('aside', { class: 'xp-orkut-sidebar' },
                             h('img', { src: 'TC UNDERGROUND.png', class: 'xp-orkut-profile-pic' }),
                             h('div', { style: { fontSize: '12px', fontWeight: 'bold', color: '#5d7cae', marginTop: '5px' } }, 'Túlio Careli'),
-                            h('div', { style: { fontSize: '10px', color: '#666', whiteSpace: 'pre-line' } }, 'masculino, solteiro(a)\ntangara da serra,\nBrasil'),
+                            h('div', { style: { fontSize: '10px', color: '#666', whiteSpace: 'pre-line' } }, 'masculino, compromissado\nBH, Brasil'),
                             h('div', { class: 'xp-orkut-profile-left-links' },
                                 h('div', {}, '➕ amigo'),
                                 h('div', {}, 'mais »'),
@@ -495,21 +507,39 @@
                         ),
                         h('aside', { class: 'xp-orkut-sidebar' },
                             h('div', { class: 'xp-orkut-box' },
-                                h('h4', {}, 'amigos <span>(51)</span>'),
+                                h('h4', {}, 'amigos ', h('span', {}, '(51)')),
                                 h('div', { class: 'xp-orkut-grid-9' },
-                                    ...Array.from({ length: 9 }).map((_, i) => h('div', { class: 'xp-orkut-grid-item' },
-                                        h('div', { class: 'xp-orkut-grid-img' }),
-                                        'Amigo ' + (i + 1)
+                                    ...friends.map((name, i) => h('div', { class: 'xp-orkut-grid-item' },
+                                        h('div', {
+                                            class: 'xp-orkut-grid-img',
+                                            style: {
+                                                background: `hsl(${i * 40}, 60%, 70%)`,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '20px'
+                                            }
+                                        }, '👤'),
+                                        name
                                     ))
                                 ),
                                 h('div', { style: { textAlign: 'right', fontSize: '10px', marginTop: '5px', color: '#5d7cae', cursor: 'pointer' } }, 'ver todos')
                             ),
                             h('div', { class: 'xp-orkut-box' },
-                                h('h4', {}, 'comunidades <span>(313)</span>'),
+                                h('h4', {}, 'comunidades ', h('span', {}, '(313)')),
                                 h('div', { class: 'xp-orkut-grid-9' },
-                                    ...Array.from({ length: 3 }).map((_, i) => h('div', { class: 'xp-orkut-grid-item' },
-                                        h('div', { class: 'xp-orkut-grid-img' }),
-                                        'Comu ' + (i + 1)
+                                    ...communities.map(com => h('div', { class: 'xp-orkut-grid-item' },
+                                        h('div', {
+                                            class: 'xp-orkut-grid-img',
+                                            style: {
+                                                background: '#eee',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '20px'
+                                            }
+                                        }, com.icon),
+                                        com.name
                                     ))
                                 ),
                                 h('div', { style: { textAlign: 'right', fontSize: '10px', marginTop: '5px', color: '#5d7cae', cursor: 'pointer' } }, 'ver todos')
