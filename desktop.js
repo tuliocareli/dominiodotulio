@@ -82,6 +82,28 @@
         } catch (e) { }
     };
 
+    // ── YOUTUBE API LOADER ───────────────────────────
+    let ytAPILoading = false;
+    const ytCallbacks = [];
+    const ensureYT = (cb) => {
+        if (window.YT && window.YT.Player) return cb();
+        ytCallbacks.push(cb);
+        if (ytAPILoading) return;
+        ytAPILoading = true;
+        if (!document.getElementById('yt-iframe-api')) {
+            const script = document.createElement('script');
+            script.id = 'yt-iframe-api';
+            script.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(script);
+        }
+        const check = setInterval(() => {
+            if (window.YT && window.YT.Player) {
+                clearInterval(check);
+                while (ytCallbacks.length) ytCallbacks.shift()();
+            }
+        }, 100);
+    };
+
     // ── HELPERS ───────────────────────────────────────
     const h = (tag, attrs = {}, ...children) => {
         const el = document.createElement(tag);
@@ -908,54 +930,31 @@
                 return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             };
 
-            const ensureAPIReady = (callback) => {
-                if (window.YT && window.YT.Player) {
-                    callback();
-                } else {
-                    if (!document.getElementById('yt-iframe-api')) {
-                        const script = document.createElement('script');
-                        script.id = 'yt-iframe-api';
-                        script.src = 'https://www.youtube.com/iframe_api';
-                        document.head.appendChild(script);
-                    }
-                    const checkYT = setInterval(() => {
-                        if (window.YT && window.YT.Player) {
-                            clearInterval(checkYT);
-                            callback();
-                        }
-                    }, 100);
-                }
-            };
-
-            // Criar ID unico pro iframe para a API do Google mapear corretamente
             const playerDivId = 'yt-player-' + Date.now();
             playerContainer.id = playerDivId;
 
-            ensureAPIReady(() => {
+            ensureYT(() => {
                 ytPlayer = new window.YT.Player(playerDivId, {
                     height: '100%',
                     width: '100%',
                     videoId: VIDS[currentIdx],
                     playerVars: {
                         'playsinline': 1,
-                        'controls': 0, // Esconde os controles nativos
+                        'controls': 0,
                         'disablekb': 1,
-                        'fs': 0, // Desativa botão fullscreen
+                        'fs': 0,
                         'modestbranding': 1,
-                        'rel': 0
+                        'rel': 0,
+                        'origin': window.location.origin
                     },
                     events: {
                         'onReady': () => {
                             ytReady = true;
-
-                            // Clique no bloqueador (em cima do video) faz play/pause
                             blocker.onclick = () => {
                                 const state = ytPlayer.getPlayerState();
                                 if (state === window.YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
                                 else ytPlayer.playVideo();
                             };
-
-                            // Atualização da barrinha de tempo
                             checkInterval = setInterval(() => {
                                 if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') return;
                                 const c = ytPlayer.getCurrentTime();
@@ -976,6 +975,11 @@
                     }
                 });
             });
+
+            wrap.onClose = () => {
+                if (checkInterval) clearInterval(checkInterval);
+                if (ytPlayer && ytPlayer.destroy) ytPlayer.destroy();
+            };
 
             // Botões do Player
             btnPlay.onclick = () => {
@@ -1604,26 +1608,7 @@
                 return `${m}:${s}`;
             };
 
-            const ensureAPIReady = (callback) => {
-                if (window.YT && window.YT.Player) {
-                    callback();
-                } else {
-                    if (!document.getElementById('yt-iframe-api')) {
-                        const script = document.createElement('script');
-                        script.id = 'yt-iframe-api';
-                        script.src = 'https://www.youtube.com/iframe_api';
-                        document.head.appendChild(script);
-                    }
-                    const checkYT = setInterval(() => {
-                        if (window.YT && window.YT.Player) {
-                            clearInterval(checkYT);
-                            callback();
-                        }
-                    }, 100);
-                }
-            };
-
-            ensureAPIReady(() => {
+            ensureYT(() => {
                 ytPlayer = new window.YT.Player(iframeId, {
                     height: '68',
                     width: '120',
@@ -1666,21 +1651,10 @@
                             }, 150);
                         },
                         'onStateChange': (e) => {
-                            if (e.data === window.YT.PlayerState.PLAYING) {
-                                btnPlay.style.color = '#0f0';
-                            } else {
-                                btnPlay.style.color = '';
-                            }
                             if (e.data === window.YT.PlayerState.ENDED) {
                                 currentIdx = (currentIdx + 1) % MUSIC_DATA.length;
                                 ytPlayer.loadVideoById(MUSIC_DATA[currentIdx].id);
-                                updateTrackInfo();
                             }
-                        },
-                        'onError': (e) => {
-                            updateTrackInfo(true);
-                            viz.childNodes.forEach(b => b.style.height = '10%');
-                            timeLabel.textContent = "ERROR";
                         }
                     }
                 });
@@ -1701,14 +1675,11 @@
                 updateTrackInfo();
             };
 
-            const cleanup = setInterval(() => {
-                if (!document.body.contains(wrap)) {
-                    clearInterval(checkInterval);
-                    clearInterval(cleanup);
-                    if (animId) cancelAnimationFrame(animId);
-                    if (ytPlayer && typeof ytPlayer.destroy === 'function') ytPlayer.destroy();
-                }
-            }, 1000);
+            wrap.onClose = () => {
+                if (checkInterval) clearInterval(checkInterval);
+                if (animId) cancelAnimationFrame(animId);
+                if (ytPlayer && ytPlayer.destroy) ytPlayer.destroy();
+            };
 
             updatePlaylistUI();
 
@@ -2433,6 +2404,13 @@ NUTTERTOOLS - Armas Pesadas
     function closeWin(id) {
         const w = openWindows[id];
         if (!w) return;
+
+        // Executa limpeza se o app definiu onClose
+        const appBody = w.querySelector('.xp-win-body > *');
+        if (appBody && typeof appBody.onClose === 'function') {
+            appBody.onClose();
+        }
+
         w.classList.remove('xp-win--open');
         w.style.opacity = '0';
         w.style.transform = 'scale(0.9)';
