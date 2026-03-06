@@ -683,3 +683,72 @@
 .xp-msn-send:hover {
     background: linear-gradient(180deg, #5a88f0 0%, #3a68d0 100%);
 }
+
+/* README Position Fix */
+.xp-icon--readme {
+    position: absolute !important;
+    top: 20px;
+    right: 20px;
+}
+
+/* CLIPPY */
+#xpClippy {
+    position: fixed;
+    bottom: 40px;
+    right: 20px;
+    z-index: 999999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    font-family: 'Tahoma', sans-serif;
+}
+
+.clippy-bubble {
+    background: #ffffcc;
+    border: 1px solid #000;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 11px;
+    color: #000;
+    margin-bottom: 10px;
+    max-width: 150px;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+    position: relative;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.clippy-bubble.speaking {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.clippy-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 30px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #000;
+}
+
+.clippy-icon {
+    font-size: 40px;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+    animation: clippyFloat 3s ease-in-out infinite;
+}
+
+@keyframes clippyFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}

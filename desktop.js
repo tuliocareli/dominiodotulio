@@ -66,6 +66,8 @@
     let shuttingDown = false;
     let clockTimer = null;
     let isOnline = false;
+    let actionCount = 0;
+    let secretsRevealed = false;
     const openWindows = {}; // id → window el
 
     // ── AUDIO EFFECTS ─────────────────────────────────
@@ -106,6 +108,45 @@
 
     let ytCounter = 0;
     const getUniqueYtId = (prefix) => prefix + '-' + (++ytCounter) + '-' + Date.now();
+
+    const clippySpeak = (msg) => {
+        const clippy = document.getElementById('xpClippy');
+        const bubble = document.querySelector('.clippy-bubble');
+        if (!clippy || !bubble) return;
+        clippy.style.display = 'flex';
+        bubble.innerText = msg;
+        bubble.classList.add('speaking');
+        setTimeout(() => {
+            bubble.classList.remove('speaking');
+            setTimeout(() => { if (!bubble.classList.contains('speaking')) clippy.style.display = 'none'; }, 500);
+        }, 4000);
+    };
+
+    const revealSecretFolder = () => {
+        if (secretsRevealed) return;
+        secretsRevealed = true;
+        const secretIcon = { id: 'mysterious_folder', icon: '📂', label: 'mysterious_folder' };
+        ICONS.push(secretIcon);
+
+        const grid = document.querySelector('.xp-icons-grid');
+        if (grid) {
+            const iconEl = h('div', {
+                class: 'xp-desk-icon xp-icon--secret',
+                style: { opacity: '0', transition: 'opacity 1s ease' },
+                ondblclick: () => openWin('mysterious_folder'),
+                onclick: e => {
+                    document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
+                    e.currentTarget.classList.add('xp-icon--selected');
+                },
+            },
+                h('div', { class: 'xp-di-img' }, '📂'),
+                h('div', { class: 'xp-di-label' }, 'mysterious_folder'),
+            );
+            grid.appendChild(iconEl);
+            setTimeout(() => iconEl.style.opacity = '1', 100);
+            clippySpeak("Você encontrou algo que não deveria...");
+        }
+    };
 
     // ── HELPERS ───────────────────────────────────────
     const h = (tag, attrs = {}, ...children) => {
@@ -1943,6 +1984,7 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                     res = 'TulioOS Experimental Kernel v1.0.42\nMemory focus initialized.';
                 } else if (c === 'domain') {
                     res = 'Domain Expansion: UNLIMITED VOID.\n(A blue hue flickers on the screen)';
+                    setTimeout(() => clippySpeak("Domain Expansion initialized."), 500);
                 } else if (c === 'open experiments') {
                     res = 'Access Denied. You need Level 4 Clearance.';
                 } else if (c === 'exit') {
@@ -1973,6 +2015,35 @@ Inspiração máxima no portfólio do Ryo Lu.`;
             wrap.onclick = () => input.focus();
             setTimeout(() => input.focus(), 200);
 
+            return wrap;
+        },
+
+        mysterious_folder: () => {
+            return h('div', { class: 'xp-folder-view', style: { padding: '20px', display: 'flex', flexWrap: 'wrap', gap: '20px' } },
+                h('div', {
+                    class: 'xp-desk-icon',
+                    ondblclick: () => openWin('secret_readme'),
+                    onclick: e => {
+                        document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
+                        e.currentTarget.classList.add('xp-icon--selected');
+                    },
+                },
+                    h('div', { class: 'xp-di-img' }, '📄'),
+                    h('div', { class: 'xp-di-label' }, 'README.txt')
+                )
+            );
+        },
+        secret_readme: () => {
+            const text = `Welcome to the hidden layer.
+
+If you found this, you are curious enough.
+
+Most people never reach this folder.
+
+The internet was built by people like you.`;
+            const wrap = h('div', { style: { height: '100%', background: '#fff', padding: '15px', fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', lineHeight: '1.4', whiteSpace: 'pre-wrap' } });
+            wrap.innerText = text;
+            setTimeout(() => clippySpeak("Eu disse para não abrir isso..."), 1000);
             return wrap;
         },
 
@@ -2426,6 +2497,11 @@ NUTTERTOOLS - Armas Pesadas
             return;
         }
 
+        actionCount++;
+        if (actionCount === 5 && !secretsRevealed) {
+            revealSecretFolder();
+        }
+
         playSfx('click');
 
         const icon = ICONS.find(i => i.id === id);
@@ -2473,6 +2549,8 @@ NUTTERTOOLS - Armas Pesadas
             'M.U.G.E.N..exe': { w: '640px', h: '480px' },
             'GTA San Andreas.exe': { w: '640px', h: '480px' },
             'Grand Chase.exe': { w: '640px', h: '480px' },
+            mysterious_folder: { w: '400px', h: '300px' },
+            secret_readme: { w: '440px', h: '340px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
@@ -2786,6 +2864,13 @@ NUTTERTOOLS - Armas Pesadas
         // START MENU (hidden by default)
         const startMenu = h('div', { id: 'xpStartMenu' });
         desk.appendChild(startMenu);
+
+        // CLIPPY
+        const clippy = h('div', { id: 'xpClippy' },
+            h('div', { class: 'clippy-bubble' }, ''),
+            h('div', { class: 'clippy-icon' }, '📎')
+        );
+        desk.appendChild(clippy);
 
         // CALENDAR POPUP
         const calendar = buildCalendarPopup();
