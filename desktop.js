@@ -2522,10 +2522,10 @@ NUTTERTOOLS - Armas Pesadas
 
         goldfinger_video: () => {
             const wrap = h('div', { style: { height: '100%', background: '#000' } });
-            const ytId = "M6PVEJc7jqs"; // Lyric Video
+            const ytId = "_d4j5H-M6ZQ"; // New Lyric Video
             const iframe = h('iframe', {
                 style: { width: '100%', height: '100%', border: 'none' },
-                src: `https://www.youtube.com/embed/${ytId}?autoplay=1&start=28`
+                src: `https://www.youtube.com/embed/${ytId}?autoplay=1&start=14`
             });
             wrap.appendChild(iframe);
 
