@@ -53,7 +53,7 @@
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
         { id: 'tuliowire', icon: '🍋', label: 'TulioWire' },
-        { id: 'readme', icon: '📝', label: 'README.txt' },
+        { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'bsod', icon: '💽', label: 'Limpar_Cache_Rapido.exe' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
@@ -1875,6 +1875,14 @@
         },
 
         readme: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' } });
+
+            // Menu bar (Notepad style)
+            const menu = h('div', { style: { display: 'flex', gap: '10px', padding: '2px 8px', background: '#ece9d8', borderBottom: '1px solid #aca899', fontSize: '11px', fontFamily: 'Tahoma' } });
+            ['Arquivo', 'Editar', 'Formatar', 'Exibir', 'Ajuda'].forEach(m => {
+                menu.appendChild(h('span', { style: { cursor: 'pointer' } }, m));
+            });
+
             const text = `Bem vindo ao TúlioOS.
 
 Esse sistema foi construído para ser o lar das minhas idéias estranhas, experimentos pequenos e interfaces não finalizadas (e nostálgicas.)
@@ -1883,16 +1891,17 @@ Algumas coisas funcionam e outras se quebram, e é intencional.
 
 Inspiração máxima no portfólio do Ryo Lu.`;
 
-            const wrap = h('div', { style: { height: '100%', background: '#fff', display: 'flex', flexDirection: 'column' } });
             const textarea = h('textarea', {
                 readonly: true,
                 spellcheck: 'false',
                 style: {
-                    flex: 1, width: '100%', resize: 'none', border: 'none', padding: '15px',
-                    fontFamily: 'Tahoma, sans-serif', fontSize: '12px', lineHeight: '1.6',
-                    outline: 'none', color: '#333', background: '#fff'
+                    flex: '1', width: '100%', resize: 'none', border: 'none', padding: '12px',
+                    fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', lineHeight: '1.2',
+                    outline: 'none', color: '#000', background: '#fff', overflow: 'hidden'
                 }
             }, text);
+
+            wrap.appendChild(menu);
             wrap.appendChild(textarea);
             return wrap;
         },
@@ -2383,6 +2392,7 @@ NUTTERTOOLS - Armas Pesadas
             messenger: { w: '480px', h: '380px' },
             winamp: { w: '280px', h: '580px' },
             wordpad: { w: '440px', h: '400px' },
+            readme: { w: '440px', h: '340px' },
             gta_cheats: { w: '440px', h: '400px' },
             tuliowire: { w: '540px', h: '340px' },
             tulionet: { w: '380px', h: '360px' },
@@ -2400,9 +2410,16 @@ NUTTERTOOLS - Armas Pesadas
         let startLeft = 80 + offset;
         let startTop = 60 + offset;
 
-        // Mobile layout clamp limit
         const deskArea = document.getElementById('xpDesktopArea');
-        if (deskArea && deskArea.clientWidth < 600) {
+
+        // Center README on first open
+        if (id === 'readme' && deskArea) {
+            const wVal = parseInt(winW);
+            const hVal = winH ? parseInt(winH) : 400;
+            startLeft = (deskArea.clientWidth - wVal) / 2;
+            startTop = (deskArea.clientHeight - hVal) / 2;
+        } else if (deskArea && deskArea.clientWidth < 600) {
+            // Mobile layout clamp limit
             startLeft = Math.max(10, (deskArea.clientWidth - parseInt(winW)) / 2 + (offset % 10)); // centralized ish + small offset
             startTop = 20 + offset % 20;
         }
