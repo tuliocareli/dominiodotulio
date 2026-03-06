@@ -109,17 +109,27 @@
     let ytCounter = 0;
     const getUniqueYtId = (prefix) => prefix + '-' + (++ytCounter) + '-' + Date.now();
 
-    const clippySpeak = (msg) => {
+    const clippySpeak = (msg, persistent = false) => {
         const clippy = document.getElementById('xpClippy');
         const bubble = document.querySelector('.clippy-bubble');
         if (!clippy || !bubble) return;
         clippy.style.display = 'flex';
         bubble.innerText = msg;
         bubble.classList.add('speaking');
-        setTimeout(() => {
-            bubble.classList.remove('speaking');
-            setTimeout(() => { if (!bubble.classList.contains('speaking')) clippy.style.display = 'none'; }, 500);
-        }, 4000);
+        if (!persistent) {
+            setTimeout(() => {
+                bubble.classList.remove('speaking');
+                setTimeout(() => { if (!bubble.classList.contains('speaking')) clippy.style.display = 'none'; }, 500);
+            }, 6000);
+        }
+    };
+
+    const clippyHide = () => {
+        const clippy = document.getElementById('xpClippy');
+        const bubble = document.querySelector('.clippy-bubble');
+        if (!clippy || !bubble) return;
+        bubble.classList.remove('speaking');
+        setTimeout(() => { if (!bubble.classList.contains('speaking')) clippy.style.display = 'none'; }, 500);
     };
 
     const revealSecretFolder = () => {
@@ -2031,7 +2041,7 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                         win.classList.add('xp-skate-wiggle');
                     });
 
-                    setTimeout(() => clippySpeak("SO HERE I AM, DOING EVERYTHING I CAN! 🛹"), 200);
+                    setTimeout(() => clippySpeak("SO HERE I AM, DOING EVERYTHING I CAN! 🛹", true), 200);
 
                 } else if (c === 'exit') {
                     closeWin('terminal');
@@ -2535,6 +2545,7 @@ NUTTERTOOLS - Armas Pesadas
                 document.querySelectorAll('.xp-win').forEach(win => {
                     win.classList.remove('xp-skate-wiggle');
                 });
+                clippyHide();
             };
 
             return wrap;
