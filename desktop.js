@@ -78,6 +78,21 @@
     let isOnline = false;
     const openWindows = {}; // id → window el
 
+    // ── AUDIO EFFECTS ─────────────────────────────────
+    const SFX = {
+        startup: new Audio('sons/startup.mp3'),
+        error: new Audio('sons/error.mp3'),
+        click: new Audio('sons/click.mp3'),
+        stop: new Audio('sons/critical_stop.mp3')
+    };
+
+    const playSfx = (name) => {
+        try {
+            SFX[name].currentTime = 0;
+            SFX[name].play().catch(() => { });
+        } catch (e) { }
+    };
+
     // ── HELPERS ───────────────────────────────────────
     const h = (tag, attrs = {}, ...children) => {
         const el = document.createElement(tag);
@@ -192,7 +207,10 @@
                     else if (g === 'M.U.G.E.N.') openWin('M.U.G.E.N..exe');
                     else if (g === 'GTA San Andreas') openWin('GTA San Andreas.exe');
                     else if (g === 'Grand Chase') openWin('Grand Chase.exe');
-                    else alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
+                    else {
+                        playSfx('error');
+                        alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
+                    }
                 },
                 ontouchstart: function (e) {
                     const now = Date.now();
@@ -203,7 +221,10 @@
                         else if (g === 'M.U.G.E.N.') openWin('M.U.G.E.N..exe');
                         else if (g === 'GTA San Andreas') openWin('GTA San Andreas.exe');
                         else if (g === 'Grand Chase') openWin('Grand Chase.exe');
-                        else alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
+                        else {
+                            playSfx('error');
+                            alert(`Erro: CD-ROM não encontrado para ${g}.\\nPor favor, insira o Disco 1 na unidade de CD-ROM e tente novamente.`);
+                        }
                         e.preventDefault();
                     }
                     this.dataset.lastTap = now;
@@ -2314,6 +2335,7 @@ NUTTERTOOLS - Armas Pesadas
     // ── OPEN / CLOSE WINDOW ───────────────────────────
     function openWin(id) {
         if (id === 'ie' && !isOnline) {
+            playSfx('error');
             alert('⚠️ ERRO DE REDE: Não foi possível localizar o servidor.\\n\\nVocê precisa abrir o discador (TulioNet 56K) e se conectar para acessar a Internet!');
             return;
         }
@@ -2330,6 +2352,8 @@ NUTTERTOOLS - Armas Pesadas
             focusWin(w);
             return;
         }
+
+        playSfx('click');
 
         const icon = ICONS.find(i => i.id === id);
         const title = icon ? icon.label : id;
@@ -2685,6 +2709,7 @@ NUTTERTOOLS - Armas Pesadas
                 // Show Welcome screen for 1.5s
                 setTimeout(() => {
                     welcome.style.opacity = '0'; // Hide welcome screen
+                    playSfx('startup');
 
                     setTimeout(() => {
                         welcome.remove();
@@ -2753,6 +2778,7 @@ NUTTERTOOLS - Armas Pesadas
     window.tcDesktop = { open: buildDesktop, close: closeDesktop, bsod: triggerBSOD };
 
     function triggerBSOD() {
+        playSfx('stop');
         const bsod = document.createElement('div');
         bsod.style.position = 'fixed';
         bsod.style.top = '0';
