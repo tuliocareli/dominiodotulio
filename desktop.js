@@ -1455,7 +1455,8 @@
                 { id: 'n4S5-nRUWbE', title: 'Sean Kingston, Justin Bieber - Eenie Meenie' },
                 { id: 'VXPvpK2ct4M', title: 'Nelly Furtado - Promiscuous' },
                 { id: 'rQ2bIzanCEU', title: 'Kasino - Can\'t Get Over' },
-                { id: 'iCL04cxeMOE', title: 'Usher - Yeah!' }
+                { id: 'iCL04cxeMOE', title: 'Usher - Yeah!' },
+                { id: 'dGEk2VI_m_U', title: 'David Guetta ft. Kid Cudi - Memories' }
             ];
 
             const wrap = h('div', { class: 'winamp-player-wrap', style: { width: '100%', height: '100%', boxSizing: 'border-box', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: '#0a0a0a' } });
