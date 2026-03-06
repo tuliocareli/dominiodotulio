@@ -2021,13 +2021,13 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                 } else if (c === 'open experiments') {
                     res = 'Access Denied. You need Level 4 Clearance.';
                 } else if (c === 'goldfinger') {
-                    res = 'YEAH! Tony Hawk mode activated! 🛹🤘\n(Loading GOLDEN ERA soundtrack...)';
+                    res = 'YEAH! Tony Hawk mode activated! 🛹🤘\n(Playing the CHORUS only...)';
 
-                    // Music from YouTube (ID: rSInO7yG390 is Superman by Goldfinger)
+                    // Music from YouTube (start at 28s for the chorus)
                     const ytId = "rSInO7yG390";
                     const hiddenPlayer = h('iframe', {
                         class: 'xp-hidden-tv',
-                        src: `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&controls=0`
+                        src: `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&controls=0&start=28`
                     });
                     document.body.appendChild(hiddenPlayer);
 
@@ -2036,15 +2036,15 @@ Inspiração máxima no portfólio do Ryo Lu.`;
                         win.classList.add('xp-skate-wiggle');
                     });
 
-                    clippySpeak("SO TEENAGE ANGST HAS PAID OFF WELL! 🛹");
+                    clippySpeak("SO HERE I AM, DOING EVERYTHING I CAN! 🛹");
 
-                    // Stop after 2 min (length of the song approx)
+                    // Stop after 10 seconds as requested
                     setTimeout(() => {
                         hiddenPlayer.remove();
                         document.querySelectorAll('.xp-win').forEach(win => {
                             win.classList.remove('xp-skate-wiggle');
                         });
-                    }, 120000);
+                    }, 10000);
 
                 } else if (c === 'exit') {
                     closeWin('terminal');
