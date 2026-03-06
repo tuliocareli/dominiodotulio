@@ -859,6 +859,142 @@
     color: #5d7cae;
     font-size: 11px;
     border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+}
+
+.xp-orkut-box h4 span {
+    color: #999;
+    font-weight: normal;
+}
+
+.xp-orkut-profile-pic {
+    width: 100%;
+    border: 1px solid #5d7cae;
+    padding: 2px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.xp-orkut-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 10px;
+}
+
+.xp-orkut-info-table tr td:first-child {
+    width: 160px;
+    text-align: right;
+    padding: 4px 8px;
+    color: #5d7cae;
+    background: #eef2f9;
+}
+
+.xp-orkut-info-table tr td:last-child {
+    padding: 4px 10px;
+    background: #fff;
+}
+
+.xp-orkut-info-table tr:nth-child(even) td:last-child {
+    background: #f8fafd;
+}
+
+.xp-orkut-social-tab {
+    background: #5d7cae;
+    color: #fff;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.xp-orkut-name-header {
+    font-size: 20px;
+    color: #333;
+    margin: 0 0 10px 0;
+    font-family: 'Verdana', sans-serif;
+}
+
+.xp-orkut-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 10px;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.xp-orkut-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+}
+
+.xp-orkut-stat-item:hover {
+    text-decoration: underline;
+}
+
+.xp-orkut-grid-9 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.xp-orkut-grid-item {
+    text-align: center;
+    font-size: 9px;
+    color: #5d7cae;
+}
+
+.xp-orkut-grid-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #ddd;
+    border: 1px solid #ccc;
+    display: block;
+    margin-bottom: 3px;
+    object-fit: cover;
+}
+
+.xp-orkut-top-meta {
+    font-size: 11px;
+    color: #fff;
+    display: flex;
+    gap: 15px;
+}
+
+.xp-orkut-search-bar {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #5d7cae;
+    padding: 1px 4px;
+}
+
+.xp-orkut-search-input {
+    border: none;
+    font-size: 11px;
+    width: 100px;
+    outline: none;
+}
+
+.xp-orkut-profile-left-links {
+    font-size: 11px;
+    color: #5d7cae;
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.xp-orkut-profile-left-links div {
+    padding: 3px 0;
+    cursor: pointer;
+}
+
+.xp-orkut-profile-left-links div:hover {
+    text-decoration: underline;
 }
 
 .xp-orkut-profile-pic {

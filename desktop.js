@@ -421,68 +421,98 @@
             const status = h('div', { class: 'xp-ie-status' });
 
             const renderOrkut = () => {
-                const luckyQuotes = [
-                    "Seu horóscopo diz: Hoje é um ótimo dia para baixar músicas no Kazaa.",
-                    "A sorte sorri para quem tem 256MB de RAM.",
-                    "Você encontrará um segredo no GTA San Andreas hoje.",
-                    "Alguém vai te 'Chamar Atenção' no MSN em breve.",
-                    "Não aceite doces de estranhos, aceite apenas Scraps."
+                const infoRows = [
+                    { label: 'relacionamento:', val: 'solteiro(a)' },
+                    { label: 'aniversário:', val: '21 março' },
+                    { label: 'idade:', val: '20' },
+                    { label: 'interesses no orkut:', val: 'amigos, companheiros para atividades, namoro (mulheres)' },
+                    { label: 'quem sou eu:', val: 'nao sei tentando descobri! o>O as vezes so retardado as vezes chato pra cacete as vezes legl' },
+                    { label: 'filhos:', val: 'não' },
+                    { label: 'etnia:', val: 'caucasiano (branco)' },
+                    { label: 'humor:', val: 'extrovertido/extravagante' },
+                    { label: 'orientação sexual:', val: 'heterossexual' },
+                    { label: 'estilo:', val: 'urbano' },
+                    { label: 'fumo:', val: 'não' },
+                    { label: 'bebo:', val: 'não' },
+                    { label: 'animais de estimação:', val: 'não gosto de animais de estimação' },
+                    { label: 'moro:', val: 'com meus pais' },
+                    { label: 'cidade natal:', val: 'tangara da serra' },
+                    { label: 'página web:', val: 'http://ryl2phoenix.com/' },
+                    { label: 'paixões:', val: 'nada lol' },
+                    { label: 'esportes:', val: 'nenhum =S' },
+                    { label: 'atividades:', val: 'lol n tenh XD' }
                 ];
-                let currentQuote = luckyQuotes[Math.floor(Math.random() * luckyQuotes.length)];
 
                 return h('div', { class: 'xp-orkut-wrap' },
-                    h('header', { class: 'xp-orkut-header' },
-                        h('div', { class: 'xp-orkut-logo' }, 'orkut'),
-                        h('div', { style: { fontSize: '11px', color: '#5d7cae' } }, 'Página inicial | Perfil | Comunidades | Jogos')
+                    h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px' } },
+                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '20px' } },
+                            h('div', { class: 'xp-orkut-logo', style: { color: '#fff', textShadow: 'none', fontSize: '18px' } }, 'orkut'),
+                            h('div', { class: 'xp-orkut-top-meta' },
+                                h('span', { style: { cursor: 'pointer' } }, 'Início'),
+                                h('span', { style: { cursor: 'pointer' } }, 'Página de recados'),
+                                h('span', { style: { cursor: 'pointer' } }, 'Amigos'),
+                                h('span', { style: { cursor: 'pointer' } }, 'Comunidades')
+                            )
+                        ),
+                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px' } },
+                            h('span', { style: { fontSize: '11px', color: '#fff', opacity: '0.8' } }, 'tuliocareli@gmail.com | Sair'),
+                            h('div', { class: 'xp-orkut-search-bar' },
+                                h('input', { type: 'text', class: 'xp-orkut-search-input', placeholder: 'pesquisa do orkut' }),
+                                h('span', { style: { cursor: 'pointer' } }, '🔍')
+                            )
+                        )
                     ),
-                    h('main', { class: 'xp-orkut-main' },
+                    h('main', { class: 'xp-orkut-main', style: { gridTemplateColumns: '160px 1fr 240px' } },
                         h('aside', { class: 'xp-orkut-sidebar' },
-                            h('div', { class: 'xp-orkut-box' },
-                                h('img', { src: 'TC UNDERGROUND.png', class: 'xp-orkut-profile-pic' }),
-                                h('div', { style: { textAlign: 'center', marginTop: '5px', fontWeight: 'bold' } }, 'Túlio Careli'),
-                                h('div', { class: 'xp-orkut-badge-row', style: { justifyContent: 'center' } },
-                                    h('span', { title: 'Legal', style: { color: '#f0ad4e' } }, '🟡🟡🟡'),
-                                    h('span', { title: 'Legal', style: { color: '#5bc0de' } }, '🔵🔵'),
-                                    h('span', { title: 'Legal', style: { color: '#d9534f' } }, '🔴')
-                                )
-                            ),
-                            h('div', { class: 'xp-orkut-box' },
-                                h('h4', {}, 'Menu'),
-                                h('ul', { class: 'xp-orkut-nav' },
-                                    h('li', {}, 'Recados (12)'),
-                                    h('li', {}, 'Fotos (42)'),
-                                    h('li', {}, 'Vídeos (0)'),
-                                    h('li', {}, 'Depoimentos (8)')
-                                )
-                            ),
-                            h('div', { class: 'xp-orkut-lucky' },
-                                h('b', {}, 'Sorte do dia:'),
-                                h('p', { id: 'orkut-lucky-text', style: { margin: '5px 0 0 0' } }, currentQuote)
+                            h('img', { src: 'TC UNDERGROUND.png', class: 'xp-orkut-profile-pic' }),
+                            h('div', { style: { fontSize: '12px', fontWeight: 'bold', color: '#5d7cae', marginTop: '5px' } }, 'Túlio Careli'),
+                            h('div', { style: { fontSize: '10px', color: '#666', whiteSpace: 'pre-line' } }, 'masculino, solteiro(a)\ntangara da serra,\nBrasil'),
+                            h('div', { class: 'xp-orkut-profile-left-links' },
+                                h('div', {}, '➕ amigo'),
+                                h('div', {}, 'mais »'),
+                                h('div', { style: { marginTop: '10px' } }, '👤 perfil'),
+                                h('div', {}, '💬 recados'),
+                                h('div', {}, '📷 fotos'),
+                                h('div', {}, '🎬 vídeos'),
+                                h('div', {}, '🌟 depoimentos')
                             )
                         ),
                         h('section', { class: 'xp-orkut-content' },
-                            h('h1', { class: 'xp-orkut-h1' }, 'Olá, Túlio!'),
-                            h('div', { class: 'xp-orkut-box', style: { border: 'none', background: '#eef2f9' } },
-                                h('b', {}, 'Seu mural de recados:'),
-                                h('div', { style: { marginTop: '10px', fontSize: '11px' } },
-                                    h('div', { style: { padding: '5px', borderBottom: '1px solid #fff' } },
-                                        h('b', { style: { color: '#ed2c91' } }, 'Clippy: '), 'Passando pra deixar um kkk e desejar boa semana!! add ai'
-                                    ),
-                                    h('div', { style: { padding: '5px' } },
-                                        h('b', { style: { color: '#ed2c91' } }, 'Beto_Doido: '), 'amanhã tem corujão na lan house??? vmo cs'
-                                    )
-                                )
+                            h('h1', { class: 'xp-orkut-name-header' }, 'Túlio Careli'),
+                            h('div', { class: 'xp-orkut-stats' },
+                                h('div', { class: 'xp-orkut-stat-item', title: 'Recados' }, '💬 114'),
+                                h('div', { class: 'xp-orkut-stat-item', title: 'Fotos' }, '📷 0'),
+                                h('div', { class: 'xp-orkut-stat-item', title: 'Vídeos' }, '🎬 5'),
+                                h('div', { class: 'xp-orkut-stat-item', title: 'Fãs' }, '⭐ 15'),
+                                h('div', { class: 'xp-orkut-stat-item', title: 'Confiável' }, '🟡🟡🟡'),
+                                h('div', { class: 'xp-orkut-stat-item', title: 'Legal' }, '🔵🔵'),
+                                h('div', { class: 'xp-orkut-stat-item', title: 'Sexy' }, '💖💖💖')
                             ),
-                            h('div', { style: { marginTop: '15px' } },
-                                h('h4', { style: { color: '#5d7cae', fontSize: '12px' } }, 'Suas Comunidades (142)'),
-                                h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginTop: '10px' } },
-                                    ['Eu Odeio Acordar Cedo', 'Eu Amo Chocolate', 'Tocava a Campainha e Corria', 'Sou Legal, Não Tô Te Dando Mole'].map(c =>
-                                        h('div', { style: { textAlign: 'center', fontSize: '9px' } },
-                                            h('div', { style: { width: '40px', height: '40px', background: '#ccc', margin: '0 auto 4px', borderRadius: '4px' } }),
-                                            c
-                                        )
-                                    )
-                                )
+                            h('div', { class: 'xp-orkut-social-tab' }, 'social'),
+                            h('table', { class: 'xp-orkut-info-table' },
+                                ...infoRows.map(r => h('tr', {}, h('td', {}, r.label), h('td', {}, r.val)))
+                            )
+                        ),
+                        h('aside', { class: 'xp-orkut-sidebar' },
+                            h('div', { class: 'xp-orkut-box' },
+                                h('h4', {}, 'amigos <span>(51)</span>'),
+                                h('div', { class: 'xp-orkut-grid-9' },
+                                    ...Array.from({ length: 9 }).map((_, i) => h('div', { class: 'xp-orkut-grid-item' },
+                                        h('div', { class: 'xp-orkut-grid-img' }),
+                                        'Amigo ' + (i + 1)
+                                    ))
+                                ),
+                                h('div', { style: { textAlign: 'right', fontSize: '10px', marginTop: '5px', color: '#5d7cae', cursor: 'pointer' } }, 'ver todos')
+                            ),
+                            h('div', { class: 'xp-orkut-box' },
+                                h('h4', {}, 'comunidades <span>(313)</span>'),
+                                h('div', { class: 'xp-orkut-grid-9' },
+                                    ...Array.from({ length: 3 }).map((_, i) => h('div', { class: 'xp-orkut-grid-item' },
+                                        h('div', { class: 'xp-orkut-grid-img' }),
+                                        'Comu ' + (i + 1)
+                                    ))
+                                ),
+                                h('div', { style: { textAlign: 'right', fontSize: '10px', marginTop: '5px', color: '#5d7cae', cursor: 'pointer' } }, 'ver todos')
                             )
                         )
                     )
@@ -1016,8 +1046,7 @@
                 'oHg5SJYRHA0',
                 'z9XkY84MUls',
                 'VgDgWzBL7s4',
-                'Ro7yHf_pU14',
-                'qnexXNl24cE',
+                'NED4qYZDrXI', // Kid Cudi
                 'k85mRPqvMbE',
                 'pFlcqWQVVuU'
             ];
