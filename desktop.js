@@ -586,16 +586,29 @@
                     if (tab.id === 'orkut') body.appendChild(renderOrkut());
                     else if (tab.id === 'flogao') body.appendChild(renderFlogao());
                 } else if (tab.wayback) {
-                    // Iframe interativo com overlay para esconder o banner da Wayback
-                    const iframeContainer = h('div', { style: { width: '100%', height: '100%', position: 'relative', overflow: 'hidden' } });
+                    // Iframe interativo com ajuste fino de posicionamento e escala
+                    const iframeContainer = h('div', {
+                        style: {
+                            width: '100%',
+                            height: '100%',
+                            position: 'relative',
+                            overflow: 'auto', // Permite scroll se necessário
+                            background: '#000',
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }
+                    });
+
                     const iframe = h('iframe', {
                         src: tab.wayback,
                         style: {
-                            width: '100%',
-                            height: 'calc(100% + 70px)', // Aumenta para empurrar a barra da Wayback para fora
+                            width: '1024px', // Largura comum de sites daquela época
+                            height: '1000px',
                             border: 'none',
-                            marginTop: '-70px', // Sobe a iframe para esconder a barra
-                            background: '#fff'
+                            marginTop: '-65px', // Ajustado para esconder a barra sem cortar a logo
+                            background: '#fff',
+                            transform: 'scale(0.9)', // Leve redução para caber melhor na viewport do XP
+                            transformOrigin: 'top center'
                         }
                     });
                     iframeContainer.appendChild(iframe);
