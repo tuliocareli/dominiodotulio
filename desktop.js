@@ -393,7 +393,7 @@
 
         ie: () => {
             const TABS = [
-                { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', img: 'telas pro tulio explorer/tonyhawkundegroundgame.com.png' },
+                { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', wayback: 'https://web.archive.org/web/20031206081727/http://www.activision.com/microsite/thug/thug.html' },
                 { name: 'Orkut', url: 'http://www.orkut.com.br', type: 'mockup', id: 'orkut' },
                 { name: 'Flogão', url: 'http://www.flogao.com.br/tuliocareli', type: 'mockup', id: 'flogao' },
                 { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', img: 'telas pro tulio explorer/needforspeedunderground2.com.png' },
@@ -417,7 +417,7 @@
             const addrUrl = h('div', { class: 'xp-browser-url' });
             addrBar.appendChild(addrUrl);
 
-            const body = h('div', { class: 'xp-browser-body xp-browser-scroll' });
+            const body = h('div', { class: 'xp-browser-body xp-browser-scroll', style: { position: 'relative', overflow: 'hidden' } });
             const status = h('div', { class: 'xp-ie-status' });
 
             const renderOrkut = () => {
@@ -585,6 +585,21 @@
                 if (tab.type === 'mockup') {
                     if (tab.id === 'orkut') body.appendChild(renderOrkut());
                     else if (tab.id === 'flogao') body.appendChild(renderFlogao());
+                } else if (tab.wayback) {
+                    // Iframe interativo com overlay para esconder o banner da Wayback
+                    const iframeContainer = h('div', { style: { width: '100%', height: '100%', position: 'relative', overflow: 'hidden' } });
+                    const iframe = h('iframe', {
+                        src: tab.wayback,
+                        style: {
+                            width: '100%',
+                            height: 'calc(100% + 70px)', // Aumenta para empurrar a barra da Wayback para fora
+                            border: 'none',
+                            marginTop: '-70px', // Sobe a iframe para esconder a barra
+                            background: '#fff'
+                        }
+                    });
+                    iframeContainer.appendChild(iframe);
+                    body.appendChild(iframeContainer);
                 } else {
                     const siteImg = h('img', { src: tab.img, class: 'xp-browser-site-img', alt: tab.name });
                     body.appendChild(siteImg);
