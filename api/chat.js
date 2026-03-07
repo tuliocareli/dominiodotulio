@@ -27,7 +27,7 @@ module.exports = async function handler(req, res) {
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-        return res.status(500).json({ error: 'Serviço indisponível.' });
+        return res.status(500).json({ error: 'Serviço indisponível.', key_loaded: false });
     }
 
     const { message } = req.body || {};
@@ -73,7 +73,7 @@ module.exports = async function handler(req, res) {
         if (!geminiRes.ok) {
             const errText = await geminiRes.text();
             console.error('Gemini error:', geminiRes.status, errText);
-            return res.status(502).json({ error: 'Erro ao contatar o serviço de IA.', debug_status: geminiRes.status, debug_msg: errText.slice(0, 500) });
+            return res.status(502).json({ error: 'Erro ao contatar o serviço de IA.', debug_status: geminiRes.status, debug_msg: errText.slice(0, 500), key_prefix: apiKey.slice(0, 12) });
         }
 
         const data = await geminiRes.json();
