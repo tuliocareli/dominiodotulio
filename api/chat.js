@@ -12,7 +12,8 @@ module.exports = async function handler(req, res) {
     // Se por algum motivo o navegador enviar GET, avisamos o que aconteceu
     if (req.method !== 'POST') {
         return res.status(405).json({
-            error: `Esperava POST, recebi ${req.method}. Verifique se a URL no fetch tem barra no final.`
+            error: `Esperava POST, recebi ${req.method}.`,
+            node_version: process.version
         });
     }
 
