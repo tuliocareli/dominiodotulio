@@ -1,9 +1,8 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
 
-const SYSTEM_PROMPT = `Você é o Túlio. Responda em português brasileiro de forma curta e amigável.`;
+const SYSTEM_PROMPT = `Você é o Túlio, um designer visual brasileiro amigável. Responda de forma casual e curta (máx 2 frases).`;
 
 module.exports = async function handler(req, res) {
-    // CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -12,27 +11,48 @@ module.exports = async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST' });
 
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: 'Chave ausente' });
+    if (!apiKey) return res.status(500).json({ error: 'Chave ausente no servidor.' });
 
     const { message } = req.body || {};
-    if (!message) return res.status(400).json({ error: 'Mensagem vazia' });
+    if (!message) return res.status(400).json({ error: 'Mensagem vazia.' });
+
+    // Payload seguindo estritamente a documentação v1
+    const payload = {
+        contents: [{
+            parts: [
+                { text: SYSTEM_PROMPT },
+                { text: `Usuário diz: ${message}` }
+            ]
+        }],
+        generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 150
+        }
+    };
 
     try {
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-        const result = await model.generateContent([
-            { text: SYSTEM_PROMPT },
-            { text: message }
-        ]);
+        const data = await response.json();
 
-        const response = await result.response;
-        const text = response.text();
+        if (!response.ok) {
+            console.error('Gemini Error:', data);
+            return res.status(response.status).json({
+                error: 'Erro na API do Gemini',
+                details: data.error?.message || 'Erro desconhecido'
+            });
+        }
 
-        return res.status(200).json({ reply: text.trim() });
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!reply) return res.status(500).json({ error: 'Resposta vazia da IA.' });
+
+        return res.status(200).json({ reply: reply.trim() });
 
     } catch (err) {
-        console.error('ERROR:', err);
-        return res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: 'Erro interno: ' + err.message });
     }
 };
