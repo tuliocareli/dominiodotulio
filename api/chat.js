@@ -1,4 +1,6 @@
+// Version: 1.0.5 - Final Fix
 module.exports = async function handler(req, res) {
+
     // Configurações de cabeçalho para evitar qualquer erro de CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
