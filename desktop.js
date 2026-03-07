@@ -396,7 +396,7 @@
                 { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', wayback: 'https://web.archive.org/web/20031206081727/http://www.activision.com/microsite/thug/thug.html' },
                 { name: 'Orkut', url: 'http://www.orkut.com.br', type: 'mockup', id: 'orkut' },
                 { name: 'Flogão', url: 'http://www.flogao.com.br/tuliocareli', type: 'mockup', id: 'flogao' },
-                { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', img: 'telas pro tulio explorer/needforspeedunderground2.com.png' },
+                { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', wayback: 'https://web.archive.org/web/20040803011553/http://www.eagames.com/official/nfs/underground2/us/home.jsp?ncc=1' },
                 { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com', img: 'telas pro tulio explorer/cartoonnetwork.com.png' },
                 { name: 'Naruto Project', url: 'http://www.narutoproject.com.br', img: 'telas pro tulio explorer/narutoproject.com.br.jpg' },
                 { name: 'MySpace', url: 'http://www.myspace.com', img: 'telas pro tulio explorer/myspace.com.jpg' },
