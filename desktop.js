@@ -605,7 +605,7 @@
                             width: '1024px',
                             height: '1200px',
                             border: 'none',
-                            marginTop: '-55px', // Menos recuo para revelar a logo
+                            marginTop: '0px', // Corte removido para mostrar a logo completa
                             background: '#fff',
                             transform: 'scale(1.2)', // Mais zoom como solicitado
                             transformOrigin: 'top center'
