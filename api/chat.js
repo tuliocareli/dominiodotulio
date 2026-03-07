@@ -73,7 +73,7 @@ module.exports = async function handler(req, res) {
         if (!geminiRes.ok) {
             const errText = await geminiRes.text();
             console.error('Gemini error:', errText);
-            return res.status(502).json({ error: 'Erro ao contatar o serviço de IA.', debug_status: geminiRes.status, debug_msg: errText.slice(0, 300) });
+            return res.status(502).json({ error: 'Erro ao contatar o serviço de IA.' });
         }
 
         const data = await geminiRes.json();
