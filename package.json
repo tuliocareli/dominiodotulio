@@ -1,6 +1,9 @@
 {
     "name": "dominiodotulio",
     "version": "1.0.0",
+    "engines": {
+        "node": "18.x"
+    },
     "dependencies": {
         "@google/generative-ai": "^0.21.0"
     }
