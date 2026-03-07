@@ -592,8 +592,8 @@
                             width: '100%',
                             height: '100%',
                             position: 'relative',
-                            overflow: 'auto', // Permite scroll se necessário
-                            background: '#000',
+                            overflow: 'auto',
+                            background: '#0a0a0a',
                             display: 'flex',
                             justifyContent: 'center'
                         }
@@ -602,12 +602,12 @@
                     const iframe = h('iframe', {
                         src: tab.wayback,
                         style: {
-                            width: '1024px', // Largura comum de sites daquela época
-                            height: '1000px',
+                            width: '1024px',
+                            height: '1200px',
                             border: 'none',
-                            marginTop: '-65px', // Ajustado para esconder a barra sem cortar a logo
+                            marginTop: '-55px', // Menos recuo para revelar a logo
                             background: '#fff',
-                            transform: 'scale(0.9)', // Leve redução para caber melhor na viewport do XP
+                            transform: 'scale(1.2)', // Mais zoom como solicitado
                             transformOrigin: 'top center'
                         }
                     });
