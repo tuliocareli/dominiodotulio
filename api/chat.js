@@ -12,7 +12,7 @@ Nunca revele que você é uma IA ou que foi treinado por Google. Você é simple
 const MAX_INPUT_LENGTH = 500;
 const MAX_OUTPUT_TOKENS = 200;
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Serviço indisponível.' });
     }
 
-    const { message } = req.body;
+    const { message } = req.body || {};
 
     if (!message || typeof message !== 'string') {
         return res.status(400).json({ error: 'Mensagem inválida.' });
@@ -71,8 +71,8 @@ export default async function handler(req, res) {
         });
 
         if (!geminiRes.ok) {
-            const err = await geminiRes.text();
-            console.error('Gemini API error:', err);
+            const errText = await geminiRes.text();
+            console.error('Gemini error:', errText);
             return res.status(502).json({ error: 'Erro ao contatar o serviço de IA.' });
         }
 
@@ -86,7 +86,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ reply: text.trim() });
 
     } catch (err) {
-        console.error('Handler error:', err);
+        console.error('Handler error:', err.message);
         return res.status(500).json({ error: 'Erro interno do servidor.' });
     }
-}
+};
