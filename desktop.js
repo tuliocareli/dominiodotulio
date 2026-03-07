@@ -1955,120 +1955,55 @@
 
                 let letsNudgeSent = false;
 
-                // --- Anti-abuse controls ---
-                const SESSION_MSG_LIMIT = 20;
-                const COOLDOWN_MS = 3000;
-                let sessionMsgCount = 0;
-                let lastMsgTime = 0;
-                let isWaitingReply = false;
-
-                const appendBotMessage = (text) => {
-                    const botWrap = document.createElement('div');
-                    botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #666">${contactName} diz:</strong></div><div style="padding-left: 10px; color: #000080">${text}</div>`;
-                    chatBox.appendChild(botWrap);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                };
-
-                const appendSystemMessage = (text, color) => {
-                    const sysWrap = document.createElement('div');
-                    sysWrap.style.cssText = `color:${color || '#888'}; text-align:center; font-size:10px; margin:8px 0;`;
-                    sysWrap.innerText = text;
-                    chatBox.appendChild(sysWrap);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                };
-
-                form.onsubmit = async (e) => {
+                form.onsubmit = (e) => {
                     e.preventDefault();
-                    const rawMsg = input.value.trim();
-                    if (!rawMsg) return;
+                    if (!input.value.trim()) return;
 
-                    // Lets contact keeps original behavior
-                    if (isLets) {
-                        const msgWrap = document.createElement('div');
-                        msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${rawMsg}</div>`;
-                        chatBox.appendChild(msgWrap);
-                        input.value = '';
-                        chatBox.scrollTop = chatBox.scrollHeight;
-
-                        if (!letsNudgeSent) {
-                            letsNudgeSent = true;
-                            setTimeout(() => {
-                                const notice = document.createElement('div');
-                                notice.style.color = 'red';
-                                notice.style.fontWeight = 'bold';
-                                notice.style.textAlign = 'center';
-                                notice.style.margin = '10px 0';
-                                notice.innerText = "Lets acaba de enviar um chamar a atenção!";
-                                chatBox.appendChild(notice);
-                                chatBox.scrollTop = chatBox.scrollHeight;
-                                const desk = document.getElementById('xpDesktop');
-                                if (desk) {
-                                    desk.classList.add('xp-nudge-shake');
-                                    setTimeout(() => desk.classList.remove('xp-nudge-shake'), 400);
-                                }
-                                playNudgeSound();
-                            }, 1500);
-                        }
-                        return;
-                    }
-
-                    // --- Rate limiting checks ---
-                    if (isWaitingReply) return;
-
-                    const now = Date.now();
-                    if (now - lastMsgTime < COOLDOWN_MS) {
-                        appendSystemMessage('Aguarde um momento antes de enviar outra mensagem.', '#c0392b');
-                        return;
-                    }
-
-                    if (sessionMsgCount >= SESSION_MSG_LIMIT) {
-                        appendSystemMessage('Limite de mensagens desta sessão atingido. Reabra o chat para continuar.', '#c0392b');
-                        btn.disabled = true;
-                        input.disabled = true;
-                        return;
-                    }
-
-                    // Render user message
+                    const msg = input.value;
                     const msgWrap = document.createElement('div');
-                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${rawMsg}</div>`;
+                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${msg}</div>`;
                     chatBox.appendChild(msgWrap);
                     input.value = '';
                     chatBox.scrollTop = chatBox.scrollHeight;
 
-                    // Update counters
-                    sessionMsgCount++;
-                    lastMsgTime = Date.now();
-                    isWaitingReply = true;
-                    btn.disabled = true;
+                    // AI response logic
+                    if (isLets && !letsNudgeSent) {
+                        letsNudgeSent = true;
+                        setTimeout(() => {
+                            const notice = document.createElement('div');
+                            notice.style.color = 'red';
+                            notice.style.fontWeight = 'bold';
+                            notice.style.textAlign = 'center';
+                            notice.style.margin = '10px 0';
+                            notice.innerText = "Lets acaba de enviar um chamar a atenção!";
+                            chatBox.appendChild(notice);
+                            chatBox.scrollTop = chatBox.scrollHeight;
 
-                    // Typing indicator
-                    const typingEl = document.createElement('div');
-                    typingEl.style.cssText = 'color:#888; font-style:italic; padding-left:10px; margin-top:8px; font-size:11px;';
-                    typingEl.innerText = `${contactName} está digitando...`;
-                    chatBox.appendChild(typingEl);
-                    chatBox.scrollTop = chatBox.scrollHeight;
+                            const desk = document.getElementById('xpDesktop');
+                            if (desk) {
+                                desk.classList.add('xp-nudge-shake');
+                                setTimeout(() => desk.classList.remove('xp-nudge-shake'), 400);
+                            }
+                            playNudgeSound();
+                        }, 1500);
+                    } else if (!isLets) {
+                        // Tulio bot response
+                        setTimeout(() => {
+                            const responses = [
+                                "Poxa, que legal ouvir isso!",
+                                "Lembra daquelas tardes jogando no fliperama? Bons tempos.",
+                                "Fico muito feliz em saber disso, meu amigo.",
+                                "Com certeza! Sempre que precisar, estou por aqui.",
+                                "Nossa, faz tanto tempo que não nos falamos né? Saudade!",
+                                "Claro, claro. Faz todo o sentido, muito legal da sua parte."
+                            ];
+                            const resp = msg.toLowerCase().includes('?') ? "Hmm, ótima pergunta. Vou ter que pensar um pouco sobre isso, meu caro." : responses[Math.floor(Math.random() * responses.length)];
 
-                    try {
-                        const response = await fetch('/api/chat', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ message: rawMsg })
-                        });
-
-                        typingEl.remove();
-
-                        if (!response.ok) {
-                            appendBotMessage('Hmm, tive um probleminha aqui. Tenta de novo em instantes!');
-                        } else {
-                            const data = await response.json();
-                            appendBotMessage(data.reply || 'Não entendi bem, pode repetir?');
-                        }
-                    } catch (err) {
-                        typingEl.remove();
-                        appendBotMessage('Parece que a conexão caiu. Tenta de novo daqui a pouco!');
-                    } finally {
-                        isWaitingReply = false;
-                        btn.disabled = false;
+                            const botWrap = document.createElement('div');
+                            botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #666">${contactName} diz:</strong></div><div style="padding-left: 10px; color: #000080">${resp}</div>`;
+                            chatBox.appendChild(botWrap);
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }, 1000 + Math.random() * 1000);
                     }
                 };
 
