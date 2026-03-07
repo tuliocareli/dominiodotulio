@@ -1955,55 +1955,76 @@
 
                 let letsNudgeSent = false;
 
-                form.onsubmit = (e) => {
-                    e.preventDefault();
-                    if (!input.value.trim()) return;
+                let sessionMsgCount = 0;
+                const SESSION_MSG_LIMIT = 10;
+                let isWaitingReply = false;
 
-                    const msg = input.value;
+                const appendBotMessage = (resp) => {
+                    const botWrap = document.createElement('div');
+                    botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${resp}</div>`;
+                    chatBox.appendChild(botWrap);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                };
+
+                const appendSystemMessage = (text, color = '#666') => {
+                    const sysWrap = document.createElement('div');
+                    sysWrap.style.cssText = `color:${color}; font-size:11px; text-align:center; margin:10px 0; font-style:italic`;
+                    sysWrap.innerText = text;
+                    chatBox.appendChild(sysWrap);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                };
+
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const rawMsg = input.value.trim();
+                    if (!rawMsg || isWaitingReply) return;
+
+                    if (sessionMsgCount >= SESSION_MSG_LIMIT) {
+                        appendSystemMessage('Limite de mensagens atingido para esta sessão.', '#c0392b');
+                        input.disabled = true; btn.disabled = true;
+                        return;
+                    }
+
+                    // Render User Message
                     const msgWrap = document.createElement('div');
-                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${msg}</div>`;
+                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${rawMsg}</div>`;
                     chatBox.appendChild(msgWrap);
                     input.value = '';
                     chatBox.scrollTop = chatBox.scrollHeight;
 
-                    // AI response logic
-                    if (isLets && !letsNudgeSent) {
-                        letsNudgeSent = true;
-                        setTimeout(() => {
-                            const notice = document.createElement('div');
-                            notice.style.color = 'red';
-                            notice.style.fontWeight = 'bold';
-                            notice.style.textAlign = 'center';
-                            notice.style.margin = '10px 0';
-                            notice.innerText = "Lets acaba de enviar um chamar a atenção!";
-                            chatBox.appendChild(notice);
-                            chatBox.scrollTop = chatBox.scrollHeight;
+                    // Update State
+                    sessionMsgCount++;
+                    isWaitingReply = true;
+                    btn.disabled = true;
 
-                            const desk = document.getElementById('xpDesktop');
-                            if (desk) {
-                                desk.classList.add('xp-nudge-shake');
-                                setTimeout(() => desk.classList.remove('xp-nudge-shake'), 400);
-                            }
-                            playNudgeSound();
-                        }, 1500);
-                    } else if (!isLets) {
-                        // Tulio bot response
-                        setTimeout(() => {
-                            const responses = [
-                                "Poxa, que legal ouvir isso!",
-                                "Lembra daquelas tardes jogando no fliperama? Bons tempos.",
-                                "Fico muito feliz em saber disso, meu amigo.",
-                                "Com certeza! Sempre que precisar, estou por aqui.",
-                                "Nossa, faz tanto tempo que não nos falamos né? Saudade!",
-                                "Claro, claro. Faz todo o sentido, muito legal da sua parte."
-                            ];
-                            const resp = msg.toLowerCase().includes('?') ? "Hmm, ótima pergunta. Vou ter que pensar um pouco sobre isso, meu caro." : responses[Math.floor(Math.random() * responses.length)];
+                    // Typing indicator
+                    const typingEl = document.createElement('div');
+                    typingEl.style.cssText = 'color:#888; font-style:italic; padding-left:10px; margin-top:8px; font-size:11px;';
+                    typingEl.innerText = `${contactName} está digitando...`;
+                    chatBox.appendChild(typingEl);
+                    chatBox.scrollTop = chatBox.scrollHeight;
 
-                            const botWrap = document.createElement('div');
-                            botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #666">${contactName} diz:</strong></div><div style="padding-left: 10px; color: #000080">${resp}</div>`;
-                            chatBox.appendChild(botWrap);
-                            chatBox.scrollTop = chatBox.scrollHeight;
-                        }, 1000 + Math.random() * 1000);
+                    try {
+                        const response = await fetch('/api/chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ message: rawMsg })
+                        });
+
+                        typingEl.remove();
+
+                        if (!response.ok) {
+                            appendBotMessage('Opa, tive um probleminha aqui. Tenta de novo já já!');
+                        } else {
+                            const data = await response.json();
+                            appendBotMessage(data.reply || '... (sem palavras)');
+                        }
+                    } catch (err) {
+                        typingEl.remove();
+                        appendBotMessage('Conexão instável. Tenta de novo?');
+                    } finally {
+                        isWaitingReply = false;
+                        btn.disabled = false;
                     }
                 };
 
