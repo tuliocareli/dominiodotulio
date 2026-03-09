@@ -162,7 +162,10 @@
         Object.entries(attrs).forEach(([k, v]) => {
             if (k === 'class') el.className = v;
             else if (k === 'html') el.innerHTML = v;
-            else if (k === 'style') Object.assign(el.style, v);
+            else if (k === 'style') {
+                if (typeof v === 'string') el.style.cssText = v;
+                else Object.assign(el.style, v);
+            }
             else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
             else el.setAttribute(k, v);
         });
