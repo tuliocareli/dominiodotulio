@@ -394,6 +394,7 @@
         ie: () => {
             const TABS = [
                 { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', wayback: 'https://web.archive.org/web/20031206081727/http://www.activision.com/microsite/thug/thug.html' },
+                { name: 'YouTube (2007)', url: 'http://www.youtube.com', type: 'mockup', id: 'youtube' },
                 { name: 'Orkut', url: 'http://www.orkut.com.br', type: 'mockup', id: 'orkut' },
                 { name: 'Flogão', url: 'http://www.flogao.com.br/tuliocareli', type: 'mockup', id: 'flogao' },
                 { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', wayback: 'https://web.archive.org/web/20040803011553/http://www.eagames.com/official/nfs/underground2/us/home.jsp?ncc=1' },
@@ -565,6 +566,230 @@
                 );
             };
 
+            const renderYoutube = () => {
+                const wrap = h('div', { style: { padding: '10px 20px', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: '850px', margin: '0 0', color: '#000' } });
+
+                // Header (logo, search)
+                const header = h('div', { style: {} });
+                header.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:26px; font-weight:bold; letter-spacing:-1px; color:#333; font-family:'Arial Narrow', Arial;">You<span style="background:#cc181e; color:#fff; border-radius:4px; padding:0 4px; margin-left:2px;">Tube</span></span>
+                            <div style="font-size:10px; color:#666; margin-left:5px; margin-top:8px;">Broadcast Yourself™</div>
+                        </div>
+                        <div style="font-size:11px; color:#03c; text-decoration:underline; font-weight:normal;">Sign Up | My Account | History | Help | Log In | Site: 🌎</div>
+                    </div>
+                    <div style="background:#e8ecef; border:1px solid #ccc; padding:5px; margin-top:10px; display:flex; justify-content:space-between; align-items:flex-end; border-radius:4px 4px 0 0;">
+                        <div style="display:flex;">
+                            <div style="background:#fff; border:1px solid #ccc; border-bottom:none; margin-right:5px; padding:4px 30px; font-weight:bold; font-size:12px; border-radius:3px 3px 0 0; color:#000;">Videos</div>
+                            <div style="background:#bfcce0; border:1px solid #a3b8d4; border-bottom:none; margin-right:5px; padding:4px 15px; font-size:12px; color:#03c; border-radius:3px 3px 0 0; cursor:pointer;">Categories</div>
+                            <div style="background:#bfcce0; border:1px solid #a3b8d4; border-bottom:none; margin-right:5px; padding:4px 15px; font-size:12px; color:#03c; border-radius:3px 3px 0 0; cursor:pointer;">Channels</div>
+                            <div style="background:#bfcce0; border:1px solid #a3b8d4; border-bottom:none; margin-right:5px; padding:4px 15px; font-size:12px; color:#03c; border-radius:3px 3px 0 0; cursor:pointer;">Community</div>
+                        </div>
+                        <div style="font-weight:bold; color:#03c; text-decoration:underline; font-size:12px; cursor:pointer;">↗ Upload</div>
+                    </div>
+                    <div style="background:#d9e1e8; padding:8px; display:flex; justify-content:center; align-items:center;">
+                        <input type="text" style="width:350px; padding:3px; font-family:Arial; font-size:13px; border:1px solid #7f9db9;" />
+                        <button style="margin-left:5px; padding:2px 10px; font-weight:bold; font-family:Arial; font-size:12px; background:#e0e0e0; border:1px outset #ccc;">Search</button>
+                    </div>
+                `;
+
+                // Title
+                const titleH = h('h2', { style: { margin: '20px 0 10px', fontSize: '18px', fontFamily: 'Arial', fontWeight: 'bold' } }, "Skateboarding Dog (Beta)");
+
+                const contentSection = h('div', { style: { display: 'flex', gap: '20px' } });
+
+                // Left Box
+                const leftBox = h('div', { style: { width: '425px' } });
+
+                // Video Area
+                const playerId = getUniqueYtId('yt-video-classic');
+                const videoArea = h('div', { style: { background: '#000', padding: '0', position: 'relative', border: '1px solid #000' } });
+                const playerWrapper = h('div', { id: playerId, style: { width: '100%', height: '350px' } });
+                videoArea.appendChild(playerWrapper);
+
+                // Controls mimicking old YT
+                const controlsMenu = h('div', { style: { background: 'linear-gradient(to bottom, #d9d9d9, #bcbcbc)', padding: '5px', display: 'flex', alignItems: 'center', gap: '10px', border: '1px solid #999', borderTop: 'none' } });
+                const btnPlay = h('button', { style: { cursor: 'pointer', fontWeight: 'bold', width: '30px', height: '22px', fontSize: '10px', padding: '0' } }, "▶");
+                const btnPause = h('button', { style: { cursor: 'pointer', fontWeight: 'bold', width: '30px', height: '22px', fontSize: '10px', padding: '0' } }, "⏸");
+                const progressBar = h('div', { style: { flex: 1, background: '#e0e0e0', border: '1px inset #999', height: '8px', position: 'relative', display: 'flex', alignItems: 'center' } });
+                const progressFill = h('div', { style: { background: '#cc181e', width: '0%', height: '100%', transition: 'width 0.2s', borderRight: '1px solid #660000' } });
+                const timeDisplay = h('div', { style: { background: '#000', color: '#fff', fontSize: '10px', padding: '2px 4px', fontFamily: 'Arial' } }, "0:00 / 0:00");
+
+                progressBar.appendChild(progressFill);
+                controlsMenu.appendChild(btnPlay);
+                controlsMenu.appendChild(btnPause);
+                controlsMenu.appendChild(progressBar);
+                controlsMenu.appendChild(timeDisplay);
+
+                // Info Box (Ratings, Views)
+                const infoBox = h('div', { style: { border: '1px solid #ccc', marginTop: '10px', padding: '10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5' } });
+                infoBox.innerHTML = `
+                    <div style="width:60%; font-size:11px;">
+                        <div style="float:left; width:45%; text-align:center;">
+                            <div style="color:#03c; text-decoration:underline; cursor:pointer;">Login to rate</div>
+                            <div style="color:#d33; font-size:16px; margin:2px 0;">★★★★☆</div>
+                            <div>2554 ratings</div>
+                        </div>
+                        <div style="float:left; width:55%;">
+                            <div style="color:#03c; text-decoration:underline; cursor:pointer; margin-bottom:4px;">♡ Save to Favorites</div>
+                            <div style="color:#03c; text-decoration:underline; cursor:pointer;">+ Add to Groups</div>
+                        </div>
+                        <div style="clear:both"></div>
+                        <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
+                        <div style="text-align:center; color:#333;">
+                            Views: <strong>657,825</strong> &nbsp;|&nbsp; Comments: <strong>1862</strong> &nbsp;|&nbsp; Favorited: <strong>4403</strong> times
+                        </div>
+                    </div>
+                    <div style="width:35%; border-left:1px dashed #ccc; padding-left:15px; font-size:11px; color:#03c; text-decoration:underline; line-height:1.6; cursor:pointer;">
+                        ✉ Share Video<br>💬 Post Video<br>❌ Flag as<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inappropriate
+                    </div>
+                `;
+
+                leftBox.appendChild(videoArea);
+                leftBox.appendChild(controlsMenu);
+                leftBox.appendChild(infoBox);
+
+                // Right Box
+                const rightBox = h('div', { style: { width: '310px' } });
+
+                // Details
+                const details = h('div', { style: { padding: '0 0 15px', fontSize: '11px', lineHeight: '1.4' } });
+                details.innerHTML = `
+                    <div style="padding:5px; background:#fffccc; border:1px solid #e2c822; margin-bottom:10px; text-align:center; font-weight:bold; color:#03c; cursor:pointer;">
+                        Try out the NEW (beta) version of this page!
+                    </div>
+                    <div style="padding: 10px; border: 1px solid #ccc; background: #fff;">
+                        <button style="float:right; background:#f90; color:#fff; border:1px solid #c60; font-size:10px; padding:2px 5px; font-weight:bold; cursor:pointer;">Subscribe</button>
+                        <strong>Added:</strong> June 28, 2007<br>
+                        <strong>From:</strong> <span style="color:#03c; text-decoration:underline; cursor:pointer;">tuliocareli</span>
+                        <p style="margin:8px 0; color:#333;">Nostalgia pura dessa época de skate e PS2... (more)</p>
+                        <div style="margin-top:3px;"><strong>Category:</strong> <span style="color:#03c; text-decoration:underline; cursor:pointer;">Entertainment</span></div>
+                        <div style="margin-top:3px;"><strong>Tags:</strong> <span style="color:#03c; text-decoration:underline; cursor:pointer;">skate</span> <span style="color:#03c; text-decoration:underline; cursor:pointer;">nostalgia</span> <span style="color:#03c; text-decoration:underline; cursor:pointer;">thps</span></div>
+                        <div style="margin-top:8px; display:flex; align-items:center;"><strong>URL</strong> <input type="text" readonly value="http://www.youtube.com/watch?v=kYJz" style="font-size:10px; flex:1; margin-left:10px; border:1px solid #ccc; padding:2px; background:#f9f9f9;"></div>
+                        <div style="margin-top:4px; display:flex; align-items:center;"><strong>Embed</strong> <input type="text" readonly value="<object width='425' height='350'..." style="font-size:10px; flex:1; margin-left:10px; border:1px solid #ccc; padding:2px; background:#f9f9f9;"></div>
+                    </div>
+                `;
+
+                // Playlists selection mimicking related videos
+                const sidePlaylists = h('div', { style: { border: '1px solid #ccc', background: '#fff' } });
+                sidePlaylists.innerHTML = `
+                    <div style="background:#e8ecef; padding:4px 10px 0; font-weight:bold; display:flex; gap:10px;">
+                        <div style="background:#fff; border:1px solid #ccc; border-bottom:none; padding:3px 8px; font-size:11px; margin-bottom:-1px; border-radius:3px 3px 0 0;">Related</div>
+                        <div style="padding:3px 8px; font-size:11px; color:#03c; cursor:pointer; text-decoration:underline;">Playlists</div>
+                    </div>
+                `;
+
+                const playListItems = h('div', { style: { padding: '10px', height: '220px', overflowY: 'auto' } });
+                playListItems.innerHTML = `<div style="font-size:11px; margin-bottom:8px; color:#333;">Showing playlists for <span style="color:#03c;text-decoration:underline">tuliocareli</span></div>`;
+
+                const plData = [
+                    { id: 'PLN5fmudwjejFKHN_5TP8QT1baTr5XM_MO', title: 'Nostalgia do Skate & TV', from: 'tuliocareli', views: '143,000', thumb: 'https://img.youtube.com/vi/aZndm5XJIfw/mqdefault.jpg' },
+                    { id: 'PLBEXC451cMXlIi9J9uIL-2zeK_zWyAzF-', title: 'Rock e Nu-Metal 2000s', from: 'tuliocareli', views: '202,105', thumb: 'https://img.youtube.com/vi/eVTXPUF4Oz4/mqdefault.jpg' }
+                ];
+
+                let playerInstance;
+                let playingListId = plData[0].id;
+
+                plData.forEach((p, idx) => {
+                    const row = h('div', { style: { display: 'flex', gap: '8px', cursor: 'pointer', marginBottom: '10px', padding: '4px', border: '1px solid transparent' } });
+
+                    row.innerHTML = `
+                        <img src="${p.thumb}" width="70" height="50" style="border:1px solid #999">
+                        <div style="font-size:11px; line-height:1.2;">
+                            <div style="color:#03c; text-decoration:underline; font-weight:bold;">${p.title}</div>
+                            <div style="color:#666; margin-top:2px;">From: <span style="color:#03c; text-decoration:underline;">${p.from}</span></div>
+                            <div style="color:#666;">Views: ${p.views}</div>
+                        </div>
+                    `;
+                    row.onmouseover = () => row.style.background = '#eef3fc';
+                    row.onmouseout = () => row.style.background = 'transparent';
+                    row.onclick = () => {
+                        if (playerInstance) {
+                            playingListId = p.id;
+                            playerInstance.loadPlaylist({ list: p.id });
+                        }
+                    };
+                    playListItems.appendChild(row);
+                });
+
+                sidePlaylists.appendChild(playListItems);
+                rightBox.appendChild(details);
+                rightBox.appendChild(sidePlaylists);
+
+                contentSection.appendChild(leftBox);
+                contentSection.appendChild(rightBox);
+
+                wrap.appendChild(header);
+                wrap.appendChild(titleH);
+                wrap.appendChild(contentSection);
+
+                // Initialize formatting and interval logic
+                const fmt = (x) => {
+                    if (!x) return '0:00';
+                    const t = Math.floor(x);
+                    return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, '0');
+                };
+
+                let ytInterval;
+
+                // On render execution
+                ensureYT(() => {
+                    const poll = setInterval(() => {
+                        const el = document.getElementById(playerId);
+                        if (!el) return;
+                        clearInterval(poll);
+
+                        playerInstance = new window.YT.Player(playerId, {
+                            height: '350',
+                            width: '425',
+                            playerVars: {
+                                listType: 'playlist',
+                                list: playingListId,
+                                autoplay: 0,
+                                controls: 0,
+                                disablekb: 1,
+                                modestbranding: 1,
+                                rel: 0,
+                                showinfo: 0,
+                                iv_load_policy: 3,
+                                origin: window.location.origin
+                            },
+                            events: {
+                                onReady: () => {
+                                    btnPlay.onclick = () => playerInstance.playVideo();
+                                    btnPause.onclick = () => playerInstance.pauseVideo();
+
+                                    ytInterval = setInterval(() => {
+                                        if (playerInstance && playerInstance.getCurrentTime) {
+                                            const ct = playerInstance.getCurrentTime();
+                                            const d = playerInstance.getDuration() || 0;
+                                            timeDisplay.innerText = fmt(ct) + ' / ' + fmt(d);
+                                            if (d > 0) progressFill.style.width = (ct / d) * 100 + '%';
+
+                                            // Update title if available
+                                            if (playerInstance.getVideoData) {
+                                                const vd = playerInstance.getVideoData();
+                                                if (vd && vd.title) {
+                                                    titleH.innerText = vd.title;
+                                                }
+                                            }
+                                        }
+                                    }, 250);
+                                }
+                            }
+                        });
+                    }, 100);
+                });
+
+                wrap._cleanup = () => {
+                    if (ytInterval) clearInterval(ytInterval);
+                    if (playerInstance && playerInstance.destroy) playerInstance.destroy();
+                };
+
+                return wrap;
+            };
+
             const tabEls = TABS.map((tab, i) => {
                 const el = h('div', {
                     class: 'xp-tab' + (i === activeIdx ? ' xp-tab--active' : ''),
@@ -575,6 +800,8 @@
             });
 
             function switchTab(idx) {
+                if (wrap._currentCleanup) { wrap._currentCleanup(); wrap._currentCleanup = null; }
+
                 activeIdx = idx;
                 const tab = TABS[idx];
                 tabEls.forEach((el, i) => el.classList.toggle('xp-tab--active', i === idx));
@@ -585,6 +812,11 @@
                 if (tab.type === 'mockup') {
                     if (tab.id === 'orkut') body.appendChild(renderOrkut());
                     else if (tab.id === 'flogao') body.appendChild(renderFlogao());
+                    else if (tab.id === 'youtube') {
+                        const ytEl = renderYoutube();
+                        wrap._currentCleanup = ytEl._cleanup;
+                        body.appendChild(ytEl);
+                    }
                 } else if (tab.wayback) {
                     // Iframe interativo com ajuste fino de posicionamento e escala
                     const iframeContainer = h('div', {
