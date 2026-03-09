@@ -968,7 +968,7 @@
             });
 
             function switchTab(idx) {
-                if (wrap._currentCleanup) { wrap._currentCleanup(); wrap._currentCleanup = null; }
+                if (browserWrap._currentCleanup) { browserWrap._currentCleanup(); browserWrap._currentCleanup = null; }
 
                 activeIdx = idx;
                 const tab = TABS[idx];
