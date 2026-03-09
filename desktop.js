@@ -397,13 +397,14 @@
                 { name: 'YouTube (2007)', url: 'http://www.youtube.com', type: 'mockup', id: 'youtube' },
                 { name: 'Orkut', url: 'http://www.orkut.com.br', type: 'mockup', id: 'orkut' },
                 { name: 'Flogão', url: 'http://www.flogao.com.br/tuliocareli', type: 'mockup', id: 'flogao' },
+                { name: 'Jogos Online', url: 'http://www.jogosonline.com.br', type: 'mockup', id: 'jogosonline' },
                 { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', wayback: 'https://web.archive.org/web/20040803011553/http://www.eagames.com/official/nfs/underground2/us/home.jsp?ncc=1' },
                 { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com', img: 'telas pro tulio explorer/cartoonnetwork.com.png' },
                 { name: 'Naruto Project', url: 'http://www.narutoproject.com.br', img: 'telas pro tulio explorer/narutoproject.com.br.jpg' },
                 { name: 'MySpace', url: 'http://www.myspace.com', img: 'telas pro tulio explorer/myspace.com.jpg' },
             ];
 
-            let activeIdx = 0;
+            let activeIdx = 1;
 
             const wrap = h('div', { class: 'xp-browser xp-browser--tabbed' });
             const toolbar = h('div', {
@@ -420,6 +421,134 @@
 
             const body = h('div', { class: 'xp-browser-body xp-browser-scroll', style: { position: 'relative', overflow: 'hidden' } });
             const status = h('div', { class: 'xp-ie-status' });
+
+            const renderJogosOnline = () => {
+                const wrap = h('div', { style: { background: '#fff', height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflowY: 'auto', fontFamily: 'Arial, sans-serif' } });
+
+                const games = [
+                    { id: 'motocross', name: 'TG Motocross 2', swf: 'jogoflash/TG_Motocross_2.swf', thumb: 'imagens/jogos_motocross.png', category: 'Esportes' },
+                    { id: 'bmx', name: 'BMX Stunts', swf: 'jogoflash/bmx.swf', thumb: 'imagens/jogos_bmx.png', category: 'Ação' },
+                    { id: 'ride', name: 'Create a Ride', swf: 'jogoflash/createaride.swf', thumb: 'imagens/jogos_ride.png', category: 'Corrida' }
+                ];
+
+                const showHome = () => {
+                    wrap.innerHTML = '';
+                    const header = h('div', { style: { background: 'linear-gradient(to right, #ffffff, #dbeefd)', padding: '15px 25px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #004a99' } },
+                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '15px' } },
+                            h('img', { src: 'imagens/jogos_logo.png', style: { height: '50px', filter: 'drop-shadow(2px 2px 0px #000)' } }),
+                            h('div', { style: { color: '#004a99', fontSize: '14px', fontWeight: 'bold', fontStyle: 'italic' } }, 'Os melhores jogos da internet!')
+                        ),
+                        h('div', { style: { fontSize: '11px', color: '#666' } }, 'BEM-VINDO, VISITANTE!')
+                    );
+
+                    const nav = h('div', { style: { background: '#0055aa', padding: '8px 25px', display: 'flex', gap: '2px', color: '#fff', fontSize: '12px', fontWeight: 'bold' } },
+                        ['Home', 'Ação', 'Esportes', 'Corrida', 'Multijogador', 'Mais v'].map((t, i) => h('div', {
+                            style: {
+                                padding: '4px 15px',
+                                background: i === 0 ? '#fff' : 'transparent',
+                                color: i === 0 ? '#0055aa' : '#fff',
+                                borderRadius: '3px 3px 0 0',
+                                cursor: 'pointer'
+                            }
+                        }, t))
+                    );
+
+                    const content = h('div', { style: { padding: '20px', display: 'flex', gap: '25px', flex: 1, background: '#f0f8ff' } });
+
+                    // Main Grid
+                    const left = h('div', { style: { flex: 1 } });
+                    const featured = h('div', { style: { border: '1px solid #0055aa', background: '#fff', padding: '15px', borderRadius: '5px', marginBottom: '20px' } });
+                    featured.innerHTML = `<h3 style="margin:0 0 15px; color:#0055aa; border-bottom:1px solid #ddd; padding-bottom:5px;">Novidades da Semana</h3>`;
+
+                    const grid = h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '20px' } });
+
+                    games.forEach(g => {
+                        const item = h('div', {
+                            style: { background: '#fff', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer', textAlign: 'center', transition: 'transform 0.2s' },
+                            onclick: () => play(g),
+                            onmouseover: (e) => e.currentTarget.style.transform = 'scale(1.05)',
+                            onmouseout: (e) => e.currentTarget.style.transform = 'scale(1)'
+                        },
+                            h('img', { src: g.thumb, style: { width: '100%', height: '90px', objectFit: 'cover', borderRadius: '3px', marginBottom: '8px' } }),
+                            h('div', { style: { fontSize: '12px', fontWeight: 'bold', color: '#004a99', height: '2.8em', overflow: 'hidden' } }, g.name),
+                            h('div', { style: { fontSize: '10px', color: '#888', marginTop: '4px' } }, g.category)
+                        );
+                        grid.appendChild(item);
+                    });
+
+                    featured.appendChild(grid);
+                    left.appendChild(featured);
+
+                    // Right Sidebar Placeholder
+                    const right = h('div', { style: { width: '250px' } });
+                    right.innerHTML = `
+                        <div style="background:#ff9900; color:#fff; padding:15px; border-radius:5px; text-align:center; font-weight:bold; margin-bottom:20px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+                            CURTA NOSSA PÁGINA NO ORKUT!
+                        </div>
+                        <div style="background:#fff; border:1px solid #ccc; padding:10px; border-radius:5px;">
+                            <h4 style="margin:0 0 10px; color:#0055aa;">Top Jogos</h4>
+                            <ol style="margin:0; padding-left:20px; font-size:12px; line-height:1.8; color:#333;">
+                                <li>TG Motocross 2</li>
+                                <li>BMX Stunts</li>
+                                <li>Create a Ride</li>
+                                <li>RuneScape</li>
+                                <li>Club Penguin</li>
+                            </ol>
+                        </div>
+                    `;
+
+                    content.appendChild(left);
+                    content.appendChild(right);
+
+                    const footer = h('footer', { style: { background: '#004a99', padding: '15px', textAlign: 'center', color: '#fff', fontSize: '11px' } },
+                        '© 2004 JOGOS ONLINE - Diversão garantida em 56kbps!'
+                    );
+
+                    wrap.appendChild(header);
+                    wrap.appendChild(nav);
+                    wrap.appendChild(content);
+                    wrap.appendChild(footer);
+                };
+
+                const play = (game) => {
+                    wrap.innerHTML = '';
+                    const header = h('div', { style: { background: '#004a99', padding: '10px 25px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
+                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', userSelect: 'none' }, onclick: showHome },
+                            h('img', { src: 'imagens/jogos_logo.png', style: { height: '35px' } }),
+                            h('span', { style: { color: '#fff', fontSize: '12px', fontWeight: 'bold', textDecoration: 'underline' } }, 'Voltar ao Início')
+                        ),
+                        h('div', { style: { color: '#fff', fontSize: '16px', fontWeight: 'bold' } }, game.name)
+                    );
+
+                    const gameArea = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#003366', padding: '30px' } });
+
+                    const playerCont = h('div', { id: 'ruffle-container', style: { width: '640px', height: '480px', background: '#000', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 0 30px rgba(0,0,0,0.8)', border: '5px solid #0055aa' } });
+
+                    gameArea.appendChild(playerCont);
+                    gameArea.appendChild(h('div', { style: { marginTop: '20px', fontSize: '12px', color: '#abc', textAlign: 'center', maxWidth: '500px' } }, 'Direito de criação dos jogos para seus respectivos criadores.'));
+
+                    wrap.appendChild(header);
+                    wrap.appendChild(gameArea);
+
+                    // Initialize Ruffle (Ensure ruffle is loaded)
+                    if (window.RufflePlayer) {
+                        const ruffle = window.RufflePlayer.newest();
+                        const player = ruffle.createPlayer();
+                        playerCont.appendChild(player);
+                        player.style.width = '100%';
+                        player.style.height = '100%';
+                        player.load({
+                            url: game.swf,
+                            allowScriptAccess: true
+                        }).catch(e => console.error("Ruffle Error:", e));
+                    } else {
+                        playerCont.innerHTML = `<div style="color:#fff; padding:20px; text-align:center;">Carregando Ruffle Player...</div>`;
+                    }
+                };
+
+                showHome();
+                return wrap;
+            };
 
             const renderOrkut = () => {
                 const infoRows = [
@@ -567,10 +696,33 @@
             };
 
             const renderYoutube = () => {
-                const wrap = h('div', { style: { padding: '10px 20px', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: '900px', margin: '0 auto', color: '#000' } });
+                const wrap = h('div', { style: { padding: '10px 20px', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: '950px', margin: '0 auto', color: '#000', boxSizing: 'border-box', height: '100%', minHeight: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' } });
 
-                // Header (logo, search)
-                const header = h('div', { style: {} });
+                // ── DATA ─────────────────────────────────────────
+                const plData = [
+                    { id: 'yU5KXTDCf-0', title: 'GTA San Andreas Bigfoot + UFO', from: 'ScapeTheGoat', views: '1,235,901' },
+                    { id: 'OiT1RyTZgcg', title: 'Mario na fase do cogumelo do sol Tunadíssimo.', from: 'zegracagames', views: '8,402,110' },
+                    { id: '02vyPaYPdl8', title: 'Erros Bizonhos 1', from: 'ZgracaRetro', views: '2,901,344' },
+                    { id: 'HPPj6viIBmU', title: 'Star Wars Kid', from: 'Jimi Love', views: '38,111,002' },
+                    { id: 'Nffd0NZERKQ', title: 'BRKs_EDU - Team Deathmatch - Modern Warfare 2', from: 'BRKsEDU', views: '5,012,778' },
+                    { id: 'oHg5SJYRHA0', title: 'RickRoll\'D', from: 'cotter548', views: '91,330,210' },
+                    { id: 'vYs8Th15yUs', title: 'como ganhar dinheiro infinito na mini fazenda', from: 'allisson castro', views: '221,440' },
+                    { id: '-ogLjIbOH78', title: 'O Efeito Jabulani', from: 'Rafael Souza', views: '1,504,221' },
+                    { id: 'Z3ZAGBL6UBA', title: 'It\'s Peanut Butter Jelly Time!!!', from: 'AlbinoBlackSheep', views: '18,504,900' },
+                    { id: 'MAPYrkYmGN8', title: 'Furfles Feelings - VMB08', from: 'gabriellelorenzo', views: '3,059,211' },
+                    { id: 'RudncJ94mOo', title: 'Meteoro em Belo Horizonte - Official', from: 'Rodrigo Guimaraes', views: '2,504,233' },
+                    { id: 'ZN5PoW7_kdA', title: 'The Annoying Orange', from: 'Dane Boe', views: '235,901,455' },
+                    { id: 'qsEZ2lpM0Yw', title: 'Nunchucks Pro', from: 'SpyderBRad', views: '7,440,210' },
+                    { id: '7-BuVMH82BE', title: 'Halo 3 - How to Get Recon Armor In 10 Minutes', from: 'nosacrificevids', views: '4,010,223' },
+                    { id: 'GXMl9wWsU2U', title: 'MySpace Tutorial', from: 'secretvideogoldmine', views: '550,212' }
+                ];
+
+                let currentIdx = 0;
+                let player = null;
+                let ytInterval = null;
+
+                // ── HEADER ──────────────────────────────────────────
+                const header = h('div', { style: { marginBottom: '10px' } });
                 header.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:flex-end;">
                         <div style="display:flex; align-items:center;">
@@ -594,288 +746,213 @@
                     </div>
                 `;
 
-                // Title
-                const titleH = h('h2', { style: { margin: '20px 0 10px', fontSize: '18px', fontFamily: 'Arial', fontWeight: 'bold' } }, "GTA San Andreas Bigfoot + UFO");
+                // ── CONTENT ───────────────────────────────────────
+                const titleH = h('h2', { style: { margin: '15px 0 10px', fontSize: '18px', fontWeight: 'bold' } }, plData[0].title);
 
-                const contentSection = h('div', { style: { display: 'flex', gap: '20px' } });
+                const grid = h('div', { style: { display: 'flex', gap: '20px' } });
+                const left = h('div', { style: { flex: '1', minWidth: '0' } });
+                const right = h('div', { style: { width: '310px' } });
 
-                // Left Box
-                const leftBox = h('div', { style: { width: '540px' } });
+                // Player Container
+                const vCont = h('div', { style: { width: '100%', background: '#000', borderRadius: '4px', overflow: 'hidden', border: '1px solid #333' } });
+                const playerId = getUniqueYtId('yt-player');
+                const vArea = h('div', {
+                    id: playerId + '-container',
+                    style: { width: '100%', aspectRatio: '4/3', background: '#000', position: 'relative' }
+                }, h('div', { id: playerId, style: { width: '100%', height: '100%' } }));
 
-                const videoContainer = h('div', { style: { width: '100%', background: '#000', display: 'flex', flexDirection: 'column' } });
-
-                // Video Area
-                const playerId = getUniqueYtId('yt-video-classic');
-                const videoArea = h('div', { style: { background: '#000', padding: '0', position: 'relative', width: '100%', height: '405px' } });
-                const playerWrapper = h('div', { id: playerId, style: { width: '100%', height: '100%' } });
-                videoArea.appendChild(playerWrapper);
-
-                // Controls mimicking 2006-2008 exact YT
-                const controlsMenu = h('div', { style: { background: 'linear-gradient(to bottom, #f1f1f1 0%, #e0e0e0 48%, #d1d1d1 52%, #c2c2c2 100%)', padding: '0 8px', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid #999', borderTop: 'none', height: '28px', userSelect: 'none' } });
-                const btnStyle = "cursor:pointer; background:linear-gradient(to bottom, #fff, #ddd); border:1px solid #888; border-radius:3px; padding:2px 8px; font-size:11px; color:#333; height:20px; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 1px rgba(0,0,0,0.1);";
-
-                const btnPlay = h('button', { style: btnStyle, title: 'Play' }, "►");
-                const btnPause = h('button', { style: btnStyle, title: 'Pause' }, "❚❚");
-
-                const trackWrapper = h('div', { style: { flex: 1, padding: '0 5px', display: 'flex', alignItems: 'center', height: '100%' } });
-                const progressBar = h('div', { style: { width: '100%', background: '#fff', border: '1px inset #777', height: '8px', position: 'relative', borderRadius: '4px', cursor: 'pointer' } });
-                const progressFill = h('div', { style: { background: '#cc0000', width: '0%', height: '100%', position: 'relative', borderRadius: '3px' } });
-                const progressThumb = h('div', { style: { position: 'absolute', right: '-6px', top: '-3px', width: '12px', height: '12px', background: 'radial-gradient(circle at 4px 4px, #fff, #999)', border: '1px solid #555', borderRadius: '50%', boxShadow: '0 1px 2px rgba(0,0,0,0.3)' } });
-
-                progressFill.appendChild(progressThumb);
-                progressBar.appendChild(progressFill);
-                trackWrapper.appendChild(progressBar);
-
-                const timeDisplay = h('div', { style: { color: '#000', fontSize: '11px', fontFamily: 'Arial', minWidth: '70px', textAlign: 'center' } }, "0:00 / 0:00");
-
-                const btnVol = h('div', { style: { fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' } });
-                btnVol.innerHTML = `<span>🔊</span> <div style="display:flex; gap:1px; height:8px"><div style="width:3px; background:#444"></div><div style="width:3px; background:#444"></div><div style="width:3px; background:#444"></div></div>`;
-
-                const btnFs = h('button', { style: btnStyle + " padding:2px 6px;", title: 'Expand' }, "⛶");
-
-                controlsMenu.appendChild(btnPlay);
-                controlsMenu.appendChild(btnPause);
-                controlsMenu.appendChild(trackWrapper);
-                controlsMenu.appendChild(timeDisplay);
-                controlsMenu.appendChild(btnVol);
-                controlsMenu.appendChild(btnFs);
-
-                btnFs.onclick = () => {
-                    if (!document.fullscreenElement) {
-                        if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
-                        else if (videoContainer.webkitRequestFullscreen) videoContainer.webkitRequestFullscreen();
-                    } else {
-                        if (document.exitFullscreen) document.exitFullscreen();
-                        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                // ── 2006-2008 BAR ───────────────────────────────────
+                const barArr = h('div', {
+                    style: {
+                        background: 'linear-gradient(to bottom, #eeeeee 0%, #cccccc 100%)',
+                        height: '28px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '0 6px',
+                        gap: '6px',
+                        borderTop: '1px solid #999',
+                        boxSizing: 'border-box',
+                        userSelect: 'none'
                     }
-                };
+                });
 
-                const fsHandler = () => {
-                    if (!document.body.contains(videoArea)) {
-                        document.removeEventListener('fullscreenchange', fsHandler);
-                        return;
+                const btnS = 'cursor:pointer; background:linear-gradient(to bottom, #fff, #ddd); border:1px solid #888; border-radius:2px; height:18px; padding:0 8px; font-size:10px; display:flex; align-items:center; color:#000;';
+                const pBtn = h('button', { style: btnS, title: 'Play' }, '►');
+                const sBtn = h('button', { style: btnS, title: 'Pause' }, '❚❚');
+
+                // Progress
+                const pCont = h('div', { style: { flex: 1, background: '#fff', border: '1px inset #888', height: '8px', borderRadius: '2px', position: 'relative', cursor: 'pointer' } });
+                const pFill = h('div', { style: { height: '100%', background: '#cc0000', width: '0%', borderRadius: '1px', position: 'relative' } });
+                const pBall = h('div', {
+                    style: {
+                        position: 'absolute', right: '-6px', top: '50%', transform: 'translateY(-50%)',
+                        width: '12px', height: '12px', borderRadius: '50%',
+                        background: 'radial-gradient(circle at 4px 4px, #ffffff, #999999)',
+                        border: '1px solid #555', boxShadow: '0 1px 2px rgba(0,0,0,0.3)'
                     }
-                    if (document.fullscreenElement === videoContainer) {
-                        videoArea.style.height = 'calc(100vh - 28px)';
-                    } else {
-                        videoArea.style.height = '405px';
-                    }
-                };
-                document.addEventListener('fullscreenchange', fsHandler);
+                });
+                pFill.appendChild(pBall);
+                pCont.appendChild(pFill);
 
-                videoContainer.appendChild(videoArea);
-                videoContainer.appendChild(controlsMenu);
-                leftBox.appendChild(videoContainer);
+                const time = h('div', { style: { fontSize: '10px', minWidth: '70px', textAlign: 'center' } }, '0:00 / 0:00');
+                const fBtn = h('button', { style: btnS + 'padding:0 4px;', title: 'Expand' }, '⛶');
 
-                // Info Box (Ratings, Views)
-                const infoBox = h('div', { style: { border: '1px solid #ccc', marginTop: '10px', padding: '10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5' } });
-                infoBox.innerHTML = `
-                    <div style="width:60%; font-size:11px;">
-                        <div style="float:left; width:45%; text-align:center;">
-                            <div style="color:#03c; text-decoration:underline; cursor:pointer;">Login to rate</div>
-                            <div style="color:#d33; font-size:16px; margin:2px 0;">★★★★☆</div>
-                            <div>2554 ratings</div>
+                barArr.appendChild(pBtn);
+                barArr.appendChild(sBtn);
+                barArr.appendChild(pCont);
+                barArr.appendChild(time);
+                barArr.appendChild(fBtn);
+
+                vCont.appendChild(vArea);
+                vCont.appendChild(barArr);
+                left.appendChild(vCont);
+
+                // Info Box
+                const info = h('div', { style: { marginTop: '15px', border: '1px solid #ccc', background: '#f8f8f8', padding: '10px', display: 'flex', gap: '20px' } });
+                info.innerHTML = `
+                    <div style="flex:1; border-right:1px dashed #ccc; padding-right:10px;">
+                        <div style="display:flex; justify-content:space-around; align-items:center; text-align:center; margin-bottom:10px;">
+                            <div><div style="color:#03c; text-decoration:underline; font-size:11px;">Sign in to rate</div><div style="color:#cc181e; font-size:18px;">★★★★★</div></div>
+                            <div><div style="color:#03c; text-decoration:underline; font-size:11px;">Save to Favorites</div></div>
+                            <div><div style="color:#03c; text-decoration:underline; font-size:11px;">Add to Groups</div></div>
                         </div>
-                        <div style="float:left; width:55%;">
-                            <div style="color:#03c; text-decoration:underline; cursor:pointer; margin-bottom:4px;">♡ Save to Favorites</div>
-                            <div style="color:#03c; text-decoration:underline; cursor:pointer;">+ Add to Groups</div>
-                        </div>
-                        <div style="clear:both"></div>
-                        <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
-                        <div style="text-align:center; color:#333;">
-                            Views: <strong id="yt-current-views">657,825</strong> &nbsp;|&nbsp; Comments: <strong>1862</strong> &nbsp;|&nbsp; Favorited: <strong>4403</strong> times
+                        <div style="text-align:center; font-size:11px; color:#333; border-top:1px dashed #ccc; padding-top:8px;">
+                            Views: <strong id="yt-views">0</strong> | Comments: <strong>1,862</strong>
                         </div>
                     </div>
-                    <div style="width:35%; border-left:1px dashed #ccc; padding-left:15px; font-size:11px; color:#03c; text-decoration:underline; line-height:1.6; cursor:pointer;">
-                        ✉ Share Video<br>💬 Post Video<br>❌ Flag as<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inappropriate
+                    <div style="width:120px; font-size:11px; color:#03c; text-decoration:underline; line-height:1.8;">
+                        ✉ Share Video<br>💬 Post Video<br>❌ Flag as Bad
                     </div>
                 `;
+                left.appendChild(info);
 
-                leftBox.appendChild(infoBox);
-
-                // Right Box
-                const rightBox = h('div', { style: { width: '310px' } });
-
-                // Details
-                const details = h('div', { style: { padding: '0 0 15px', fontSize: '11px', lineHeight: '1.4' } });
-                details.innerHTML = `
-                    <div style="padding:5px; background:#fffccc; border:1px solid #e2c822; margin-bottom:10px; text-align:center; font-weight:bold; color:#03c; cursor:pointer;">
-                        Try out the NEW (beta) version of this page!
-                    </div>
-                    <div style="padding: 10px; border: 1px solid #ccc; background: #fff;">
-                        <button style="float:right; background:#f90; color:#fff; border:1px solid #c60; font-size:10px; padding:2px 5px; font-weight:bold; cursor:pointer;">Subscribe</button>
-                        <strong>Added:</strong> June 28, 2007<br>
-                        <strong>From:</strong> <span id="yt-current-author" style="color:#03c; text-decoration:underline; cursor:pointer;">tuliocareli</span>
-                        <p style="margin:8px 0; color:#333;">Nostalgia pura dessa época de skate e PS2... (more)</p>
-                        <div style="margin-top:3px;"><strong>Category:</strong> <span style="color:#03c; text-decoration:underline; cursor:pointer;">Entertainment</span></div>
-                        <div style="margin-top:3px;"><strong>Tags:</strong> <span style="color:#03c; text-decoration:underline; cursor:pointer;">skate</span> <span style="color:#03c; text-decoration:underline; cursor:pointer;">nostalgia</span> <span style="color:#03c; text-decoration:underline; cursor:pointer;">thps</span></div>
-                        <div style="margin-top:8px; display:flex; align-items:center;"><strong>URL</strong> <input id="yt-current-url" type="text" readonly value="http://www.youtube.com/watch?v=kYJz" style="font-size:10px; flex:1; margin-left:10px; border:1px solid #ccc; padding:2px; background:#f9f9f9;"></div>
-                        <div style="margin-top:4px; display:flex; align-items:center;"><strong>Embed</strong> <input id="yt-current-embed" type="text" readonly value="<object width='425' height='350'..." style="font-size:10px; flex:1; margin-left:10px; border:1px solid #ccc; padding:2px; background:#f9f9f9;"></div>
-                    </div>
+                // Right sidebar
+                const meta = h('div', { style: { padding: '10px', border: '1px solid #ccc', background: '#fff', fontSize: '11px', marginBottom: '15px' } });
+                meta.innerHTML = `
+                    <div style="background:#fffccc; border:1px solid #e2c822; padding:5px; margin-bottom:10px; font-weight:bold; color:#03c; text-align:center;">TRY OUT THE NEW BETA!</div>
+                    <button style="float:right; background:#f90; color:#fff; border:1px solid #c60; font-size:10px; padding:2px 5px; font-weight:bold;">Subscribe</button>
+                    <strong>Added:</strong> June 28, 2007<br>
+                    <strong>From:</strong> <span id="yt-author" style="color:#03c; text-decoration:underline;">tuliocareli</span>
+                    <p style="margin:8px 0;">História pura do YouTube!</p>
+                    <strong>Category:</strong> <span style="color:#03c; text-decoration:underline;">Entertainment</span><br>
+                    <strong>Tags:</strong> <span style="color:#03c; text-decoration:underline;">oldschool</span> <span style="color:#03c; text-decoration:underline;">nostalgia</span>
                 `;
+                right.appendChild(meta);
 
-                const sidePlaylists = h('div', { style: { border: '1px solid #ccc', background: '#fff' } });
-                sidePlaylists.innerHTML = `
-                    <div style="background:#e8ecef; padding:4px 10px 0; font-weight:bold; display:flex; gap:10px;">
-                        <div style="background:#fff; border:1px solid #ccc; border-bottom:none; padding:3px 8px; font-size:11px; margin-bottom:-1px; border-radius:3px 3px 0 0;">Related Videos</div>
-                    </div>
-                `;
+                const listCont = h('div', { style: { border: '1px solid #ccc', background: '#fff' } });
+                listCont.innerHTML = `<div style="background:#e8ecef; padding:5px; font-size:11px; font-weight:bold; border-bottom:1px solid #ccc;">Related Videos</div>`;
+                const listItems = h('div', { style: { maxHeight: '400px', overflowY: 'auto', padding: '5px' } });
 
-                const playListItems = h('div', { id: 'yt-playlist-container', style: { padding: '10px', height: '220px', overflowY: 'auto' } });
+                const updateUI = (idx) => {
+                    const v = plData[idx];
+                    titleH.innerText = v.title;
+                    const auth = meta.querySelector('#yt-author'); if (auth) auth.innerText = v.from;
+                    const view = info.querySelector('#yt-views'); if (view) view.innerText = v.views;
 
-                const plData = [
-                    { id: 'yU5KXTDCf-0', title: 'GTA San Andreas Bigfoot + UFO', from: 'ScapeTheGoat', views: '1,235,901' },
-                    { id: 'OiT1RyTZgcg', title: 'Mario na fase do cogumelo do sol Tunadíssimo.', from: 'zegracagames', views: '8,402,110' },
-                    { id: '02vyPaYPdl8', title: 'Erros Bizonhos 1', from: 'ZgracaRetro', views: '2,901,344' },
-                    { id: 'HPPj6viIBmU', title: 'Star Wars Kid', from: 'Jimi Love', views: '38,111,002' },
-                    { id: 'Nffd0NZERKQ', title: 'BRKs_EDU - Team Deathmatch - Modern Warfare ...', from: 'BRKsEDU', views: '5,012,778' },
-                    { id: 'oHg5SJYRHA0', title: 'RickRoll\'D', from: 'cotter548', views: '91,330,210' },
-                    { id: 'vYs8Th15yUs', title: 'como ganhar dinheiro infinito na mini fazenda', from: 'allisson castro', views: '221,440' },
-                    { id: '-ogLjIbOH78', title: 'O Efeito Jabulani', from: 'Rafael Souza', views: '1,504,221' },
-                    { id: 'Z3ZAGBL6UBA', title: 'It\'s Peanut Butter Jelly Time!!!', from: 'AlbinoBlackSheep', views: '18,504,900' },
-                    { id: 'MAPYrkYmGN8', title: 'Furfles Feelings - VMB08', from: 'gabriellelorenzo', views: '3,059,211' },
-                    { id: 'RudncJ94mOo', title: 'Meteoro em Belo Horizonte - Official', from: 'Rodrigo Guimaraes', views: '2,504,233' },
-                    { id: 'ZN5PoW7_kdA', title: 'The Annoying Orange', from: 'Dane Boe', views: '235,901,455' },
-                    { id: 'qsEZ2lpM0Yw', title: 'Nunchucks Pro', from: 'SpyderBRad', views: '7,440,210' },
-                    { id: '7-BuVMH82BE', title: 'Halo 3 - How to Get Recon Armor In 10 Minutes', from: 'nosacrificevids', views: '4,010,223' },
-                    { id: 'GXMl9wWsU2U', title: 'MySpace Tutorial', from: 'secretvideogoldmine', views: '550,212' }
-                ];
-
-                playListItems.innerHTML = `<div style="font-size:11px; margin-bottom:8px; color:#333;">Showing 1–${plData.length} of about 15,000</div>`;
-
-                let playerInstance;
-                let currentVideoIdx = 0;
-
-                const updateYoutubeUI = (idx) => {
-                    const p = plData[idx];
-                    titleH.innerText = p.title;
-                    const authorEl = document.getElementById('yt-current-author');
-                    if (authorEl) authorEl.innerText = p.from;
-                    const viewsEl = document.getElementById('yt-current-views');
-                    if (viewsEl) viewsEl.innerText = p.views;
-                    const urlEl = document.getElementById('yt-current-url');
-                    if (urlEl) urlEl.value = 'http://www.youtube.com/watch?v=' + p.id;
-                    const embEl = document.getElementById('yt-current-embed');
-                    if (embEl) embEl.value = `<object width="425" height="350"><param name="movie" value="http://www.youtube.com/v/${p.id}"></param><embed src="http://www.youtube.com/v/${p.id}" type="application/x-shockwave-flash" width="425" height="350"></embed></object>`;
-
-                    // Highlight active video in list
-                    Array.from(playListItems.children).forEach(child => {
-                        if (child.dataset.idx !== undefined) {
-                            child.style.background = child.dataset.idx == idx ? '#ffffcc' : 'transparent';
-                            child.style.border = child.dataset.idx == idx ? '1px dashed #e2c822' : '1px solid transparent';
-                        }
+                    Array.from(listItems.children).forEach((c, i) => {
+                        c.style.background = (i === idx) ? '#ffffcc' : 'transparent';
+                        c.style.border = (i === idx) ? '1px dashed #e2c822' : '1px solid transparent';
                     });
                 };
 
-                plData.forEach((p, idx) => {
-                    const row = h('div', { style: { display: 'flex', gap: '8px', cursor: 'pointer', marginBottom: '10px', padding: '4px', border: '1px solid transparent' } });
-                    row.dataset.idx = idx;
-
+                plData.forEach((v, i) => {
+                    const row = h('div', {
+                        style: { display: 'flex', gap: '8px', padding: '4px', cursor: 'pointer', marginBottom: '5px', border: '1px solid transparent' },
+                        onclick: () => {
+                            currentIdx = i;
+                            updateUI(i);
+                            if (player) player.loadVideoById(v.id);
+                        }
+                    });
                     row.innerHTML = `
-                        <img src="https://img.youtube.com/vi/${p.id}/mqdefault.jpg" width="70" height="50" style="border:1px solid #999">
+                        <img src="https://img.youtube.com/vi/${v.id}/default.jpg" width="60" style="border:1px solid #999">
                         <div style="font-size:11px; line-height:1.2;">
-                            <div style="color:#03c; text-decoration:underline; font-weight:bold;">${p.title}</div>
-                            <div style="color:#666; margin-top:2px;">From: <span style="color:#03c; text-decoration:underline;">${p.from}</span></div>
-                            <div style="color:#666;">Views: ${p.views}</div>
+                            <div style="color:#03c; text-decoration:underline; font-weight:bold; height:2.4em; overflow:hidden;">${v.title}</div>
+                            <div style="color:#666;">From: ${v.from}</div>
+                            <div style="color:#666;">Views: ${v.views}</div>
                         </div>
                     `;
-                    row.onmouseover = () => { if (currentVideoIdx !== idx) row.style.background = '#eef3fc'; };
-                    row.onmouseout = () => { if (currentVideoIdx !== idx) row.style.background = 'transparent'; };
-                    row.onclick = () => {
-                        if (playerInstance) {
-                            currentVideoIdx = idx;
-                            updateYoutubeUI(idx);
-                            playerInstance.loadVideoById(p.id);
-                        }
-                    };
-                    playListItems.appendChild(row);
+                    listItems.appendChild(row);
                 });
+                listCont.appendChild(listItems);
+                right.appendChild(listCont);
 
-                sidePlaylists.appendChild(playListItems);
-                rightBox.appendChild(details);
-                rightBox.appendChild(sidePlaylists);
-
-                contentSection.appendChild(leftBox);
-                contentSection.appendChild(rightBox);
-
+                grid.appendChild(left);
+                grid.appendChild(right);
                 wrap.appendChild(header);
                 wrap.appendChild(titleH);
-                wrap.appendChild(contentSection);
+                wrap.appendChild(grid);
 
-                // Initialize formatting and interval logic
-                const fmt = (x) => {
-                    if (!x) return '0:00';
-                    const t = Math.floor(x);
-                    return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, '0');
+                // ── LOGIC ──────────────────────────────────────────
+                const fmt = (s) => {
+                    const m = Math.floor(s / 60);
+                    const rs = Math.floor(s % 60);
+                    return m + ":" + String(rs).padStart(2, '0');
                 };
 
-                let ytInterval;
+                pCont.onclick = (e) => {
+                    if (!player) return;
+                    const rect = pCont.getBoundingClientRect();
+                    const per = (e.clientX - rect.left) / rect.width;
+                    player.seekTo(per * player.getDuration(), true);
+                };
 
-                // On render execution
+                fBtn.onclick = () => {
+                    const el = vCont;
+                    if (!document.fullscreenElement) {
+                        (el.requestFullscreen || el.webkitRequestFullscreen || (() => { })).call(el);
+                    } else {
+                        (document.exitFullscreen || document.webkitExitFullscreen || (() => { })).call(document);
+                    }
+                };
+
                 ensureYT(() => {
-                    const poll = setInterval(() => {
-                        const el = document.getElementById(playerId);
-                        if (!el) return;
-                        clearInterval(poll);
+                    const check = setInterval(() => {
+                        if (!document.getElementById(playerId)) return;
+                        clearInterval(check);
 
-                        // Initial UI update
-                        setTimeout(() => updateYoutubeUI(currentVideoIdx), 100);
-
-                        playerInstance = new window.YT.Player(playerId, {
-                            height: '350',
-                            width: '425',
-                            videoId: plData[currentVideoIdx].id,
+                        player = new window.YT.Player(playerId, {
+                            width: '100%',
+                            height: '100%',
+                            videoId: plData[0].id,
                             playerVars: {
-                                autoplay: 0,
                                 controls: 0,
                                 disablekb: 1,
-                                modestbranding: 1,
                                 rel: 0,
-                                showinfo: 0,
+                                modestbranding: 1,
                                 iv_load_policy: 3,
-                                origin: window.location.origin,
-                                fs: 0
+                                enablejsapi: 1,
+                                origin: window.location.origin
                             },
                             events: {
                                 onReady: () => {
-                                    btnPlay.onclick = () => playerInstance.playVideo();
-                                    btnPause.onclick = () => playerInstance.pauseVideo();
-
-                                    progressBar.onclick = (e) => {
-                                        if (playerInstance && typeof playerInstance.getDuration === 'function') {
-                                            const rect = progressBar.getBoundingClientRect();
-                                            let p = (e.clientX - rect.left) / rect.width;
-                                            p = Math.max(0, Math.min(1, p));
-                                            playerInstance.seekTo(p * playerInstance.getDuration(), true);
-                                            // Optional: Force visual update
-                                            progressFill.style.width = (p * 100) + '%';
-                                        }
-                                    };
+                                    pBtn.onclick = () => player.playVideo();
+                                    sBtn.onclick = () => player.pauseVideo();
+                                    updateUI(0);
 
                                     ytInterval = setInterval(() => {
-                                        if (playerInstance && typeof playerInstance.getCurrentTime === 'function') {
-                                            const ct = playerInstance.getCurrentTime();
-                                            const d = playerInstance.getDuration() || 0;
-                                            timeDisplay.innerText = fmt(ct) + ' / ' + fmt(d);
-                                            if (d > 0) progressFill.style.width = (ct / d) * 100 + '%';
-                                        }
-                                    }, 150);
+                                        if (!player || !player.getCurrentTime) return;
+                                        const ct = player.getCurrentTime();
+                                        const dur = player.getDuration() || 0;
+                                        time.innerText = fmt(ct) + ' / ' + fmt(dur);
+                                        if (dur > 0) pFill.style.width = (ct / dur * 100) + '%';
+                                    }, 200);
                                 },
                                 onStateChange: (e) => {
                                     if (e.data === window.YT.PlayerState.ENDED) {
-                                        currentVideoIdx = (currentVideoIdx + 1) % plData.length;
-                                        updateYoutubeUI(currentVideoIdx);
-                                        playerInstance.loadVideoById(plData[currentVideoIdx].id);
+                                        currentIdx = (currentIdx + 1) % plData.length;
+                                        updateUI(currentIdx);
+                                        player.loadVideoById(plData[currentIdx].id);
                                     }
                                 }
                             }
                         });
-                    }, 100);
+                    }, 500);
                 });
 
                 wrap._cleanup = () => {
                     if (ytInterval) clearInterval(ytInterval);
-                    if (playerInstance && playerInstance.destroy) playerInstance.destroy();
+                    if (player && player.destroy) player.destroy();
                 };
 
                 return wrap;
@@ -903,6 +980,7 @@
                 if (tab.type === 'mockup') {
                     if (tab.id === 'orkut') body.appendChild(renderOrkut());
                     else if (tab.id === 'flogao') body.appendChild(renderFlogao());
+                    else if (tab.id === 'jogosonline') body.appendChild(renderJogosOnline());
                     else if (tab.id === 'youtube') {
                         const ytEl = renderYoutube();
                         wrap._currentCleanup = ytEl._cleanup;
@@ -3239,11 +3317,13 @@ NUTTERTOOLS - Armas Pesadas
             )
         );
 
-        // Barra de endereço mockada
-        const addrbar = h('div', { class: 'xp-win-addrbar' },
+        // Barra de endereço mockada (apenas para o browser ou pastas do sistema)
+        // O browser 'ie' já tem sua própria barra interna, então removemos a genérica dele
+        const showAddr = ['mycomputer', 'games', 'trash', 'mysterious_folder'].includes(id);
+        const addrbar = showAddr ? h('div', { class: 'xp-win-addrbar' },
             h('span', { class: 'xp-addr-label' }, 'Endereço:'),
             h('div', { class: 'xp-addr-val' }, `C:\\TULIO\\${title.toUpperCase().replace(' ', '_')}`),
-        );
+        ) : null;
 
         const body = h('div', { class: 'xp-win-body' }, (CONTENT[id] || CONTENT.mycomputer)());
 
