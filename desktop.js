@@ -646,10 +646,6 @@
                     </div>
                 `;
 
-                leftBox.appendChild(videoArea);
-                leftBox.appendChild(controlsMenu);
-                leftBox.appendChild(infoBox);
-
                 // Right Box
                 const rightBox = h('div', { style: { width: '310px' } });
 
@@ -662,52 +658,87 @@
                     <div style="padding: 10px; border: 1px solid #ccc; background: #fff;">
                         <button style="float:right; background:#f90; color:#fff; border:1px solid #c60; font-size:10px; padding:2px 5px; font-weight:bold; cursor:pointer;">Subscribe</button>
                         <strong>Added:</strong> June 28, 2007<br>
-                        <strong>From:</strong> <span style="color:#03c; text-decoration:underline; cursor:pointer;">tuliocareli</span>
+                        <strong>From:</strong> <span id="yt-current-author" style="color:#03c; text-decoration:underline; cursor:pointer;">tuliocareli</span>
                         <p style="margin:8px 0; color:#333;">Nostalgia pura dessa época de skate e PS2... (more)</p>
                         <div style="margin-top:3px;"><strong>Category:</strong> <span style="color:#03c; text-decoration:underline; cursor:pointer;">Entertainment</span></div>
                         <div style="margin-top:3px;"><strong>Tags:</strong> <span style="color:#03c; text-decoration:underline; cursor:pointer;">skate</span> <span style="color:#03c; text-decoration:underline; cursor:pointer;">nostalgia</span> <span style="color:#03c; text-decoration:underline; cursor:pointer;">thps</span></div>
-                        <div style="margin-top:8px; display:flex; align-items:center;"><strong>URL</strong> <input type="text" readonly value="http://www.youtube.com/watch?v=kYJz" style="font-size:10px; flex:1; margin-left:10px; border:1px solid #ccc; padding:2px; background:#f9f9f9;"></div>
-                        <div style="margin-top:4px; display:flex; align-items:center;"><strong>Embed</strong> <input type="text" readonly value="<object width='425' height='350'..." style="font-size:10px; flex:1; margin-left:10px; border:1px solid #ccc; padding:2px; background:#f9f9f9;"></div>
+                        <div style="margin-top:8px; display:flex; align-items:center;"><strong>URL</strong> <input id="yt-current-url" type="text" readonly value="http://www.youtube.com/watch?v=kYJz" style="font-size:10px; flex:1; margin-left:10px; border:1px solid #ccc; padding:2px; background:#f9f9f9;"></div>
+                        <div style="margin-top:4px; display:flex; align-items:center;"><strong>Embed</strong> <input id="yt-current-embed" type="text" readonly value="<object width='425' height='350'..." style="font-size:10px; flex:1; margin-left:10px; border:1px solid #ccc; padding:2px; background:#f9f9f9;"></div>
                     </div>
                 `;
 
-                // Playlists selection mimicking related videos
                 const sidePlaylists = h('div', { style: { border: '1px solid #ccc', background: '#fff' } });
                 sidePlaylists.innerHTML = `
                     <div style="background:#e8ecef; padding:4px 10px 0; font-weight:bold; display:flex; gap:10px;">
-                        <div style="background:#fff; border:1px solid #ccc; border-bottom:none; padding:3px 8px; font-size:11px; margin-bottom:-1px; border-radius:3px 3px 0 0;">Related</div>
-                        <div style="padding:3px 8px; font-size:11px; color:#03c; cursor:pointer; text-decoration:underline;">Playlists</div>
+                        <div style="background:#fff; border:1px solid #ccc; border-bottom:none; padding:3px 8px; font-size:11px; margin-bottom:-1px; border-radius:3px 3px 0 0;">Related Videos</div>
                     </div>
                 `;
 
-                const playListItems = h('div', { style: { padding: '10px', height: '220px', overflowY: 'auto' } });
-                playListItems.innerHTML = `<div style="font-size:11px; margin-bottom:8px; color:#333;">Showing playlists for <span style="color:#03c;text-decoration:underline">tuliocareli</span></div>`;
+                const playListItems = h('div', { id: 'yt-playlist-container', style: { padding: '10px', height: '220px', overflowY: 'auto' } });
 
                 const plData = [
-                    { id: 'PLN5fmudwjejFKHN_5TP8QT1baTr5XM_MO', title: 'Nostalgia do Skate & TV', from: 'tuliocareli', views: '143,000', thumb: 'https://img.youtube.com/vi/aZndm5XJIfw/mqdefault.jpg' },
-                    { id: 'PLBEXC451cMXlIi9J9uIL-2zeK_zWyAzF-', title: 'Rock e Nu-Metal 2000s', from: 'tuliocareli', views: '202,105', thumb: 'https://img.youtube.com/vi/eVTXPUF4Oz4/mqdefault.jpg' }
+                    { id: 'yU5KXTDCf-0', title: 'GTA San Andreas Bigfoot + UFO', from: 'ScapeTheGoat', views: '1,235,901' },
+                    { id: 'OiT1RyTZgcg', title: 'Mario na fase do cogumelo do sol Tunadíssimo.', from: 'zegracagames', views: '8,402,110' },
+                    { id: '02vyPaYPdl8', title: 'Erros Bizonhos 1', from: 'ZgracaRetro', views: '2,901,344' },
+                    { id: 'HPPj6viIBmU', title: 'Star Wars Kid', from: 'Jimi Love', views: '38,111,002' },
+                    { id: 'Nffd0NZERKQ', title: 'BRKs_EDU - Team Deathmatch - Modern Warfare ...', from: 'BRKsEDU', views: '5,012,778' },
+                    { id: 'oHg5SJYRHA0', title: 'RickRoll\'D', from: 'cotter548', views: '91,330,210' },
+                    { id: 'vYs8Th15yUs', title: 'como ganhar dinheiro infinito na mini fazenda', from: 'allisson castro', views: '221,440' },
+                    { id: '-ogLjIbOH78', title: 'O Efeito Jabulani', from: 'Rafael Souza', views: '1,504,221' },
+                    { id: 'Z3ZAGBL6UBA', title: 'It\'s Peanut Butter Jelly Time!!!', from: 'AlbinoBlackSheep', views: '18,504,900' },
+                    { id: 'MAPYrkYmGN8', title: 'Furfles Feelings - VMB08', from: 'gabriellelorenzo', views: '3,059,211' },
+                    { id: 'RudncJ94mOo', title: 'Meteoro em Belo Horizonte - Official', from: 'Rodrigo Guimaraes', views: '2,504,233' },
+                    { id: 'ZN5PoW7_kdA', title: 'The Annoying Orange', from: 'Dane Boe', views: '235,901,455' },
+                    { id: 'qsEZ2lpM0Yw', title: 'Nunchucks Pro', from: 'SpyderBRad', views: '7,440,210' },
+                    { id: '7-BuVMH82BE', title: 'Halo 3 - How to Get Recon Armor In 10 Minutes', from: 'nosacrificevids', views: '4,010,223' },
+                    { id: 'GXMl9wWsU2U', title: 'MySpace Tutorial', from: 'secretvideogoldmine', views: '550,212' }
                 ];
 
+                playListItems.innerHTML = `<div style="font-size:11px; margin-bottom:8px; color:#333;">Showing 1–${plData.length} of about 15,000</div>`;
+
                 let playerInstance;
-                let playingListId = plData[0].id;
+                let currentVideoIdx = 0;
+
+                const updateYoutubeUI = (idx) => {
+                    const p = plData[idx];
+                    titleH.innerText = p.title;
+                    const authorEl = document.getElementById('yt-current-author');
+                    if (authorEl) authorEl.innerText = p.from;
+                    const viewsEl = document.getElementById('yt-current-views');
+                    if (viewsEl) viewsEl.innerText = p.views;
+                    const urlEl = document.getElementById('yt-current-url');
+                    if (urlEl) urlEl.value = 'http://www.youtube.com/watch?v=' + p.id;
+                    const embEl = document.getElementById('yt-current-embed');
+                    if (embEl) embEl.value = `<object width="425" height="350"><param name="movie" value="http://www.youtube.com/v/${p.id}"></param><embed src="http://www.youtube.com/v/${p.id}" type="application/x-shockwave-flash" width="425" height="350"></embed></object>`;
+
+                    // Highlight active video in list
+                    Array.from(playListItems.children).forEach(child => {
+                        if (child.dataset.idx !== undefined) {
+                            child.style.background = child.dataset.idx == idx ? '#ffffcc' : 'transparent';
+                            child.style.border = child.dataset.idx == idx ? '1px dashed #e2c822' : '1px solid transparent';
+                        }
+                    });
+                };
 
                 plData.forEach((p, idx) => {
                     const row = h('div', { style: { display: 'flex', gap: '8px', cursor: 'pointer', marginBottom: '10px', padding: '4px', border: '1px solid transparent' } });
+                    row.dataset.idx = idx;
 
                     row.innerHTML = `
-                        <img src="${p.thumb}" width="70" height="50" style="border:1px solid #999">
+                        <img src="https://img.youtube.com/vi/${p.id}/mqdefault.jpg" width="70" height="50" style="border:1px solid #999">
                         <div style="font-size:11px; line-height:1.2;">
                             <div style="color:#03c; text-decoration:underline; font-weight:bold;">${p.title}</div>
                             <div style="color:#666; margin-top:2px;">From: <span style="color:#03c; text-decoration:underline;">${p.from}</span></div>
                             <div style="color:#666;">Views: ${p.views}</div>
                         </div>
                     `;
-                    row.onmouseover = () => row.style.background = '#eef3fc';
-                    row.onmouseout = () => row.style.background = 'transparent';
+                    row.onmouseover = () => { if (currentVideoIdx !== idx) row.style.background = '#eef3fc'; };
+                    row.onmouseout = () => { if (currentVideoIdx !== idx) row.style.background = 'transparent'; };
                     row.onclick = () => {
                         if (playerInstance) {
-                            playingListId = p.id;
-                            playerInstance.loadPlaylist({ list: p.id });
+                            currentVideoIdx = idx;
+                            updateYoutubeUI(idx);
+                            playerInstance.loadVideoById(p.id);
                         }
                     };
                     playListItems.appendChild(row);
@@ -740,12 +771,14 @@
                         if (!el) return;
                         clearInterval(poll);
 
+                        // Initial UI update
+                        setTimeout(() => updateYoutubeUI(currentVideoIdx), 100);
+
                         playerInstance = new window.YT.Player(playerId, {
                             height: '350',
                             width: '425',
+                            videoId: plData[currentVideoIdx].id,
                             playerVars: {
-                                listType: 'playlist',
-                                list: playingListId,
                                 autoplay: 0,
                                 controls: 0,
                                 disablekb: 1,
@@ -761,21 +794,20 @@
                                     btnPause.onclick = () => playerInstance.pauseVideo();
 
                                     ytInterval = setInterval(() => {
-                                        if (playerInstance && playerInstance.getCurrentTime) {
+                                        if (playerInstance && typeof playerInstance.getCurrentTime === 'function') {
                                             const ct = playerInstance.getCurrentTime();
                                             const d = playerInstance.getDuration() || 0;
                                             timeDisplay.innerText = fmt(ct) + ' / ' + fmt(d);
                                             if (d > 0) progressFill.style.width = (ct / d) * 100 + '%';
-
-                                            // Update title if available
-                                            if (playerInstance.getVideoData) {
-                                                const vd = playerInstance.getVideoData();
-                                                if (vd && vd.title) {
-                                                    titleH.innerText = vd.title;
-                                                }
-                                            }
                                         }
                                     }, 250);
+                                },
+                                onStateChange: (e) => {
+                                    if (e.data === window.YT.PlayerState.ENDED) {
+                                        currentVideoIdx = (currentVideoIdx + 1) % plData.length;
+                                        updateYoutubeUI(currentVideoIdx);
+                                        playerInstance.loadVideoById(plData[currentVideoIdx].id);
+                                    }
                                 }
                             }
                         });
@@ -1383,7 +1415,7 @@
                 secs = Math.floor(secs);
                 const m = Math.floor(secs / 60);
                 const s = secs % 60;
-                return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')} `;
             };
 
             // Criar ID unico pro iframe para a API do Google mapear corretamente
