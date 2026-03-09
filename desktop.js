@@ -567,7 +567,7 @@
             };
 
             const renderYoutube = () => {
-                const wrap = h('div', { style: { padding: '10px 20px', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: '850px', margin: '0 0', color: '#000' } });
+                const wrap = h('div', { style: { padding: '10px 20px', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: '900px', margin: '0 auto', color: '#000' } });
 
                 // Header (logo, search)
                 const header = h('div', { style: {} });
@@ -595,32 +595,77 @@
                 `;
 
                 // Title
-                const titleH = h('h2', { style: { margin: '20px 0 10px', fontSize: '18px', fontFamily: 'Arial', fontWeight: 'bold' } }, "Skateboarding Dog (Beta)");
+                const titleH = h('h2', { style: { margin: '20px 0 10px', fontSize: '18px', fontFamily: 'Arial', fontWeight: 'bold' } }, "GTA San Andreas Bigfoot + UFO");
 
                 const contentSection = h('div', { style: { display: 'flex', gap: '20px' } });
 
                 // Left Box
-                const leftBox = h('div', { style: { width: '425px' } });
+                const leftBox = h('div', { style: { width: '540px' } });
+
+                const videoContainer = h('div', { style: { width: '100%', background: '#000', display: 'flex', flexDirection: 'column' } });
 
                 // Video Area
                 const playerId = getUniqueYtId('yt-video-classic');
-                const videoArea = h('div', { style: { background: '#000', padding: '0', position: 'relative', border: '1px solid #000' } });
-                const playerWrapper = h('div', { id: playerId, style: { width: '100%', height: '350px' } });
+                const videoArea = h('div', { style: { background: '#000', padding: '0', position: 'relative', width: '100%', height: '405px' } });
+                const playerWrapper = h('div', { id: playerId, style: { width: '100%', height: '100%' } });
                 videoArea.appendChild(playerWrapper);
 
-                // Controls mimicking old YT
-                const controlsMenu = h('div', { style: { background: 'linear-gradient(to bottom, #d9d9d9, #bcbcbc)', padding: '5px', display: 'flex', alignItems: 'center', gap: '10px', border: '1px solid #999', borderTop: 'none' } });
-                const btnPlay = h('button', { style: { cursor: 'pointer', fontWeight: 'bold', width: '30px', height: '22px', fontSize: '10px', padding: '0' } }, "▶");
-                const btnPause = h('button', { style: { cursor: 'pointer', fontWeight: 'bold', width: '30px', height: '22px', fontSize: '10px', padding: '0' } }, "⏸");
-                const progressBar = h('div', { style: { flex: 1, background: '#e0e0e0', border: '1px inset #999', height: '8px', position: 'relative', display: 'flex', alignItems: 'center' } });
-                const progressFill = h('div', { style: { background: '#cc181e', width: '0%', height: '100%', transition: 'width 0.2s', borderRight: '1px solid #660000' } });
-                const timeDisplay = h('div', { style: { background: '#000', color: '#fff', fontSize: '10px', padding: '2px 4px', fontFamily: 'Arial' } }, "0:00 / 0:00");
+                // Controls mimicking 2006-2008 exact YT
+                const controlsMenu = h('div', { style: { background: 'linear-gradient(to bottom, #f1f1f1 0%, #e0e0e0 48%, #d1d1d1 52%, #c2c2c2 100%)', padding: '0 8px', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid #999', borderTop: 'none', height: '28px', userSelect: 'none' } });
+                const btnStyle = "cursor:pointer; background:linear-gradient(to bottom, #fff, #ddd); border:1px solid #888; border-radius:3px; padding:2px 8px; font-size:11px; color:#333; height:20px; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 1px rgba(0,0,0,0.1);";
 
+                const btnPlay = h('button', { style: btnStyle, title: 'Play' }, "►");
+                const btnPause = h('button', { style: btnStyle, title: 'Pause' }, "❚❚");
+
+                const trackWrapper = h('div', { style: { flex: 1, padding: '0 5px', display: 'flex', alignItems: 'center', height: '100%' } });
+                const progressBar = h('div', { style: { width: '100%', background: '#fff', border: '1px inset #777', height: '8px', position: 'relative', borderRadius: '4px', cursor: 'pointer' } });
+                const progressFill = h('div', { style: { background: '#cc0000', width: '0%', height: '100%', position: 'relative', borderRadius: '3px' } });
+                const progressThumb = h('div', { style: { position: 'absolute', right: '-6px', top: '-3px', width: '12px', height: '12px', background: 'radial-gradient(circle at 4px 4px, #fff, #999)', border: '1px solid #555', borderRadius: '50%', boxShadow: '0 1px 2px rgba(0,0,0,0.3)' } });
+
+                progressFill.appendChild(progressThumb);
                 progressBar.appendChild(progressFill);
+                trackWrapper.appendChild(progressBar);
+
+                const timeDisplay = h('div', { style: { color: '#000', fontSize: '11px', fontFamily: 'Arial', minWidth: '70px', textAlign: 'center' } }, "0:00 / 0:00");
+
+                const btnVol = h('div', { style: { fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' } });
+                btnVol.innerHTML = `<span>🔊</span> <div style="display:flex; gap:1px; height:8px"><div style="width:3px; background:#444"></div><div style="width:3px; background:#444"></div><div style="width:3px; background:#444"></div></div>`;
+
+                const btnFs = h('button', { style: btnStyle + " padding:2px 6px;", title: 'Expand' }, "⛶");
+
                 controlsMenu.appendChild(btnPlay);
                 controlsMenu.appendChild(btnPause);
-                controlsMenu.appendChild(progressBar);
+                controlsMenu.appendChild(trackWrapper);
                 controlsMenu.appendChild(timeDisplay);
+                controlsMenu.appendChild(btnVol);
+                controlsMenu.appendChild(btnFs);
+
+                btnFs.onclick = () => {
+                    if (!document.fullscreenElement) {
+                        if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
+                        else if (videoContainer.webkitRequestFullscreen) videoContainer.webkitRequestFullscreen();
+                    } else {
+                        if (document.exitFullscreen) document.exitFullscreen();
+                        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                    }
+                };
+
+                const fsHandler = () => {
+                    if (!document.body.contains(videoArea)) {
+                        document.removeEventListener('fullscreenchange', fsHandler);
+                        return;
+                    }
+                    if (document.fullscreenElement === videoContainer) {
+                        videoArea.style.height = 'calc(100vh - 28px)';
+                    } else {
+                        videoArea.style.height = '405px';
+                    }
+                };
+                document.addEventListener('fullscreenchange', fsHandler);
+
+                videoContainer.appendChild(videoArea);
+                videoContainer.appendChild(controlsMenu);
+                leftBox.appendChild(videoContainer);
 
                 // Info Box (Ratings, Views)
                 const infoBox = h('div', { style: { border: '1px solid #ccc', marginTop: '10px', padding: '10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5' } });
@@ -638,13 +683,15 @@
                         <div style="clear:both"></div>
                         <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
                         <div style="text-align:center; color:#333;">
-                            Views: <strong>657,825</strong> &nbsp;|&nbsp; Comments: <strong>1862</strong> &nbsp;|&nbsp; Favorited: <strong>4403</strong> times
+                            Views: <strong id="yt-current-views">657,825</strong> &nbsp;|&nbsp; Comments: <strong>1862</strong> &nbsp;|&nbsp; Favorited: <strong>4403</strong> times
                         </div>
                     </div>
                     <div style="width:35%; border-left:1px dashed #ccc; padding-left:15px; font-size:11px; color:#03c; text-decoration:underline; line-height:1.6; cursor:pointer;">
                         ✉ Share Video<br>💬 Post Video<br>❌ Flag as<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inappropriate
                     </div>
                 `;
+
+                leftBox.appendChild(infoBox);
 
                 // Right Box
                 const rightBox = h('div', { style: { width: '310px' } });
@@ -786,12 +833,24 @@
                                 rel: 0,
                                 showinfo: 0,
                                 iv_load_policy: 3,
-                                origin: window.location.origin
+                                origin: window.location.origin,
+                                fs: 0
                             },
                             events: {
                                 onReady: () => {
                                     btnPlay.onclick = () => playerInstance.playVideo();
                                     btnPause.onclick = () => playerInstance.pauseVideo();
+
+                                    progressBar.onclick = (e) => {
+                                        if (playerInstance && typeof playerInstance.getDuration === 'function') {
+                                            const rect = progressBar.getBoundingClientRect();
+                                            let p = (e.clientX - rect.left) / rect.width;
+                                            p = Math.max(0, Math.min(1, p));
+                                            playerInstance.seekTo(p * playerInstance.getDuration(), true);
+                                            // Optional: Force visual update
+                                            progressFill.style.width = (p * 100) + '%';
+                                        }
+                                    };
 
                                     ytInterval = setInterval(() => {
                                         if (playerInstance && typeof playerInstance.getCurrentTime === 'function') {
@@ -800,7 +859,7 @@
                                             timeDisplay.innerText = fmt(ct) + ' / ' + fmt(d);
                                             if (d > 0) progressFill.style.width = (ct / d) * 100 + '%';
                                         }
-                                    }, 250);
+                                    }, 150);
                                 },
                                 onStateChange: (e) => {
                                     if (e.data === window.YT.PlayerState.ENDED) {
