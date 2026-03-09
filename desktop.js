@@ -2058,31 +2058,43 @@
                 const emojiPanel = h('div', {
                     style: {
                         display: 'none', position: 'absolute', bottom: '25px', left: '0',
-                        background: '#fff', border: '1px solid #7f9db9', padding: '5px',
-                        boxShadow: '2px 2px 5px rgba(0,0,0,0.2)', width: '150px',
-                        flexWrap: 'wrap', gap: '5px', zIndex: 100
+                        background: '#f9fbfd', border: '1px solid #7f9db9', padding: '5px',
+                        boxShadow: '2px 2px 5px rgba(0,0,0,0.2)', width: '380px',
+                        gridTemplateColumns: 'repeat(10, 1fr)', gap: '2px', zIndex: 100
                     }
                 });
 
-                const emojis = [':)', ':(', ':D', ':O', ';)', '8)', ':@', ':S', ':$', ':(|)', '(Y)', '(N)', 'xD', 'O_o', ':P', '^^'];
-                emojis.forEach(emo => {
-                    const span = h('span', {
-                        style: { cursor: 'pointer', padding: '2px 5px', fontSize: '11px', fontFamily: 'monospace' }
-                    }, emo);
-                    span.onclick = (e) => {
+                const emoticons = [
+                    { e: '🙂', t: ':)' }, { e: '😀', t: ':D' }, { e: '😉', t: ';)' }, { e: '😲', t: ':-O' }, { e: '😛', t: ':P' }, { e: '😎', t: '(H)' }, { e: '😡', t: ':@' }, { e: '😕', t: ':S' }, { e: '😳', t: ':$' }, { e: '🙁', t: ':(' },
+                    { e: '😢', t: ':\\\'(' }, { e: '😐', t: ':|' }, { e: '😇', t: '(A)' }, { e: '😬', t: '8o|' }, { e: '🤓', t: '8-|' }, { e: '🤢', t: '+o(' }, { e: '🥳', t: '<:o)' }, { e: '😴', t: '|-)' }, { e: '🤔', t: '*-)' }, { e: '🤐', t: ':-#' },
+                    { e: '😙', t: ':-*' }, { e: '🤨', t: '^o)' }, { e: '🙄', t: '8-)' }, { e: '❤️', t: '(L)' }, { e: '💔', t: '(U)' }, { e: '👤', t: '(M)' }, { e: '🐱', t: '(@)' }, { e: '🐶', t: '(&)' }, { e: '🐌', t: '(sn)' }, { e: '🐑', t: '(bah)' },
+                    { e: '🌙', t: '(S)' }, { e: '⭐', t: '(*)' }, { e: '☀️', t: '(#)' }, { e: '🌈', t: '(R)' }, { e: '🫂', t: '({})' }, { e: '🫂', t: '(})' }, { e: '💋', t: '(K)' }, { e: '🌹', t: '(F)' }, { e: '🥀', t: '(W)' }, { e: '⌚', t: '(O)' }
+                ];
+
+                emoticons.forEach(emo => {
+                    const wrapEmo = h('div', {
+                        style: {
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                            height: '36px', cursor: 'pointer', border: '1px solid transparent', backgroundColor: 'transparent'
+                        }
+                    });
+                    wrapEmo.innerHTML = `<div style="font-size:16px; line-height:1.2; text-shadow:0px 0px 1px rgba(0,0,0,0.2)">${emo.e}</div><div style="font-size:9px; color:#333; font-family:Tahoma">${emo.t}</div>`;
+
+                    wrapEmo.onclick = (e) => {
                         e.stopPropagation();
-                        input.value += (input.value ? ' ' : '') + emo;
+                        input.value += (input.value ? ' ' : '') + emo.t;
                         emojiPanel.style.display = 'none';
                         input.focus();
                     };
-                    span.onmouseover = () => span.style.background = '#eef3fc';
-                    span.onmouseout = () => span.style.background = 'transparent';
-                    emojiPanel.appendChild(span);
+                    wrapEmo.onmouseover = () => { wrapEmo.style.borderColor = '#316ac5'; wrapEmo.style.backgroundColor = '#c1d2ee'; };
+                    wrapEmo.onmouseout = () => { wrapEmo.style.borderColor = 'transparent'; wrapEmo.style.backgroundColor = 'transparent'; };
+
+                    emojiPanel.appendChild(wrapEmo);
                 });
 
                 btnEmoji.appendChild(emojiPanel);
                 btnEmoji.onclick = () => {
-                    emojiPanel.style.display = emojiPanel.style.display === 'none' ? 'flex' : 'none';
+                    emojiPanel.style.display = emojiPanel.style.display === 'none' ? 'grid' : 'none';
                 };
 
                 // Close panel if clicked outside
