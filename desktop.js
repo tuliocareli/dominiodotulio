@@ -419,7 +419,7 @@
             const addrUrl = h('div', { class: 'xp-browser-url' });
             addrBar.appendChild(addrUrl);
 
-            const browserBody = h('div', { class: 'xp-browser-body xp-browser-scroll', style: { position: 'relative', overflow: 'hidden' } });
+            const browserBody = h('div', { class: 'xp-browser-body xp-browser-scroll', style: { position: 'relative', display: 'flex', flexDirection: 'column', flex: '1', minHeight: '0' } });
             const status = h('div', { class: 'xp-ie-status' });
 
             const renderJogosOnline = () => {
@@ -696,7 +696,7 @@
             };
 
             const renderYoutube = () => {
-                const wrap = h('div', { style: { padding: '10px 20px', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: '950px', margin: '0 auto', color: '#000', boxSizing: 'border-box', height: '100%', minHeight: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' } });
+                const wrap = h('div', { style: { padding: '10px 20px', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: '950px', width: '100%', margin: '0 auto', color: '#000', boxSizing: 'border-box', height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' } });
 
                 // ── DATA ─────────────────────────────────────────
                 const plData = [
@@ -977,7 +977,8 @@
                 status.textContent = '✔ Concluído — ' + tab.url;
 
                 browserBody.innerHTML = '';
-                if (tab.id === 'youtube') browserBody.style.background = '#fff'; // Reset bg for YT
+                browserBody.scrollTop = 0;
+                if (tab.id === 'youtube') browserBody.style.background = '#fff';
                 else browserBody.style.background = 'transparent';
 
                 if (tab.type === 'mockup') {
