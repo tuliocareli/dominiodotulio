@@ -57,11 +57,8 @@ module.exports = async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
-        // Usando gemini-1.5-flash com systemInstruction na configuração do modelo (padrão recomendado)
-        const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
-            systemInstruction: TULIO_PROMPT
-        });
+        // gemini-flash-latest é o alias que o Google confirmou estar disponível para sua chave
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
         if (req.method === 'GET') {
             const queryMsg = req.query.msg || 'Diga oi';
@@ -77,7 +74,10 @@ module.exports = async function handler(req, res) {
             const { message } = req.body || {};
             if (!message) return res.status(400).json({ error: 'Mensagem vazia' });
 
-            const result = await model.generateContent(message);
+            const result = await model.generateContent({
+                contents: [{ role: 'user', parts: [{ text: message }] }],
+                systemInstruction: TULIO_PROMPT
+            });
 
             const response = await result.response;
             return res.status(200).json({ reply: response.text().trim() });
