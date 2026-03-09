@@ -1952,25 +1952,164 @@
                 header.appendChild(iconWrap);
                 header.appendChild(titleInfo);
 
-                const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', borderBottom: '1px solid #ccc' } });
-                chatBox.innerHTML = `<div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- ${contactName} acabou de entrar ---</div>`;
+                const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', borderBottom: '1px solid #ccc', scrollBehavior: 'smooth' } });
 
-                if (isLets) {
-                    chatBox.innerHTML += `
-                        <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
-                        <div style="margin-bottom: 10px; padding-left: 10px; font-family: 'Comic Sans MS'; color: #000080">oioioioi</div>
+                // Add shake style globally if not present
+                if (!document.getElementById('msn-shake-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'msn-shake-style';
+                    style.textContent = `
+                        @keyframes msn-shake {
+                            0% { transform: translate(1px, 1px) rotate(0deg); }
+                            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+                            20% { transform: translate(-3px, 0px) rotate(1deg); }
+                            30% { transform: translate(3px, 2px) rotate(0deg); }
+                            40% { transform: translate(1px, -1px) rotate(1deg); }
+                            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+                            60% { transform: translate(-3px, 1px) rotate(0deg); }
+                            70% { transform: translate(3px, 1px) rotate(-1deg); }
+                            80% { transform: translate(-1px, -1px) rotate(1deg); }
+                            90% { transform: translate(1px, 2px) rotate(0deg); }
+                            100% { transform: translate(1px, -2px) rotate(-1deg); }
+                        }
+                        .shaking {
+                            animation: msn-shake 0.1s;
+                            animation-iteration-count: 4;
+                        }
                     `;
-                } else {
-                    chatBox.innerHTML += `
-                        <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
-                        <div style="margin-bottom: 10px; padding-left: 10px; color: #000080">Olá, tudo bem por ai?</div>
-                    `;
+                    document.head.appendChild(style);
                 }
+
+                // Storage key for this contact
+                const storageKey = `tulio_msn_hist_${contactName}`;
+                let history = [];
+                try {
+                    const stored = localStorage.getItem(storageKey);
+                    if (stored) history = JSON.parse(stored);
+                } catch (e) { }
+
+                const saveHistory = () => {
+                    localStorage.setItem(storageKey, JSON.stringify(history));
+                };
+
+                const renderHistory = () => {
+                    chatBox.innerHTML = `<div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- ${contactName} acabou de entrar ---</div>`;
+
+                    if (history.length === 0) {
+                        // Default first message if no history
+                        if (isLets) {
+                            chatBox.innerHTML += `
+                                <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
+                                <div style="margin-bottom: 10px; padding-left: 10px; font-family: 'Comic Sans MS'; color: #000080">oioioioi</div>
+                            `;
+                        } else {
+                            chatBox.innerHTML += `
+                                <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
+                                <div style="margin-bottom: 10px; padding-left: 10px; color: #000080">Olá, tudo bem por ai?</div>
+                            `;
+                        }
+                    } else {
+                        // Render stored history
+                        history.forEach(msg => {
+                            if (msg.type === 'system') {
+                                appendSystemMessage(msg.text, msg.color, false);
+                            } else if (msg.sender === 'Você') {
+                                const msgWrap = document.createElement('div');
+                                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${msg.text}</div>`;
+                                chatBox.appendChild(msgWrap);
+                            } else {
+                                const botWrap = document.createElement('div');
+                                botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${msg.text}</div>`;
+                                chatBox.appendChild(botWrap);
+                            }
+                        });
+                    }
+                    setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 10);
+                };
+
+                const playReceiveMsgSound = () => {
+                    try {
+                        const C = window.AudioContext || window.webkitAudioContext;
+                        if (C) {
+                            const c = new C();
+                            const playBeep = (freq, start, dur) => {
+                                const o = c.createOscillator(), g = c.createGain();
+                                o.type = 'sine'; o.frequency.setValueAtTime(freq, start);
+                                g.gain.setValueAtTime(0, start);
+                                g.gain.linearRampToValueAtTime(0.3, start + 0.02);
+                                g.gain.exponentialRampToValueAtTime(0.01, start + dur);
+                                o.connect(g); g.connect(c.destination);
+                                o.start(start); o.stop(start + dur);
+                            };
+                            playBeep(600, c.currentTime, 0.15);
+                            playBeep(800, c.currentTime + 0.15, 0.2);
+                        }
+                    } catch (e) { }
+                };
 
                 const inputBox = h('div', { style: { height: '80px', padding: '5px', background: '#ece9d8', display: 'flex', flexDirection: 'column' } });
 
-                const toolBar = h('div', { style: { display: 'flex', gap: '4px', marginBottom: '4px' } });
-                toolBar.innerHTML = `<span style="cursor:pointer">🅰️</span><span style="cursor:pointer">😊</span><span style="cursor:pointer">🎵</span>`;
+                const toolBar = h('div', { style: { display: 'flex', gap: '8px', marginBottom: '4px', fontSize: '13px' } });
+
+                // Emoticons Button
+                const btnEmoji = h('span', { style: { cursor: 'pointer', position: 'relative' }, title: 'Emoticons' }, '😊');
+
+                // Emoji Panel
+                const emojiPanel = h('div', {
+                    style: {
+                        display: 'none', position: 'absolute', bottom: '25px', left: '0',
+                        background: '#fff', border: '1px solid #7f9db9', padding: '5px',
+                        boxShadow: '2px 2px 5px rgba(0,0,0,0.2)', width: '150px',
+                        flexWrap: 'wrap', gap: '5px', zIndex: 100
+                    }
+                });
+
+                const emojis = [':)', ':(', ':D', ':O', ';)', '8)', ':@', ':S', ':$', ':(|)', '(Y)', '(N)', 'xD', 'O_o', ':P', '^^'];
+                emojis.forEach(emo => {
+                    const span = h('span', {
+                        style: { cursor: 'pointer', padding: '2px 5px', fontSize: '11px', fontFamily: 'monospace' }
+                    }, emo);
+                    span.onclick = (e) => {
+                        e.stopPropagation();
+                        input.value += (input.value ? ' ' : '') + emo;
+                        emojiPanel.style.display = 'none';
+                        input.focus();
+                    };
+                    span.onmouseover = () => span.style.background = '#eef3fc';
+                    span.onmouseout = () => span.style.background = 'transparent';
+                    emojiPanel.appendChild(span);
+                });
+
+                btnEmoji.appendChild(emojiPanel);
+                btnEmoji.onclick = () => {
+                    emojiPanel.style.display = emojiPanel.style.display === 'none' ? 'flex' : 'none';
+                };
+
+                // Close panel if clicked outside
+                viewContainer.addEventListener('click', (e) => {
+                    if (e.target !== btnEmoji && !emojiPanel.contains(e.target)) {
+                        emojiPanel.style.display = 'none';
+                    }
+                });
+
+                // Nudge Button
+                const btnNudge = h('span', { style: { cursor: 'pointer' }, title: 'Chamar a atenção' }, '🔔');
+                btnNudge.onclick = () => {
+                    appendSystemMessage('Você enviou um chamar a atenção!', '#000000');
+                    playNudgeSound();
+
+                    // Encontrar a janela raiz .xp-window relativa ao viewContainer
+                    let win = wrap.closest('.xp-window');
+                    if (win) {
+                        win.classList.remove('shaking');
+                        void win.offsetWidth; // trigger reflow
+                        win.classList.add('shaking');
+                    }
+                };
+
+                toolBar.appendChild(h('span', { style: { cursor: 'pointer' }, title: 'Fonte' }, '🅰️'));
+                toolBar.appendChild(btnEmoji);
+                toolBar.appendChild(btnNudge);
 
                 const form = h('form', { style: { display: 'flex', gap: '5px', flex: 1 } });
                 const input = h('input', { type: 'text', style: { flex: 1, border: '1px solid #7f9db9', padding: '4px' }, placeholder: 'Escreva uma mensagem...' });
@@ -1981,10 +2120,8 @@
                 inputBox.appendChild(toolBar);
                 inputBox.appendChild(form);
 
-                let letsNudgeSent = false;
-
                 let sessionMsgCount = 0;
-                const SESSION_MSG_LIMIT = 10;
+                const SESSION_MSG_LIMIT = 15;
                 let isWaitingReply = false;
 
                 const appendBotMessage = (resp) => {
@@ -1992,14 +2129,21 @@
                     botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${resp}</div>`;
                     chatBox.appendChild(botWrap);
                     chatBox.scrollTop = chatBox.scrollHeight;
+                    history.push({ sender: contactName, text: resp });
+                    saveHistory();
+                    playReceiveMsgSound();
                 };
 
-                const appendSystemMessage = (text, color = '#666') => {
+                const appendSystemMessage = (text, color = '#666', shouldSave = true) => {
                     const sysWrap = document.createElement('div');
                     sysWrap.style.cssText = `color:${color}; font-size:11px; text-align:center; margin:10px 0; font-style:italic`;
                     sysWrap.innerText = text;
                     chatBox.appendChild(sysWrap);
                     chatBox.scrollTop = chatBox.scrollHeight;
+                    if (shouldSave) {
+                        history.push({ type: 'system', text: text, color: color });
+                        saveHistory();
+                    }
                 };
 
                 form.onsubmit = async (e) => {
@@ -2017,6 +2161,9 @@
                     const msgWrap = document.createElement('div');
                     msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${rawMsg}</div>`;
                     chatBox.appendChild(msgWrap);
+                    history.push({ sender: 'Você', text: rawMsg });
+                    saveHistory();
+
                     input.value = '';
                     chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -2053,8 +2200,11 @@
                     } finally {
                         isWaitingReply = false;
                         btn.disabled = false;
+                        input.focus();
                     }
                 };
+
+                renderHistory();
 
                 viewContainer.appendChild(header);
                 viewContainer.appendChild(chatBox);
