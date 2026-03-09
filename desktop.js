@@ -96,8 +96,6 @@
     const ensureYT = (cb) => {
         if (window.YT && window.YT.Player) return cb();
         ytCallbacks.push(cb);
-        if (ytAPILoading) return;
-        ytAPILoading = true;
         if (!document.getElementById('yt-iframe-api')) {
             const script = document.createElement('script');
             script.id = 'yt-iframe-api';
@@ -399,9 +397,9 @@
                 { name: 'Flogão', url: 'http://www.flogao.com.br/tuliocareli', type: 'mockup', id: 'flogao' },
                 { name: 'Jogos Online', url: 'http://www.jogosonline.com.br', type: 'mockup', id: 'jogosonline' },
                 { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', wayback: 'https://web.archive.org/web/20040803011553/http://www.eagames.com/official/nfs/underground2/us/home.jsp?ncc=1' },
-                { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com', img: 'telas pro tulio explorer/cartoonnetwork.com.png' },
-                { name: 'Naruto Project', url: 'http://www.narutoproject.com.br', img: 'telas pro tulio explorer/narutoproject.com.br.jpg' },
-                { name: 'MySpace', url: 'http://www.myspace.com', img: 'telas pro tulio explorer/myspace.com.jpg' },
+                { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com', img: 'imagens/cartoonnetwork.com.png' },
+                { name: 'Naruto Project', url: 'http://www.narutoproject.com.br', img: 'imagens/narutoproject.com.br.jpg' },
+                { name: 'MySpace', url: 'http://www.myspace.com', img: 'imagens/myspace.com.jpg' },
             ];
 
             let activeIdx = 0; // Começar na Tony Hawk que é mais estável no boot
