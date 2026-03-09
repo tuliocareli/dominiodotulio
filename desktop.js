@@ -404,9 +404,9 @@
                 { name: 'MySpace', url: 'http://www.myspace.com', img: 'telas pro tulio explorer/myspace.com.jpg' },
             ];
 
-            let activeIdx = 1;
+            let activeIdx = 0; // Começar na Tony Hawk que é mais estável no boot
 
-            const wrap = h('div', { class: 'xp-browser xp-browser--tabbed' });
+            const browserWrap = h('div', { class: 'xp-browser xp-browser--tabbed' });
             const toolbar = h('div', {
                 class: 'xp-ie-toolbar', html:
                     '<span>Arquivo</span><span>Editar</span><span>Exibir</span>' +
@@ -419,7 +419,7 @@
             const addrUrl = h('div', { class: 'xp-browser-url' });
             addrBar.appendChild(addrUrl);
 
-            const body = h('div', { class: 'xp-browser-body xp-browser-scroll', style: { position: 'relative', overflow: 'hidden' } });
+            const browserBody = h('div', { class: 'xp-browser-body xp-browser-scroll', style: { position: 'relative', overflow: 'hidden' } });
             const status = h('div', { class: 'xp-ie-status' });
 
             const renderJogosOnline = () => {
@@ -976,15 +976,18 @@
                 addrUrl.textContent = tab.url;
                 status.textContent = '✔ Concluído — ' + tab.url;
 
-                body.innerHTML = '';
+                browserBody.innerHTML = '';
+                if (tab.id === 'youtube') browserBody.style.background = '#fff'; // Reset bg for YT
+                else browserBody.style.background = 'transparent';
+
                 if (tab.type === 'mockup') {
-                    if (tab.id === 'orkut') body.appendChild(renderOrkut());
-                    else if (tab.id === 'flogao') body.appendChild(renderFlogao());
-                    else if (tab.id === 'jogosonline') body.appendChild(renderJogosOnline());
+                    if (tab.id === 'orkut') browserBody.appendChild(renderOrkut());
+                    else if (tab.id === 'flogao') browserBody.appendChild(renderFlogao());
+                    else if (tab.id === 'jogosonline') browserBody.appendChild(renderJogosOnline());
                     else if (tab.id === 'youtube') {
                         const ytEl = renderYoutube();
-                        wrap._currentCleanup = ytEl._cleanup;
-                        body.appendChild(ytEl);
+                        browserWrap._currentCleanup = ytEl._cleanup;
+                        browserBody.appendChild(ytEl);
                     }
                 } else if (tab.wayback) {
                     // Iframe interativo com ajuste fino de posicionamento e escala
@@ -1006,28 +1009,28 @@
                             width: '1024px',
                             height: '1200px',
                             border: 'none',
-                            marginTop: '0px', // Corte removido para mostrar a logo completa
+                            marginTop: '0px',
                             background: '#fff',
-                            transform: 'scale(1.2)', // Mais zoom como solicitado
+                            transform: 'scale(1.2)',
                             transformOrigin: 'top center'
                         }
                     });
                     iframeContainer.appendChild(iframe);
-                    body.appendChild(iframeContainer);
+                    browserBody.appendChild(iframeContainer);
                 } else {
                     const siteImg = h('img', { src: tab.img, class: 'xp-browser-site-img', alt: tab.name });
-                    body.appendChild(siteImg);
+                    browserBody.appendChild(siteImg);
                 }
             }
 
             switchTab(activeIdx);
 
-            wrap.appendChild(toolbar);
-            wrap.appendChild(tabBar);
-            wrap.appendChild(addrBar);
-            wrap.appendChild(body);
-            wrap.appendChild(status);
-            return wrap;
+            browserWrap.appendChild(toolbar);
+            browserWrap.appendChild(tabBar);
+            browserWrap.appendChild(addrBar);
+            browserWrap.appendChild(browserBody);
+            browserWrap.appendChild(status);
+            return browserWrap;
         },
 
         winamp: () => h('div', { class: 'xp-winamp' },
