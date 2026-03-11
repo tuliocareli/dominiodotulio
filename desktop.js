@@ -421,25 +421,14 @@
                 wrapOuter.appendChild(wrap);
 
                 const infoRows = [
-                    { label: 'relacionamento:', val: 'solteiro(a)' },
-                    { label: 'aniversário:', val: '21 março' },
-                    { label: 'idade:', val: '20' },
-                    { label: 'interesses no orkut:', val: 'amigos, companheiros para atividades, namoro (mulheres)' },
-                    { label: 'quem sou eu:', val: 'nao sei tentando descobri! o>O as vezes so retardado as vezes chato pra cacete as vezes legl' },
-                    { label: 'filhos:', val: 'não' },
+                    { label: 'relacionamento:', val: 'compromissado' },
+                    { label: 'aniversário:', val: '23 de abril' },
+                    { label: 'idade:', val: '28' },
+                    { label: 'interesses no orkut:', val: 'amigos' },
+                    { label: 'quem sou eu:', val: 'tecnicamente impressionante, esteticamente horrivel O_o' },
                     { label: 'etnia:', val: 'caucasiano (branco)' },
-                    { label: 'humor:', val: 'extrovertido/extravagante' },
-                    { label: 'orientação sexual:', val: 'heterossexual' },
-                    { label: 'estilo:', val: 'urbano' },
-                    { label: 'fumo:', val: 'não' },
-                    { label: 'bebo:', val: 'não' },
-                    { label: 'animais de estimação:', val: 'não gosto de animais de estimação' },
-                    { label: 'moro:', val: 'com meus pais' },
-                    { label: 'cidade natal:', val: 'tangara da serra' },
-                    { label: 'página web:', val: h('a', { href: '#', style: { color: '#0033cc' } }, 'http://ryl2phoenix.com/') },
-                    { label: 'paixões:', val: 'nada lol' },
-                    { label: 'esportes:', val: 'nenhum =S' },
-                    { label: 'atividades:', val: 'lol n tenh XD' }
+                    { label: 'cidade natal:', val: 'BH' },
+                    { label: 'página web:', val: h('a', { href: '#', style: { color: '#0033cc' } }, 'tuliocareli.com') }
                 ];
 
                 const getScraps = () => JSON.parse(localStorage.getItem('orkut_scraps') || '[]');
@@ -448,8 +437,8 @@
                     wrap.innerHTML = '';
                     wrapOuter.style.background = '#e8eef7'; // Classic light blue background
 
-                    const userName = "Gr3g0LLy FeLipe franca";
-                    const email = "armandotobias@gmail.com";
+                    const userName = "tuliocareli";
+                    const email = "tulio@email.com";
 
                     // TOP HEADER
                     const header = h('header', { style: { background: '#688cb8', padding: '0 15px', color: '#fff', fontSize: '11px', display: 'flex', alignItems: 'center', height: '35px', justifyContent: 'space-between' } },
@@ -476,11 +465,11 @@
                     // ── LEFT COLUMN ──
                     const leftCol = h('div', { style: { width: '160px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '10px' } });
 
-                    leftCol.appendChild(h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #c4d4e9', padding: '2px', background: '#fff' } }));
+                    leftCol.appendChild(h('img', { src: 'imagens/orkut_amigo_9.png', style: { width: '100%', border: '1px solid #c4d4e9', padding: '2px', background: '#fff' } }));
 
                     leftCol.appendChild(h('div', { style: { fontSize: '11px', lineHeight: '1.4' } },
                         h('div', { style: { color: '#0033cc', fontWeight: 'bold' } }, userName),
-                        h('div', { style: { color: '#666' } }, 'masculino, solteiro(a)', h('br'), 'tangara da serra, Brasil')
+                        h('div', { style: { color: '#666' } }, 'masculino, compromissado', h('br'), 'BH, Brasil')
                     ));
 
                     leftCol.appendChild(h('div', { style: { color: '#0033cc', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' } },
@@ -886,6 +875,10 @@
 
                 const videos = [
                     { id: 'yU5KXTDCf-0', min: '3:51', t: 'GTA San Andreas Bigfoot + UFO', f: 'ScapeTheGoat', v: '1,235,901' },
+                    { id: 'OiT1RyTZgcg', min: '1:24', t: 'Mario na fase do cogumelo do sol Tunadíssimo.', f: 'zegracagames', v: '5,407,110' },
+                    { id: '02vyPaYPdl8', min: '4:11', t: 'Erros Bizonhos 1', f: 'ZgracaRetro', v: '2,901,344' },
+                    { id: 'Nffd0NZERKQ', min: '6:02', t: 'BRKs_EDU - Team Deathmatch - Modern Warfare', f: 'BRKsEDU', v: '5,012,778' },
+                    { id: 'oHg5SJYRHA0', min: '3:32', t: 'RickRoll\'D', f: 'cotter548', v: '91,330,210' },
                     { id: 'y8Kyi0WNg40', min: '0:05', t: 'Dramatic Look', f: 'Sleepingplanet', v: '49,155,301' },
                     { id: '6zlViU5PBPY', min: '10:04', t: 'Night at the roxbury-What is love? original gif', f: 'funnyhoney', v: '18,540,110' },
                     { id: 'ZN5PoW7_kdA', min: '1:36', t: 'The Annoying Orange', f: 'Annoying Orange', v: '230,901,344' },
