@@ -392,6 +392,8 @@
             )
         )),
 
+
+
         ie: () => {
             const TABS = [
                 { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', wayback: 'https://web.archive.org/web/20031206081727/http://www.activision.com/microsite/thug/thug.html' },
@@ -405,152 +407,17 @@
                 { name: 'MySpace', url: 'http://www.myspace.com', img: 'imagens/myspace.com.jpg' },
             ];
 
-            let activeIdx = 0; // Começar na Tony Hawk que é mais estável no boot
-
+            let activeIdx = 0;
             const browserWrap = h('div', { class: 'xp-browser xp-browser--tabbed' });
-            const toolbar = h('div', {
-                class: 'xp-ie-toolbar', html:
-                    '<span>Arquivo</span><span>Editar</span><span>Exibir</span>' +
-                    '<span>Favoritos</span><span>Ferramentas</span><span>Ajuda</span>'
-            });
+            const toolbar = h('div', { class: 'xp-ie-toolbar', html: '<span>Arquivo</span><span>Editar</span><span>Exibir</span><span>Favoritos</span><span>Ferramentas</span><span>Ajuda</span>' });
             const tabBar = h('div', { class: 'xp-tab-bar' });
-            const addrBar = h('div', { class: 'xp-browser-bar' },
-                h('span', { class: 'xp-browser-label' }, '🌐'),
-            );
+            const addrBar = h('div', { class: 'xp-browser-bar' }, h('span', { class: 'xp-browser-label' }, '🌐'));
             const addrUrl = h('div', { class: 'xp-browser-url' });
             addrBar.appendChild(addrUrl);
-
             const browserBody = h('div', { class: 'xp-browser-body xp-browser-scroll', style: { position: 'relative', display: 'flex', flexDirection: 'column', flex: '1', minHeight: '0' } });
             const status = h('div', { class: 'xp-ie-status' });
 
-            const renderJogosOnline = () => {
-                const wrap = h('div', { style: { background: '#fff', height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflowY: 'auto', fontFamily: 'Arial, sans-serif' } });
-
-                const games = [
-                    { id: 'motocross', name: 'TG Motocross 2', swf: 'jogoflash/TG_Motocross_2.swf', thumb: 'imagens/jogos_motocross.png', category: 'Esportes' },
-                    { id: 'bmx', name: 'BMX Stunts', swf: 'jogoflash/bmx.swf', thumb: 'imagens/jogos_bmx.png', category: 'Ação' },
-                    { id: 'ride', name: 'Create a Ride', swf: 'jogoflash/createaride.swf', thumb: 'imagens/jogos_ride.png', category: 'Corrida' }
-                ];
-
-                const showHome = () => {
-                    wrap.innerHTML = '';
-                    const header = h('div', { style: { background: 'linear-gradient(to right, #ffffff, #dbeefd)', padding: '15px 25px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #004a99' } },
-                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '15px' } },
-                            h('img', { src: 'imagens/jogos_logo.png', style: { height: '50px', filter: 'drop-shadow(2px 2px 0px #000)' } }),
-                            h('div', { style: { color: '#004a99', fontSize: '14px', fontWeight: 'bold', fontStyle: 'italic' } }, 'Os melhores jogos da internet!')
-                        ),
-                        h('div', { style: { fontSize: '11px', color: '#666' } }, 'BEM-VINDO, VISITANTE!')
-                    );
-
-                    const nav = h('div', { style: { background: '#0055aa', padding: '8px 25px', display: 'flex', gap: '2px', color: '#fff', fontSize: '12px', fontWeight: 'bold' } },
-                        ['Home', 'Ação', 'Esportes', 'Corrida', 'Multijogador', 'Mais v'].map((t, i) => h('div', {
-                            style: {
-                                padding: '4px 15px',
-                                background: i === 0 ? '#fff' : 'transparent',
-                                color: i === 0 ? '#0055aa' : '#fff',
-                                borderRadius: '3px 3px 0 0',
-                                cursor: 'pointer'
-                            }
-                        }, t))
-                    );
-
-                    const content = h('div', { style: { padding: '20px', display: 'flex', gap: '25px', flex: 1, background: '#f0f8ff' } });
-
-                    // Main Grid
-                    const left = h('div', { style: { flex: 1 } });
-                    const featured = h('div', { style: { border: '1px solid #0055aa', background: '#fff', padding: '15px', borderRadius: '5px', marginBottom: '20px' } });
-                    featured.innerHTML = `<h3 style="margin:0 0 15px; color:#0055aa; border-bottom:1px solid #ddd; padding-bottom:5px;">Novidades da Semana</h3>`;
-
-                    const grid = h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '20px' } });
-
-                    games.forEach(g => {
-                        const item = h('div', {
-                            style: { background: '#fff', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer', textAlign: 'center', transition: 'transform 0.2s' },
-                            onclick: () => play(g),
-                            onmouseover: (e) => e.currentTarget.style.transform = 'scale(1.05)',
-                            onmouseout: (e) => e.currentTarget.style.transform = 'scale(1)'
-                        },
-                            h('img', { src: g.thumb, style: { width: '100%', height: '90px', objectFit: 'cover', borderRadius: '3px', marginBottom: '8px' } }),
-                            h('div', { style: { fontSize: '12px', fontWeight: 'bold', color: '#004a99', height: '2.8em', overflow: 'hidden' } }, g.name),
-                            h('div', { style: { fontSize: '10px', color: '#888', marginTop: '4px' } }, g.category)
-                        );
-                        grid.appendChild(item);
-                    });
-
-                    featured.appendChild(grid);
-                    left.appendChild(featured);
-
-                    // Right Sidebar Placeholder
-                    const right = h('div', { style: { width: '250px' } });
-                    right.innerHTML = `
-                        <div style="background:#ff9900; color:#fff; padding:15px; border-radius:5px; text-align:center; font-weight:bold; margin-bottom:20px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
-                            CURTA NOSSA PÁGINA NO ORKUT!
-                        </div>
-                        <div style="background:#fff; border:1px solid #ccc; padding:10px; border-radius:5px;">
-                            <h4 style="margin:0 0 10px; color:#0055aa;">Top Jogos</h4>
-                            <ol style="margin:0; padding-left:20px; font-size:12px; line-height:1.8; color:#333;">
-                                <li>TG Motocross 2</li>
-                                <li>BMX Stunts</li>
-                                <li>Create a Ride</li>
-                                <li>RuneScape</li>
-                                <li>Club Penguin</li>
-                            </ol>
-                        </div>
-                    `;
-
-                    content.appendChild(left);
-                    content.appendChild(right);
-
-                    const footer = h('footer', { style: { background: '#004a99', padding: '15px', textAlign: 'center', color: '#fff', fontSize: '11px' } },
-                        '© 2004 JOGOS ONLINE - Diversão garantida em 56kbps!'
-                    );
-
-                    wrap.appendChild(header);
-                    wrap.appendChild(nav);
-                    wrap.appendChild(content);
-                    wrap.appendChild(footer);
-                };
-
-                const play = (game) => {
-                    wrap.innerHTML = '';
-                    const header = h('div', { style: { background: '#004a99', padding: '10px 25px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
-                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', userSelect: 'none' }, onclick: showHome },
-                            h('img', { src: 'imagens/jogos_logo.png', style: { height: '35px' } }),
-                            h('span', { style: { color: '#fff', fontSize: '12px', fontWeight: 'bold', textDecoration: 'underline' } }, 'Voltar ao Início')
-                        ),
-                        h('div', { style: { color: '#fff', fontSize: '16px', fontWeight: 'bold' } }, game.name)
-                    );
-
-                    const gameArea = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#003366', padding: '30px' } });
-
-                    const playerCont = h('div', { id: 'ruffle-container', style: { width: '640px', height: '480px', background: '#000', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 0 30px rgba(0,0,0,0.8)', border: '5px solid #0055aa' } });
-
-                    gameArea.appendChild(playerCont);
-                    gameArea.appendChild(h('div', { style: { marginTop: '20px', fontSize: '12px', color: '#abc', textAlign: 'center', maxWidth: '500px' } }, 'Direito de criação dos jogos para seus respectivos criadores.'));
-
-                    wrap.appendChild(header);
-                    wrap.appendChild(gameArea);
-
-                    // Initialize Ruffle (Ensure ruffle is loaded)
-                    if (window.RufflePlayer) {
-                        const ruffle = window.RufflePlayer.newest();
-                        const player = ruffle.createPlayer();
-                        playerCont.appendChild(player);
-                        player.style.width = '100%';
-                        player.style.height = '100%';
-                        player.load({
-                            url: game.swf,
-                            allowScriptAccess: true
-                        }).catch(e => console.error("Ruffle Error:", e));
-                    } else {
-                        playerCont.innerHTML = `<div style="color:#fff; padding:20px; text-align:center;">Carregando Ruffle Player...</div>`;
-                    }
-                };
-
-                showHome();
-                return wrap;
-            };
-
+            // ── Mockup Content Builders ──────────────────
             const renderOrkut = () => {
                 const infoRows = [
                     { label: 'relacionamento:', val: 'compromissado' },
@@ -558,479 +425,373 @@
                     { label: 'idade:', val: '28' },
                     { label: 'interesses no orkut:', val: 'amigos' },
                     { label: 'quem sou eu:', val: 'tecnicamente impressionante, esteticamente horrivel O_o' },
-                    { label: 'filhos:', val: 'não' },
                     { label: 'etnia:', val: 'caucasiano (branco)' },
-                    { label: 'humor:', val: 'introvertido' },
-                    { label: 'orientação sexual:', val: 'heterossexual' },
-                    { label: 'estilo:', val: 'urbano' },
-                    { label: 'fumo:', val: 'não' },
-                    { label: 'bebo:', val: 'não' },
-                    { label: 'animais de estimação:', val: 'sim' },
-                    { label: 'moro:', val: 'no momento' },
                     { label: 'cidade natal:', val: 'BH' },
-                    { label: 'página web:', val: 'tuliocareli.com' },
-                    { label: 'paixões:', val: 'musica' },
-                    { label: 'esportes:', val: 'basquete, skate' },
-                    { label: 'atividades:', val: 'design' }
+                    { label: 'página web:', val: 'tuliocareli.com' }
                 ];
-
                 const friends = [
                     { name: 'BetoLol', img: 'imagens/orkut_amigo_1.png' },
                     { name: 'ZedTHPS', img: 'imagens/orkut_amigo_2.png' },
-                    { name: 'Calazadroid', img: 'imagens/orkut_amigo_4.png' },
                     { name: 'Lets', img: 'imagens/orkut_amigo_3.png' },
-                    { name: 'Jubajubs86', img: 'imagens/orkut_amigo_5.png' },
-                    { name: 'Rick_Gamer', img: 'imagens/orkut_amigo_6.png' },
-                    { name: 'NiNa_2004', img: 'imagens/orkut_amigo_7.png' },
-                    { name: 'Dark_Lord_S2', img: 'imagens/orkut_amigo_8.png' },
-                    { name: 'XuxaS2', img: 'imagens/orkut_amigo_9.png' }
+                    { name: 'NiNa_2004', img: 'imagens/orkut_amigo_7.png' }
                 ];
-
-                const communities = [
-                    { name: 'Eu odeio acordar cedo', img: 'imagens/orkut_communities.png', pos: '0%' },
-                    { name: 'Eu já entrei na internet e queria sorvete', img: 'imagens/orkut_communities.png', pos: '50%' },
-                    { name: 'Sorvete ou Feijão?', img: 'imagens/orkut_communities.png', pos: '100%' }
-                ];
-
                 return h('div', { class: 'xp-orkut-wrap' },
-                    h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px' } },
-                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '20px' } },
-                            h('div', { class: 'xp-orkut-logo', style: { color: '#fff', textShadow: 'none', fontSize: '18px' } }, 'orkut'),
-                            h('div', { class: 'xp-orkut-top-meta' },
-                                h('span', { style: { cursor: 'pointer' } }, 'Início'),
-                                h('span', { style: { cursor: 'pointer' } }, 'Página de recados'),
-                                h('span', { style: { cursor: 'pointer' } }, 'Amigos'),
-                                h('span', { style: { cursor: 'pointer' } }, 'Comunidades')
-                            )
+                    h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px', color: '#fff' } }, 'orkut'),
+                    h('div', { style: { padding: '20px', display: 'flex', gap: '20px', background: '#d4dded' } },
+                        h('div', { style: { width: '160px' } },
+                            h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #fff' } }),
+                            h('div', { style: { marginTop: '10px' } }, 'tuliocareli')
                         ),
-                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px' } },
-                            h('span', { style: { fontSize: '11px', color: '#fff', opacity: '0.8' } }, 'tuliocareli@gmail.com | Sair'),
-                            h('div', { class: 'xp-orkut-search-bar' },
-                                h('input', { type: 'text', class: 'xp-orkut-search-input', placeholder: 'pesquisa do orkut' }),
-                                h('span', { style: { cursor: 'pointer' } }, '🔍')
-                            )
-                        )
-                    ),
-                    h('main', { class: 'xp-orkut-main', style: { gridTemplateColumns: '160px 1fr 240px' } },
-                        h('aside', { class: 'xp-orkut-sidebar' },
-                            h('img', { src: 'TC UNDERGROUND.png', class: 'xp-orkut-profile-pic' }),
-                            h('div', { style: { fontSize: '12px', fontWeight: 'bold', color: '#5d7cae', marginTop: '5px' } }, 'Túlio Careli'),
-                            h('div', { style: { fontSize: '10px', color: '#666', whiteSpace: 'pre-line' } }, 'masculino, compromissado\nBH, Brasil'),
-                            h('div', { class: 'xp-orkut-profile-left-links' },
-                                h('div', {}, '➕ amigo'),
-                                h('div', {}, 'mais »'),
-                                h('div', { style: { marginTop: '10px' } }, '👤 perfil'),
-                                h('div', {}, '💬 recados'),
-                                h('div', {}, '📷 fotos'),
-                                h('div', {}, '🎬 vídeos'),
-                                h('div', {}, '🌟 depoimentos')
-                            )
-                        ),
-                        h('section', { class: 'xp-orkut-content' },
-                            h('h1', { class: 'xp-orkut-name-header' }, 'Túlio Careli'),
-                            h('div', { class: 'xp-orkut-stats' },
-                                h('div', { class: 'xp-orkut-stat-item', title: 'Recados' }, '💬 114'),
-                                h('div', { class: 'xp-orkut-stat-item', title: 'Fotos' }, '📷 0'),
-                                h('div', { class: 'xp-orkut-stat-item', title: 'Vídeos' }, '🎬 5'),
-                                h('div', { class: 'xp-orkut-stat-item', title: 'Fãs' }, '⭐ 15'),
-                                h('div', { class: 'xp-orkut-stat-item', title: 'Confiável' }, '🟡🟡🟡'),
-                                h('div', { class: 'xp-orkut-stat-item', title: 'Legal' }, '🔵🔵'),
-                                h('div', { class: 'xp-orkut-stat-item', title: 'Sexy' }, '💖💖💖')
-                            ),
-                            h('div', { class: 'xp-orkut-social-tab' }, 'social'),
-                            h('table', { class: 'xp-orkut-info-table' },
-                                ...infoRows.map(r => h('tr', {}, h('td', {}, r.label), h('td', {}, r.val)))
-                            )
-                        ),
-                        h('aside', { class: 'xp-orkut-sidebar' },
-                            h('div', { class: 'xp-orkut-box' },
-                                h('h4', {}, 'amigos ', h('span', {}, '(51)')),
-                                h('div', { class: 'xp-orkut-grid-9' },
-                                    ...friends.map((f, i) => h('div', { class: 'xp-orkut-grid-item' },
-                                        h('img', {
-                                            class: 'xp-orkut-grid-img',
-                                            src: f.img
-                                        }),
-                                        f.name
-                                    ))
-                                ),
-                                h('div', { style: { textAlign: 'right', fontSize: '10px', marginTop: '5px', color: '#5d7cae', cursor: 'pointer' } }, 'ver todos')
-                            ),
-                            h('div', { class: 'xp-orkut-box' },
-                                h('h4', {}, 'comunidades ', h('span', {}, '(313)')),
-                                h('div', { class: 'xp-orkut-grid-9' },
-                                    ...communities.map(com => h('div', { class: 'xp-orkut-grid-item' },
-                                        h('div', {
-                                            class: 'xp-orkut-grid-img',
-                                            style: {
-                                                backgroundImage: `url(${com.img})`,
-                                                backgroundSize: '300% 100%',
-                                                backgroundPosition: com.pos,
-                                                backgroundRepeat: 'no-repeat'
-                                            }
-                                        }),
-                                        com.name
-                                    ))
-                                ),
-                                h('div', { style: { textAlign: 'right', fontSize: '10px', marginTop: '5px', color: '#5d7cae', cursor: 'pointer' } }, 'ver todos')
-                            )
+                        h('div', { style: { flex: 1, background: '#fff', padding: '15px' } },
+                            h('h2', { style: { color: '#bf6000' } }, 'perfil'),
+                            infoRows.map(row => h('div', { style: { display: 'flex', marginBottom: '8px', fontSize: '12px' } },
+                                h('span', { style: { width: '120px', color: '#666', textAlign: 'right', paddingRight: '10px' } }, row.label),
+                                h('span', { style: { flex: 1, color: '#000' } }, row.val)
+                            ))
                         )
                     )
                 );
             };
 
-            const renderFlogao = () => {
-                return h('div', { class: 'xp-flogao-wrap' },
-                    h('header', { class: 'xp-flogao-header' }, 'FLOGÃO :: tuliocareli'),
-                    h('div', { class: 'xp-flogao-photo-box' },
-                        h('img', { src: 'imagens/THUG_11.jpg', class: 'xp-flogao-img' }),
-                        h('div', { style: { marginTop: '10px', fontSize: '12px', textAlign: 'center' } }, 'manobrinha basica no project 8 kkkk')
-                    ),
-                    h('div', { class: 'xp-flogao-comments' },
-                        h('div', { style: { fontWeight: 'bold', fontSize: '12px', borderBottom: '1px solid #ccc', marginBottom: '5px' } }, 'Livro de Visitas:'),
-                        h('div', { class: 'xp-flogao-comment' }, h('b', {}, 'xXx_Gamer_xXx:'), ' mto loko o print!! dpois passa no meu e comenta tbm vlw f-f'),
-                        h('div', { class: 'xp-flogao-comment' }, h('b', {}, 'Gatinha_XP:'), ' lindo!! dpois te chamo no msn bjss'),
-                        h('div', { class: 'xp-flogao-comment' }, h('b', {}, 'Zed_THPS:'), ' essa manobra eh foda :D')
-                    ),
-                    h('footer', { style: { margin: '20px 0', fontSize: '10px', color: '#999' } }, 'Flogão © 2004 - O maior portal de fotos do Brasil')
-                );
+            const renderJogosOnline = () => {
+                const wrap = h('div', { style: { background: '#fff', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflowY: 'auto', fontFamily: 'Arial, sans-serif' } });
+                const games = [
+                    { id: 'motocross', name: 'TG Motocross 2', swf: 'jogoflash/TG_Motocross_2.swf', thumb: 'imagens/jogos_motocross.png', category: 'Esportes' },
+                    { id: 'bmx', name: 'BMX Stunts', swf: 'jogoflash/bmx.swf', thumb: 'imagens/jogos_bmx.png', category: 'Ação' },
+                    { id: 'ride', name: 'Create a Ride', swf: 'jogoflash/createaride.swf', thumb: 'imagens/jogos_ride.png', category: 'Corrida' },
+                    { id: 'habbo', name: 'Habbo Hotel Mockup', swf: 'jogoflash/habbo.swf', thumb: 'imagens/jogos_extras.png', category: 'Social' },
+                    { id: 'sonic', name: 'Sonic Flash', swf: 'jogoflash/sonic.swf', thumb: 'imagens/jogos_extras.png', category: 'Ação' },
+                    { id: 'mario', name: 'Super Mario 63', swf: 'jogoflash/mario.swf', thumb: 'imagens/jogos_extras.png', category: 'Aventura' }
+                ];
+
+                const showHome = () => {
+                    wrap.innerHTML = '';
+                    const header = h('div', { style: { background: 'linear-gradient(to right, #ffffff, #dbeefd)', padding: '15px 25px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #004a99' } },
+                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '15px' } },
+                            h('img', { src: 'imagens/jogos_logo.png', style: { height: '50px' } }),
+                            h('div', { style: { color: '#004a99', fontSize: '14px', fontWeight: 'bold' } }, 'Os melhores jogos da internet!')
+                        )
+                    );
+                    const grid = h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '15px', padding: '15px', background: '#f0f8ff', flex: 1, minWidth: '0' } });
+                    games.forEach(g => {
+                        const item = h('div', { style: { background: '#fff', padding: '8px', border: '1px solid #ccc', cursor: 'pointer', textAlign: 'center', transition: 'transform 0.2s', boxShadow: '1px 1px 3px rgba(0,0,0,0.1)' }, onclick: () => play(g), onmouseover: (e) => e.currentTarget.style.transform = 'scale(1.03)', onmouseout: (e) => e.currentTarget.style.transform = 'scale(1)' },
+                            h('img', { src: g.thumb, style: { width: '100%', height: '80px', objectFit: 'cover', background: '#ddd' } }),
+                            h('div', { style: { fontWeight: 'bold', marginTop: '5px', fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, g.name)
+                        );
+                        grid.appendChild(item);
+                    });
+                    const sidebar = h('div', { style: { width: '180px', flexShrink: '0', padding: '15px', background: '#f0f8ff', borderLeft: '1px solid #ccc', fontSize: '12px' } },
+                        h('div', { style: { background: '#ff9900', color: '#fff', padding: '10px', textAlign: 'center', fontWeight: 'bold', marginBottom: '15px', borderRadius: '4px' } }, 'CURTA NO ORKUT!'),
+                        h('div', { style: { background: '#fff', border: '1px solid #ccc', padding: '10px' } },
+                            h('h4', { style: { margin: '0 0 10px', color: '#004a99' } }, 'Ranking Viral'),
+                            ['TG Motocross 2', 'BMX Stunts', 'Sonic Flash', 'Mario 63'].map((n, i) => h('div', { style: { marginBottom: '5px', display: 'flex', gap: '5px' } },
+                                h('span', { style: { fontWeight: 'bold', color: '#ff9900' } }, i + 1 + '.'),
+                                h('span', {}, n)
+                            ))
+                        )
+                    );
+                    const main = h('div', { style: { display: 'flex', flex: 1, minHeight: '0' } }, grid, sidebar);
+                    wrap.appendChild(header);
+                    wrap.appendChild(main);
+                };
+
+                const play = (game) => {
+                    wrap.innerHTML = '';
+                    const head = h('div', { style: { background: '#004a99', padding: '10px', color: '#fff', display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }, onclick: showHome }, 'Voltar');
+                    const gameCont = h('div', { style: { flex: 1, background: '#000', display: 'flex', justifyContent: 'center', alignItems: 'center' } });
+                    if (window.RufflePlayer) {
+                        const ruffle = window.RufflePlayer.newest();
+                        const player = ruffle.createPlayer();
+                        gameCont.appendChild(player);
+                        player.style.width = '640px'; player.style.height = '480px';
+                        player.load({ url: game.swf });
+                    }
+                    wrap.appendChild(head); wrap.appendChild(gameCont);
+                    wrap.appendChild(h('div', { style: { padding: '10px', textAlign: 'center', fontSize: '10px' } }, 'Direito de criação dos jogos para seus respectivos criadores.'));
+                };
+                showHome();
+                return wrap;
             };
 
             const renderYoutube = () => {
-                const wrap = h('div', { style: { padding: '10px 20px', background: '#fff', fontFamily: 'Arial, sans-serif', maxWidth: '950px', width: '100%', margin: '0 auto', color: '#000', boxSizing: 'border-box', height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto' } });
+                const wrap = h('div', {
+                    class: 'yt-legacy-view',
+                    style: { background: '#fff', height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', fontFamily: 'Arial, sans-serif', fontSize: '12px' }
+                });
 
-                // ── DATA ─────────────────────────────────────────
-                const plData = [
-                    { id: 'yU5KXTDCf-0', title: 'GTA San Andreas Bigfoot + UFO', from: 'ScapeTheGoat', views: '1,235,901' },
-                    { id: 'OiT1RyTZgcg', title: 'Mario na fase do cogumelo do sol Tunadíssimo.', from: 'zegracagames', views: '8,402,110' },
-                    { id: '02vyPaYPdl8', title: 'Erros Bizonhos 1', from: 'ZgracaRetro', views: '2,901,344' },
-                    { id: 'HPPj6viIBmU', title: 'Star Wars Kid', from: 'Jimi Love', views: '38,111,002' },
-                    { id: 'Nffd0NZERKQ', title: 'BRKs_EDU - Team Deathmatch - Modern Warfare 2', from: 'BRKsEDU', views: '5,012,778' },
-                    { id: 'oHg5SJYRHA0', title: 'RickRoll\'D', from: 'cotter548', views: '91,330,210' },
-                    { id: 'vYs8Th15yUs', title: 'como ganhar dinheiro infinito na mini fazenda', from: 'allisson castro', views: '221,440' },
-                    { id: '-ogLjIbOH78', title: 'O Efeito Jabulani', from: 'Rafael Souza', views: '1,504,221' },
-                    { id: 'Z3ZAGBL6UBA', title: 'It\'s Peanut Butter Jelly Time!!!', from: 'AlbinoBlackSheep', views: '18,504,900' },
-                    { id: 'MAPYrkYmGN8', title: 'Furfles Feelings - VMB08', from: 'gabriellelorenzo', views: '3,059,211' },
-                    { id: 'RudncJ94mOo', title: 'Meteoro em Belo Horizonte - Official', from: 'Rodrigo Guimaraes', views: '2,504,233' },
-                    { id: 'ZN5PoW7_kdA', title: 'The Annoying Orange', from: 'Dane Boe', views: '235,901,455' },
-                    { id: 'qsEZ2lpM0Yw', title: 'Nunchucks Pro', from: 'SpyderBRad', views: '7,440,210' },
-                    { id: '7-BuVMH82BE', title: 'Halo 3 - How to Get Recon Armor In 10 Minutes', from: 'nosacrificevids', views: '4,010,223' },
-                    { id: 'GXMl9wWsU2U', title: 'MySpace Tutorial', from: 'secretvideogoldmine', views: '550,212' }
-                ];
+                // Top Search Bar Mockup
+                const header = h('div', { style: { display: 'flex', justifyContent: 'center', padding: '15px 0', background: '#d4dde8' } },
+                    h('input', { type: 'text', style: { width: '400px', border: '1px solid #7f9db9', padding: '3px 5px' } }),
+                    h('button', { style: { marginLeft: '5px', padding: '2px 10px', background: '#e0e0e0', border: '1px solid #aaa', cursor: 'pointer' } }, 'Search')
+                );
 
-                let currentIdx = 0;
-                let player = null;
-                let ytInterval = null;
+                const mainCont = h('div', { style: { display: 'flex', padding: '20px', gap: '20px', background: '#fff' } });
 
-                // ── HEADER ──────────────────────────────────────────
-                const header = h('div', { style: { marginBottom: '10px' } });
-                header.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                        <div style="display:flex; align-items:center;">
-                            <span style="font-size:26px; font-weight:bold; letter-spacing:-1px; color:#333; font-family:'Arial Narrow', Arial;">You<span style="background:#cc181e; color:#fff; border-radius:4px; padding:0 4px; margin-left:2px;">Tube</span></span>
-                            <div style="font-size:10px; color:#666; margin-left:5px; margin-top:8px;">Broadcast Yourself™</div>
-                        </div>
-                        <div style="font-size:11px; color:#03c; text-decoration:underline; font-weight:normal;">Sign Up | My Account | History | Help | Log In | Site: 🌎</div>
-                    </div>
-                    <div style="background:#e8ecef; border:1px solid #ccc; padding:5px; margin-top:10px; display:flex; justify-content:space-between; align-items:flex-end; border-radius:4px 4px 0 0;">
-                        <div style="display:flex;">
-                            <div style="background:#fff; border:1px solid #ccc; border-bottom:none; margin-right:5px; padding:4px 30px; font-weight:bold; font-size:12px; border-radius:3px 3px 0 0; color:#000;">Videos</div>
-                            <div style="background:#bfcce0; border:1px solid #a3b8d4; border-bottom:none; margin-right:5px; padding:4px 15px; font-size:12px; color:#03c; border-radius:3px 3px 0 0; cursor:pointer;">Categories</div>
-                            <div style="background:#bfcce0; border:1px solid #a3b8d4; border-bottom:none; margin-right:5px; padding:4px 15px; font-size:12px; color:#03c; border-radius:3px 3px 0 0; cursor:pointer;">Channels</div>
-                            <div style="background:#bfcce0; border:1px solid #a3b8d4; border-bottom:none; margin-right:5px; padding:4px 15px; font-size:12px; color:#03c; border-radius:3px 3px 0 0; cursor:pointer;">Community</div>
-                        </div>
-                        <div style="font-weight:bold; color:#03c; text-decoration:underline; font-size:12px; cursor:pointer;">↗ Upload</div>
-                    </div>
-                    <div style="background:#d9e1e8; padding:8px; display:flex; justify-content:center; align-items:center;">
-                        <input type="text" style="width:350px; padding:3px; font-family:Arial; font-size:13px; border:1px solid #7f9db9;" />
-                        <button style="margin-left:5px; padding:2px 10px; font-weight:bold; font-family:Arial; font-size:12px; background:#e0e0e0; border:1px outset #ccc;">Search</button>
-                    </div>
-                `;
+                // LEFT COLUMN
+                const leftCol = h('div', { style: { flex: 1, minWidth: '480px' } });
 
-                // ── CONTENT ───────────────────────────────────────
-                const titleH = h('h2', { style: { margin: '15px 0 10px', fontSize: '18px', fontWeight: 'bold' } }, plData[0].title);
+                const title = h('h1', { style: { fontSize: '18px', fontWeight: 'bold', margin: '0 0 10px', color: '#000' } }, 'GTA San Andreas Bigfoot + UFO');
 
-                const grid = h('div', { style: { display: 'flex', gap: '20px' } });
-                const left = h('div', { style: { flex: '1', minWidth: '0' } });
-                const right = h('div', { style: { width: '310px' } });
+                // PLAYER CONTAINER
+                const playerBg = h('div', { style: { background: '#f5f5f5', border: '1px solid #ccc', padding: '10px' } });
+                const videoCont = h('div', { style: { background: '#000', height: '360px', position: 'relative' } });
 
-                // Player Container
-                const vCont = h('div', { style: { width: '100%', background: '#000', borderRadius: '4px', overflow: 'hidden', border: '1px solid #333' } });
-                const playerId = getUniqueYtId('yt-player');
-                const vArea = h('div', {
-                    id: playerId + '-container',
-                    style: { width: '100%', aspectRatio: '4/3', background: '#000', position: 'relative' }
-                }, h('div', { id: playerId, style: { width: '100%', height: '100%' } }));
+                const ytDivId = getUniqueYtId('ytplayer-video');
+                const ytDiv = h('div', { id: ytDivId, style: { width: '100%', height: '100%' } });
+                videoCont.appendChild(ytDiv);
 
-                // ── 2006-2008 BAR ───────────────────────────────────
-                const barArr = h('div', {
+                // --- 2007 PLAYER CONTROLS BARRINHA ---
+                const controlsBar = h('div', {
                     style: {
                         background: 'linear-gradient(to bottom, #eeeeee 0%, #cccccc 100%)',
-                        height: '28px',
+                        border: '1px solid #aaaaaa',
+                        borderTopColor: '#dfdfdf',
+                        borderRadius: '4px',
+                        height: '24px',
+                        marginTop: '5px',
                         display: 'flex',
                         alignItems: 'center',
-                        padding: '0 6px',
                         gap: '6px',
-                        borderTop: '1px solid #999',
-                        boxSizing: 'border-box',
-                        userSelect: 'none'
+                        padding: '0 6px',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
                     }
                 });
 
-                const btnS = 'cursor:pointer; background:linear-gradient(to bottom, #fff, #ddd); border:1px solid #888; border-radius:2px; height:18px; padding:0 8px; font-size:10px; display:flex; align-items:center; color:#000;';
-                const pBtn = h('button', { style: btnS, title: 'Play' }, '►');
-                const sBtn = h('button', { style: btnS, title: 'Pause' }, '❚❚');
+                // Play/Pause and Audio
+                const btnStyle = {
+                    width: '20px', height: '18px', background: 'linear-gradient(to bottom, #fafafa 0%, #d0d0d0 100%)',
+                    border: '1px solid #999', borderRadius: '3px', cursor: 'pointer', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#333'
+                };
 
-                // Progress
-                const pCont = h('div', { style: { flex: 1, background: '#fff', border: '1px inset #888', height: '8px', borderRadius: '2px', position: 'relative', cursor: 'pointer' } });
-                const pFill = h('div', { style: { height: '100%', background: '#cc0000', width: '0%', borderRadius: '1px', position: 'relative' } });
-                const pBall = h('div', {
+                const btnPause = h('button', { style: btnStyle }, '⏸');
+                const btnPrev = h('button', { style: btnStyle }, '⏮');
+
+                // Progress Bar
+                const progWrap = h('div', { style: { display: 'flex', alignItems: 'center', flex: 1, position: 'relative', height: '100%', cursor: 'pointer' } });
+
+                const playHead = h('div', { style: { width: '12px', height: '12px', borderRadius: '50%', background: 'radial-gradient(circle at center, #fff, #999)', border: '1px solid #666', zIndex: 2, position: 'absolute', pointerEvents: 'none' } });
+
+                const progBg = h('div', { style: { position: 'absolute', left: '12px', right: '0', height: '6px', background: '#fff', border: '1px solid #999', borderRadius: '3px', overflow: 'hidden' } });
+                const progFill = h('div', { style: { width: '0%', height: '100%', background: '#cc0000', borderRight: '1px solid #900' } });
+                progBg.appendChild(progFill);
+
+                progWrap.appendChild(playHead);
+                progWrap.appendChild(progBg);
+
+                // Time Display
+                const timeBox = h('div', {
                     style: {
-                        position: 'absolute', right: '-6px', top: '50%', transform: 'translateY(-50%)',
-                        width: '12px', height: '12px', borderRadius: '50%',
-                        background: 'radial-gradient(circle at 4px 4px, #ffffff, #999999)',
-                        border: '1px solid #555', boxShadow: '0 1px 2px rgba(0,0,0,0.3)'
+                        background: 'linear-gradient(to bottom, #111 0%, #222 100%)',
+                        fontFamily: 'monospace',
+                        fontSize: '9px',
+                        padding: '2px 5px',
+                        border: '1px solid #000',
+                        borderRadius: '2px',
+                        whiteSpace: 'nowrap'
                     }
                 });
-                pFill.appendChild(pBall);
-                pCont.appendChild(pFill);
+                timeBox.innerHTML = '<span style="color:#aaa">00:00</span> / <span style="color:#c00">0:00</span>';
 
-                const time = h('div', { style: { fontSize: '10px', minWidth: '70px', textAlign: 'center' } }, '0:00 / 0:00');
-                const fBtn = h('button', { style: btnS + 'padding:0 4px;', title: 'Expand' }, '⛶');
+                // --- NEW VOLUME SLIDER ---
+                const volWrap = h('div', { style: { display: 'flex', alignItems: 'center', gap: '5px', marginLeft: '5px' } });
 
-                barArr.appendChild(pBtn);
-                barArr.appendChild(sBtn);
-                barArr.appendChild(pCont);
-                barArr.appendChild(time);
-                barArr.appendChild(fBtn);
+                // Track do slider cinza escura
+                const volTrack = h('div', { style: { width: '35px', height: '4px', background: '#444', borderTop: '1px solid #222', borderBottom: '1px solid #aaa', position: 'relative', cursor: 'pointer' } });
+                // Grabber (pequeno puxador do volume) branco/prateado
+                const volThumb = h('div', { style: { width: '8px', height: '12px', background: 'linear-gradient(to bottom, #f0f0f0, #aaa)', border: '1px solid #666', position: 'absolute', top: '-4px', left: '15px', borderRadius: '2px', pointerEvents: 'none' } });
+                volTrack.appendChild(volThumb);
 
-                vCont.appendChild(vArea);
-                vCont.appendChild(barArr);
-                left.appendChild(vCont);
+                const volIcon = h('div', { style: { fontSize: '13px', cursor: 'pointer', color: '#555' }, title: 'Mute' }, '🔊');
 
-                // Info Box
-                const info = h('div', { style: { marginTop: '15px', border: '1px solid #ccc', background: '#f8f8f8', padding: '10px', display: 'flex', gap: '20px' } });
-                info.innerHTML = `
-                    <div style="flex:1; border-right:1px dashed #ccc; padding-right:10px;">
-                        <div style="display:flex; justify-content:space-around; align-items:center; text-align:center; margin-bottom:10px;">
-                            <div><div style="color:#03c; text-decoration:underline; font-size:11px;">Sign in to rate</div><div style="color:#cc181e; font-size:18px;">★★★★★</div></div>
-                            <div><div style="color:#03c; text-decoration:underline; font-size:11px;">Save to Favorites</div></div>
-                            <div><div style="color:#03c; text-decoration:underline; font-size:11px;">Add to Groups</div></div>
-                        </div>
-                        <div style="text-align:center; font-size:11px; color:#333; border-top:1px dashed #ccc; padding-top:8px;">
-                            Views: <strong id="yt-views">0</strong> | Comments: <strong>1,862</strong>
-                        </div>
-                    </div>
-                    <div style="width:120px; font-size:11px; color:#03c; text-decoration:underline; line-height:1.8;">
-                        ✉ Share Video<br>💬 Post Video<br>❌ Flag as Bad
-                    </div>
-                `;
-                left.appendChild(info);
+                volWrap.appendChild(volTrack);
+                volWrap.appendChild(volIcon);
+                // ------------------------------
 
-                // Right sidebar
-                const meta = h('div', { style: { padding: '10px', border: '1px solid #ccc', background: '#fff', fontSize: '11px', marginBottom: '15px' } });
-                meta.innerHTML = `
-                    <div style="background:#fffccc; border:1px solid #e2c822; padding:5px; margin-bottom:10px; font-weight:bold; color:#03c; text-align:center;">TRY OUT THE NEW BETA!</div>
-                    <button style="float:right; background:#f90; color:#fff; border:1px solid #c60; font-size:10px; padding:2px 5px; font-weight:bold;">Subscribe</button>
-                    <strong>Added:</strong> June 28, 2007<br>
-                    <strong>From:</strong> <span id="yt-author" style="color:#03c; text-decoration:underline;">tuliocareli</span>
-                    <p style="margin:8px 0;">História pura do YouTube!</p>
-                    <strong>Category:</strong> <span style="color:#03c; text-decoration:underline;">Entertainment</span><br>
-                    <strong>Tags:</strong> <span style="color:#03c; text-decoration:underline;">oldschool</span> <span style="color:#03c; text-decoration:underline;">nostalgia</span>
-                `;
-                right.appendChild(meta);
+                const btnFull = h('button', { style: btnStyle }, '⛶');
+                const btnPop = h('button', { style: btnStyle }, '⧉');
 
-                const listCont = h('div', { style: { border: '1px solid #ccc', background: '#fff' } });
-                listCont.innerHTML = `<div style="background:#e8ecef; padding:5px; font-size:11px; font-weight:bold; border-bottom:1px solid #ccc;">Related Videos</div>`;
-                const listItems = h('div', { style: { maxHeight: '400px', overflowY: 'auto', padding: '5px' } });
+                controlsBar.append(btnPause, btnPrev, progWrap, timeBox, volWrap, btnFull, btnPop);
 
-                const updateUI = (idx) => {
-                    const v = plData[idx];
-                    titleH.innerText = v.title;
-                    const auth = meta.querySelector('#yt-author'); if (auth) auth.innerText = v.from;
-                    const view = info.querySelector('#yt-views'); if (view) view.innerText = v.views;
+                playerBg.append(videoCont, controlsBar);
 
-                    Array.from(listItems.children).forEach((c, i) => {
-                        c.style.background = (i === idx) ? '#ffffcc' : 'transparent';
-                        c.style.border = (i === idx) ? '1px dashed #e2c822' : '1px solid transparent';
-                    });
-                };
+                // Bottom Actions
+                const actionBox = h('div', { style: { display: 'flex', justifyContent: 'space-between', border: '1px dotted #ccc', marginTop: '10px', padding: '10px', fontSize: '11px', background: '#fafafa' } });
+                actionBox.innerHTML = '<div style="text-align:center"><div style="color:#0033cc;text-decoration:underline;cursor:pointer">Sign in to rate</div><div style="color:#c00;font-size:14px">★★★★★</div><div style="margin-top:5px;color:#333;font-size:10px">Views: 1,235,901 | Comments: 1,862</div></div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;padding-top:10px">Save to Favorites</div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;padding-top:10px">Add to Groups</div><div style="text-align:right"><div style="color:#0033cc;text-decoration:underline;cursor:pointer;margin-bottom:3px">Share Video</div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;margin-bottom:3px">Post Video</div><div style="color:#c00;text-decoration:underline;cursor:pointer">Flag as Inappropriate</div></div>';
 
-                plData.forEach((v, i) => {
-                    const row = h('div', {
-                        style: { display: 'flex', gap: '8px', padding: '4px', cursor: 'pointer', marginBottom: '5px', border: '1px solid transparent' },
-                        onclick: () => {
-                            currentIdx = i;
-                            updateUI(i);
-                            if (player) player.loadVideoById(v.id);
-                        }
-                    });
-                    row.innerHTML = `
-                        <img src="https://img.youtube.com/vi/${v.id}/default.jpg" width="60" style="border:1px solid #999">
-                        <div style="font-size:11px; line-height:1.2;">
-                            <div style="color:#03c; text-decoration:underline; font-weight:bold; height:2.4em; overflow:hidden;">${v.title}</div>
-                            <div style="color:#666;">From: ${v.from}</div>
-                            <div style="color:#666;">Views: ${v.views}</div>
-                        </div>
-                    `;
-                    listItems.appendChild(row);
+                leftCol.append(title, playerBg, actionBox);
+
+                // RIGHT COLUMN (Related + Info)
+                const rightCol = h('div', { style: { width: '280px', flexShrink: 0 } });
+                const mainInfo = h('div', { style: { border: '1px solid #e2e2e2', padding: '10px', marginBottom: '15px' } });
+                mainInfo.innerHTML = '<div style="background:#ffffee; border:1px solid #eade83; padding:5px; text-align:center; font-weight:bold; color:#773300; margin-bottom:10px; cursor:pointer; font-size:11px">TRY OUT THE NEW BETA!</div><div style="display:flex; justify-content:space-between"><div style="line-height:1.4"><div>Added: June 28, 2007</div><div>From: <a href="#" style="color:#0033cc;text-decoration:none">ScapeTheGoat</a></div><div style="margin:5px 0">História pura do YouTube!</div><div>Category: <a href="#" style="color:#0033cc;text-decoration:none">Entertainment</a></div><div>Tags: <a href="#" style="color:#0033cc;text-decoration:none">old</a> <a href="#" style="color:#0033cc;text-decoration:none">nostalgia</a></div></div><button style="background:#ff9900; color:#fff; border:1px solid #cc6600; padding:2px 5px; font-weight:bold; font-size:10px; height:max-content; cursor:pointer; border-radius:2px">Subscribe</button></div>';
+
+                const relatedInfo = h('div', { style: { border: '1px solid #ccc', background: '#f5f5f5' } });
+                const relatedTitle = h('div', { style: { fontWeight: 'bold', padding: '5px 10px', borderBottom: '1px solid #ccc', fontSize: '11px' } }, 'Related Videos');
+
+                const relatedList = h('div', { style: { maxHeight: '380px', overflowY: 'auto', padding: '10px', display: 'flex', flexDirection: 'column', gap: '10px' } });
+
+                const videos = [
+                    { img: 'https://img.youtube.com/vi/yU5KXTDCf-0/default.jpg', min: '3:51', t: 'GTA San Andreas Bigfoot + UFO', f: 'ScapeTheGoat', v: '1,235,901' },
+                    { img: 'https://img.youtube.com/vi/OiT1RyTZgcg/default.jpg', min: '1:24', t: 'Mario na fase do cogumelo do sol Tunadíssimo.', f: 'zegracagames', v: '5,407,110' },
+                    { img: 'https://img.youtube.com/vi/02vyPaYPdl8/default.jpg', min: '4:11', t: 'Erros Bizonhos 1', f: 'ZgracaRetro', v: '2,901,344' },
+                    { img: 'https://img.youtube.com/vi/HPPj6viIBmU/default.jpg', min: '1:44', t: 'Star Wars Kid', f: 'Jimi Love', v: '38,111,002' },
+                    { img: 'https://img.youtube.com/vi/Nffd0NZERKQ/default.jpg', min: '6:02', t: 'BRKs_EDU - Team Deathmatch - Modern Warfare', f: 'BRKsEDU', v: '5,012,778' },
+                    { img: 'https://img.youtube.com/vi/oHg5SJYRHA0/default.jpg', min: '3:32', t: 'RickRoll\'D', f: 'cotter548', v: '91,330,210' }
+                ];
+
+                videos.forEach((v, i) => {
+                    relatedList.innerHTML += '<div style="display:flex; gap:10px; padding:5px; cursor:pointer; background:' + (i === 0 ? '#ffffee' : 'none') + '; border:' + (i === 0 ? '1px dotted #cc9900' : 'none') + '" title="' + v.t + '"><div style="position:relative; width:90px; height:68px; background:#000; flex-shrink:0; border:1px solid #999; padding:2px; box-sizing:border-box; background:#fff"><div style="width:100%; height:100%; overflow:hidden; position:relative"><img src="' + v.img + '" style="width:100%; height:140%; object-fit:cover; margin-top:-15%; opacity:' + (i === 0 ? 1 : 0.8) + '"><div style="position:absolute; bottom:2px; right:2px; background:rgba(0,0,0,0.7); color:#fff; font-size:9px; padding:1px 3px">' + v.min + '</div></div></div><div style="font-size:11px; display:flex; flex-direction:column; gap:3px"><div style="color:#0033cc; font-weight:bold">' + v.t + '</div><div style="color:#666">From: ' + v.f + '</div><div style="color:#333">Views: ' + v.v + '</div></div></div>';
                 });
-                listCont.appendChild(listItems);
-                right.appendChild(listCont);
 
-                grid.appendChild(left);
-                grid.appendChild(right);
-                wrap.appendChild(header);
-                wrap.appendChild(titleH);
-                wrap.appendChild(grid);
+                relatedInfo.append(relatedTitle, relatedList);
+                rightCol.append(mainInfo, relatedInfo);
 
-                // ── LOGIC ──────────────────────────────────────────
-                const fmt = (s) => {
-                    const m = Math.floor(s / 60);
-                    const rs = Math.floor(s % 60);
-                    return m + ":" + String(rs).padStart(2, '0');
-                };
+                mainCont.append(leftCol, rightCol);
+                wrap.append(header, mainCont);
 
-                pCont.onclick = (e) => {
-                    if (!player) return;
-                    const rect = pCont.getBoundingClientRect();
-                    const per = (e.clientX - rect.left) / rect.width;
-                    player.seekTo(per * player.getDuration(), true);
-                };
-
-                fBtn.onclick = () => {
-                    const el = vCont;
-                    if (!document.fullscreenElement) {
-                        (el.requestFullscreen || el.webkitRequestFullscreen || (() => { })).call(el);
-                    } else {
-                        (document.exitFullscreen || document.webkitExitFullscreen || (() => { })).call(document);
-                    }
+                // --- Interaction and Sync ---
+                let ytPlayer;
+                const updatePlayBtn = (state) => {
+                    btnPause.textContent = (state === window.YT.PlayerState.PLAYING) ? '⏸' : '▶';
                 };
 
                 ensureYT(() => {
-                    const check = setInterval(() => {
-                        if (!document.getElementById(playerId)) return;
-                        clearInterval(check);
+                    const checkDom = setInterval(() => {
+                        if (!document.getElementById(ytDivId)) return;
+                        clearInterval(checkDom);
 
-                        player = new window.YT.Player(playerId, {
-                            width: '100%',
-                            height: '100%',
-                            videoId: plData[0].id,
-                            playerVars: {
-                                controls: 0,
-                                disablekb: 1,
-                                rel: 0,
-                                modestbranding: 1,
-                                iv_load_policy: 3,
-                                enablejsapi: 1,
-                                origin: window.location.origin
-                            },
+                        ytPlayer = new window.YT.Player(ytDivId, {
+                            height: '100%', width: '100%', videoId: 'yU5KXTDCf-0',
+                            playerVars: { autoplay: 1, controls: 0, rel: 0, modestybranding: 1, disablekb: 1 },
                             events: {
                                 onReady: () => {
-                                    pBtn.onclick = () => player.playVideo();
-                                    sBtn.onclick = () => player.pauseVideo();
-                                    updateUI(0);
-
-                                    ytInterval = setInterval(() => {
-                                        if (!player || !player.getCurrentTime) return;
-                                        const ct = player.getCurrentTime();
-                                        const dur = player.getDuration() || 0;
-                                        time.innerText = fmt(ct) + ' / ' + fmt(dur);
-                                        if (dur > 0) pFill.style.width = (ct / dur * 100) + '%';
-                                    }, 200);
+                                    ytPlayer.setVolume(50);
+                                    updatePlayBtn(ytPlayer.getPlayerState());
                                 },
-                                onStateChange: (e) => {
-                                    if (e.data === window.YT.PlayerState.ENDED) {
-                                        currentIdx = (currentIdx + 1) % plData.length;
-                                        updateUI(currentIdx);
-                                        player.loadVideoById(plData[currentIdx].id);
-                                    }
-                                }
+                                onStateChange: (e) => updatePlayBtn(e.data)
                             }
                         });
-                    }, 500);
+
+                        setInterval(() => {
+                            if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+                                const t = ytPlayer.getCurrentTime();
+                                const d = ytPlayer.getDuration() || 0;
+                                const fTime = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+                                timeBox.innerHTML = '<span style="color:#aaa">' + fTime(t) + '</span> / <span style="color:#c00">' + fTime(d) + '</span>';
+                                if (d > 0) {
+                                    const pct = t / d;
+                                    progFill.style.width = (pct * 100) + '%';
+                                    const pw = progBg.offsetWidth;
+                                    playHead.style.left = (12 + pct * pw - 6) + 'px';
+                                }
+                            }
+                        }, 200);
+                    }, 100);
                 });
 
-                wrap._cleanup = () => {
-                    if (ytInterval) clearInterval(ytInterval);
-                    if (player && player.destroy) player.destroy();
+                btnPause.onclick = () => {
+                    if (!ytPlayer) return;
+                    if (ytPlayer.getPlayerState() === window.YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+                    else ytPlayer.playVideo();
+                };
+
+                // Volume slider interactivity
+                let isDraggingVol = false;
+
+                const updateVol = (e) => {
+                    const rect = volTrack.getBoundingClientRect();
+                    let x = e.clientX - rect.left;
+                    if (x < 0) x = 0; if (x > rect.width) x = rect.width;
+                    const pct = x / rect.width;
+                    volThumb.style.left = (x - 4) + 'px'; // Center thumb
+                    if (ytPlayer && ytPlayer.setVolume) {
+                        ytPlayer.setVolume(pct * 100);
+                        if (pct > 0) ytPlayer.unMute();
+                    }
+                };
+
+                volWrap.onmousedown = (e) => {
+                    isDraggingVol = true;
+                    updateVol(e);
+                };
+
+                window.addEventListener('mousemove', (e) => {
+                    if (isDraggingVol) updateVol(e);
+                });
+
+                window.addEventListener('mouseup', () => {
+                    isDraggingVol = false;
+                });
+
+                // Set initial volume visually
+                volThumb.style.left = ((35 * 0.5) - 4) + 'px';
+
+                // Seek interactivity
+                progWrap.onclick = (e) => {
+                    if (!ytPlayer || ytPlayer.getDuration() === 0) return;
+                    const rect = progBg.getBoundingClientRect();
+                    let x = e.clientX - rect.left;
+                    if (x < 0) x = 0; if (x > rect.width) x = rect.width;
+                    let pct = x / rect.width;
+                    ytPlayer.seekTo(pct * ytPlayer.getDuration(), true);
+                };
+
+                let muted = false;
+                volIcon.onclick = () => {
+                    if (!ytPlayer) return;
+                    muted = !muted;
+                    if (muted) {
+                        ytPlayer.mute();
+                        volIcon.innerHTML = '🔇';
+                    } else {
+                        ytPlayer.unMute();
+                        volIcon.innerHTML = '🔊';
+                    }
+                };
+
+                wrap.onClose = () => {
+                    if (ytPlayer && ytPlayer.destroy) ytPlayer.destroy();
                 };
 
                 return wrap;
             };
 
+            const renderFlogao = () => h('div', { style: { padding: '20px' } }, 'Flogão Mockup');
+
             const tabEls = TABS.map((tab, i) => {
-                const el = h('div', {
-                    class: 'xp-tab' + (i === activeIdx ? ' xp-tab--active' : ''),
-                    onclick: () => switchTab(i),
-                }, tab.name);
+                const el = h('div', { class: 'xp-tab' + (i === activeIdx ? ' xp-tab--active' : ''), onclick: () => switchTab(i) }, tab.name);
                 tabBar.appendChild(el);
                 return el;
             });
 
             function switchTab(idx) {
                 if (browserWrap._currentCleanup) { browserWrap._currentCleanup(); browserWrap._currentCleanup = null; }
-
                 activeIdx = idx;
                 const tab = TABS[idx];
                 tabEls.forEach((el, i) => el.classList.toggle('xp-tab--active', i === idx));
                 addrUrl.textContent = tab.url;
-                status.textContent = '✔ Concluído — ' + tab.url;
-
                 browserBody.innerHTML = '';
-                browserBody.scrollTop = 0;
-                if (tab.id === 'youtube') browserBody.style.background = '#fff';
-                else browserBody.style.background = 'transparent';
-
-                if (tab.type === 'mockup') {
-                    if (tab.id === 'orkut') browserBody.appendChild(renderOrkut());
-                    else if (tab.id === 'flogao') browserBody.appendChild(renderFlogao());
-                    else if (tab.id === 'jogosonline') browserBody.appendChild(renderJogosOnline());
-                    else if (tab.id === 'youtube') {
-                        const ytEl = renderYoutube();
-                        browserWrap._currentCleanup = ytEl._cleanup;
-                        browserBody.appendChild(ytEl);
-                    }
-                } else if (tab.wayback) {
-                    // Iframe interativo com ajuste fino de posicionamento e escala
-                    const iframeContainer = h('div', {
-                        style: {
-                            width: '100%',
-                            height: '100%',
-                            position: 'relative',
-                            overflow: 'auto',
-                            background: '#0a0a0a',
-                            display: 'flex',
-                            justifyContent: 'center'
-                        }
-                    });
-
-                    const iframe = h('iframe', {
-                        src: tab.wayback,
-                        style: {
-                            width: '1024px',
-                            height: '1200px',
-                            border: 'none',
-                            marginTop: '0px',
-                            background: '#fff',
-                            transform: 'scale(1.2)',
-                            transformOrigin: 'top center'
-                        }
-                    });
-                    iframeContainer.appendChild(iframe);
-                    browserBody.appendChild(iframeContainer);
+                if (tab.id === 'youtube') browserBody.appendChild(renderYoutube());
+                else if (tab.id === 'orkut') browserBody.appendChild(renderOrkut());
+                else if (tab.id === 'jogosonline') browserBody.appendChild(renderJogosOnline());
+                else if (tab.id === 'flogao') browserBody.appendChild(renderFlogao());
+                else if (tab.wayback) {
+                    const ifr = h('iframe', { src: tab.wayback, style: { width: '100%', height: '100%', border: 'none' } });
+                    browserBody.appendChild(ifr);
+                } else if (tab.img) {
+                    const img = h('img', { src: tab.img, style: { width: '100%', height: '100%', objectFit: 'contain' } });
+                    browserBody.appendChild(img);
                 } else {
-                    const siteImg = h('img', { src: tab.img, class: 'xp-browser-site-img', alt: tab.name });
-                    browserBody.appendChild(siteImg);
+                    // Default iframe for external sites
+                    const iframe = h('iframe', { src: tab.url, style: { width: '100%', height: '100%', border: 'none' } });
+                    browserBody.appendChild(iframe);
                 }
             }
 
             switchTab(activeIdx);
-
-            browserWrap.appendChild(toolbar);
-            browserWrap.appendChild(tabBar);
-            browserWrap.appendChild(addrBar);
-            browserWrap.appendChild(browserBody);
+            browserWrap.appendChild(toolbar); browserWrap.appendChild(tabBar);
+            browserWrap.appendChild(addrBar); browserWrap.appendChild(browserBody);
             browserWrap.appendChild(status);
             return browserWrap;
         },
@@ -3333,7 +3094,7 @@ NUTTERTOOLS - Armas Pesadas
         const body = h('div', { class: 'xp-win-body' }, (CONTENT[id] || CONTENT.mycomputer)());
 
         const WIN_SIZES = {
-            ie: { w: '620px', h: '440px' },
+            ie: { w: '820px', h: '560px' },
             paint: { w: '500px', h: '420px' },
             earth: { w: '600px', h: '380px' },
             calculator: { w: '260px', h: '340px' },
