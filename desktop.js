@@ -520,15 +520,15 @@
                 });
 
                 // Top Search Bar Mockup
-                const header = h('div', { style: { display: 'flex', justifyContent: 'center', padding: '15px 0', background: '#d4dde8' } },
-                    h('input', { type: 'text', style: { width: '400px', border: '1px solid #7f9db9', padding: '3px 5px' } }),
+                const header = h('div', { style: { display: 'flex', justifyContent: 'center', padding: '15px 10px', background: '#d4dde8' } },
+                    h('input', { type: 'text', style: { width: '100%', maxWidth: '400px', border: '1px solid #7f9db9', padding: '3px 5px' } }),
                     h('button', { style: { marginLeft: '5px', padding: '2px 10px', background: '#e0e0e0', border: '1px solid #aaa', cursor: 'pointer' } }, 'Search')
                 );
 
-                const mainCont = h('div', { style: { display: 'flex', padding: '20px', gap: '20px', background: '#fff' } });
+                const mainCont = h('div', { style: { display: 'flex', flexWrap: 'wrap', padding: '20px', gap: '20px', background: '#fff' } });
 
                 // LEFT COLUMN
-                const leftCol = h('div', { style: { flex: 1, minWidth: '480px' } });
+                const leftCol = h('div', { style: { flex: '1 1 480px', minWidth: '0' } });
 
                 const title = h('h1', { style: { fontSize: '18px', fontWeight: 'bold', margin: '0 0 10px', color: '#000' } }, 'GTA San Andreas Bigfoot + UFO');
 
@@ -616,13 +616,13 @@
                 playerBg.append(videoCont, controlsBar);
 
                 // Bottom Actions
-                const actionBox = h('div', { style: { display: 'flex', justifyContent: 'space-between', border: '1px dotted #ccc', marginTop: '10px', padding: '10px', fontSize: '11px', background: '#fafafa' } });
-                actionBox.innerHTML = '<div style="text-align:center"><div style="color:#0033cc;text-decoration:underline;cursor:pointer">Sign in to rate</div><div style="color:#c00;font-size:14px">★★★★★</div><div style="margin-top:5px;color:#333;font-size:10px">Views: 1,235,901 | Comments: 1,862</div></div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;padding-top:10px">Save to Favorites</div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;padding-top:10px">Add to Groups</div><div style="text-align:right"><div style="color:#0033cc;text-decoration:underline;cursor:pointer;margin-bottom:3px">Share Video</div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;margin-bottom:3px">Post Video</div><div style="color:#c00;text-decoration:underline;cursor:pointer">Flag as Inappropriate</div></div>';
+                const actionBox = h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'space-between', border: '1px dotted #ccc', marginTop: '10px', padding: '10px', fontSize: '11px', background: '#fafafa' } });
+                actionBox.innerHTML = '<div style="text-align:center; min-width: 100px;"><div style="color:#0033cc;text-decoration:underline;cursor:pointer">Sign in to rate</div><div style="color:#c00;font-size:14px">★★★★★</div><div style="margin-top:5px;color:#333;font-size:10px">Views: 1,235,901 | Comments: 1,862</div></div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;padding-top:10px">Save to Favorites</div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;padding-top:10px">Add to Groups</div><div style="text-align:right"><div style="color:#0033cc;text-decoration:underline;cursor:pointer;margin-bottom:3px">Share Video</div><div style="color:#0033cc;text-decoration:underline;cursor:pointer;margin-bottom:3px">Post Video</div><div style="color:#c00;text-decoration:underline;cursor:pointer">Flag as Inappropriate</div></div>';
 
                 leftCol.append(title, playerBg, actionBox);
 
                 // RIGHT COLUMN (Related + Info)
-                const rightCol = h('div', { style: { width: '280px', flexShrink: 0 } });
+                const rightCol = h('div', { style: { flex: '1 1 280px', minWidth: '0', maxWidth: '100%' } });
                 const mainInfo = h('div', { style: { border: '1px solid #e2e2e2', padding: '10px', marginBottom: '15px' } });
                 mainInfo.innerHTML = '<div style="background:#ffffee; border:1px solid #eade83; padding:5px; text-align:center; font-weight:bold; color:#773300; margin-bottom:10px; cursor:pointer; font-size:11px">TRY OUT THE NEW BETA!</div><div style="display:flex; justify-content:space-between"><div style="line-height:1.4"><div>Added: June 28, 2007</div><div>From: <a href="#" style="color:#0033cc;text-decoration:none">ScapeTheGoat</a></div><div style="margin:5px 0">História pura do YouTube!</div><div>Category: <a href="#" style="color:#0033cc;text-decoration:none">Entertainment</a></div><div>Tags: <a href="#" style="color:#0033cc;text-decoration:none">old</a> <a href="#" style="color:#0033cc;text-decoration:none">nostalgia</a></div></div><button style="background:#ff9900; color:#fff; border:1px solid #cc6600; padding:2px 5px; font-weight:bold; font-size:10px; height:max-content; cursor:pointer; border-radius:2px">Subscribe</button></div>';
 
