@@ -886,11 +886,11 @@
 
                 const videos = [
                     { id: 'yU5KXTDCf-0', min: '3:51', t: 'GTA San Andreas Bigfoot + UFO', f: 'ScapeTheGoat', v: '1,235,901' },
-                    { id: 'OiT1RyTZgcg', min: '1:24', t: 'Mario na fase do cogumelo do sol Tunadíssimo.', f: 'zegracagames', v: '5,407,110' },
-                    { id: '02vyPaYPdl8', min: '4:11', t: 'Erros Bizonhos 1', f: 'ZgracaRetro', v: '2,901,344' },
-                    { id: 'HPPj6viIBmU', min: '1:44', t: 'Star Wars Kid', f: 'Jimi Love', v: '38,111,002' },
-                    { id: 'Nffd0NZERKQ', min: '6:02', t: 'BRKs_EDU - Team Deathmatch - Modern Warfare', f: 'BRKsEDU', v: '5,012,778' },
-                    { id: 'oHg5SJYRHA0', min: '3:32', t: 'RickRoll\'D', f: 'cotter548', v: '91,330,210' }
+                    { id: 'y8Kyi0WNg40', min: '0:05', t: 'Dramatic Look', f: 'Sleepingplanet', v: '49,155,301' },
+                    { id: '6zlViU5PBPY', min: '10:04', t: 'Night at the roxbury-What is love? original gif', f: 'funnyhoney', v: '18,540,110' },
+                    { id: 'ZN5PoW7_kdA', min: '1:36', t: 'The Annoying Orange', f: 'Annoying Orange', v: '230,901,344' },
+                    { id: 's8MDNFaGfT4', min: '1:45', t: 'It\'s Peanut Butter Jelly Time!!!', f: 'RyanEtrata', v: '48,111,002' },
+                    { id: 'HPPj6viIBmU', min: '1:44', t: 'Star Wars Kid', f: 'Jimi Love', v: '38,111,002' }
                 ];
 
                 videos.forEach((v, i) => {
