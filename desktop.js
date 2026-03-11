@@ -521,48 +521,7 @@
                     wrap.append(topBar, loginBody);
                 };
 
-                const showProfile = () => {
-                    wrap.innerHTML = '';
-                    const inner = h('div', { class: 'xp-orkut-wrap', style: { paddingBottom: '30px' } },
-                        h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px', color: '#fff', fontSize: '18px', fontWeight: 'bold' } }, 'orkut'),
-                        h('div', { style: { padding: '20px', display: 'flex', gap: '20px', background: '#d4dded', flexWrap: 'wrap' } },
-                            h('div', { style: { width: '160px', flexShrink: 0 } },
-                                h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #fff' } }),
-                                h('div', { style: { marginTop: '10px', fontWeight: 'bold', fontSize: '14px', color: '#0033cc' } }, 'tuliocareli')
-                            ),
-                            h('div', { style: { flex: 1, minWidth: '280px', background: '#fff', padding: '15px' } },
-                                h('h2', { style: { color: '#bf6000', borderBottom: '1px solid #ccc', paddingBottom: '5px', margin: '0 0 15px' } }, 'perfil'),
-                                infoRows.map(row => h('div', { style: { display: 'flex', marginBottom: '8px', fontSize: '12px' } },
-                                    h('span', { style: { width: '130px', color: '#666', textAlign: 'right', paddingRight: '10px' } }, row.label),
-                                    h('span', { style: { flex: 1, color: '#000' } }, row.val)
-                                )),
 
-                                // Scrapbook section
-                                h('div', { style: { marginTop: '30px', borderTop: '1px dashed #ccc', paddingTop: '15px', background: '#f5f5f5', padding: '15px' } },
-                                    h('h3', { style: { color: '#bf6000', margin: '0 0 10px' } }, 'página de recados (scraps)'),
-                                    h('div', { style: { fontSize: '11px', color: '#666', marginBottom: '10px' } }, 'Recados ficam salvos apenas neste navegador (LocalStorage).'),
-                                    h('textarea', { id: 'orkut_scrap_input', style: { width: '100%', height: '60px', marginBottom: '10px', boxSizing: 'border-box' } }),
-                                    h('button', {
-                                        style: { padding: '5px 15px', cursor: 'pointer' }, onclick: () => {
-                                            const t = document.getElementById('orkut_scrap_input').value;
-                                            if (t.trim()) {
-                                                const sc = getScraps();
-                                                sc.unshift({ text: t, date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString() });
-                                                localStorage.setItem('orkut_scraps', JSON.stringify(sc));
-                                                showProfile(); // re-render
-                                            }
-                                        }
-                                    }, 'Deixar Recado'),
-                                    h('div', { style: { marginTop: '20px' } }, ...getScraps().map(s => h('div', { style: { background: '#fff', padding: '10px', marginBottom: '10px', border: '1px solid #ddd' } },
-                                        h('div', { style: { fontSize: '10px', color: '#999', marginBottom: '5px', fontWeight: 'bold' } }, 'Anônimo (', s.date, ')'),
-                                        h('div', { style: { whiteSpace: 'pre-wrap' } }, s.text)
-                                    )))
-                                )
-                            )
-                        )
-                    );
-                    wrap.appendChild(inner);
-                };
 
                 showLogin();
                 return wrapOuter;
