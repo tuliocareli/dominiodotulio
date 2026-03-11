@@ -548,7 +548,8 @@
                     subRow.append(cbWrap, h('div', { style: { textAlign: 'left' } }, btn));
 
                     rightCol.append(eRow, pRow, subRow);
-                    rightCol.innerHTML += '<div style="text-align:center; margin-top:20px; font-size:11px"><a href="#" style="color:#0033cc">Esqueceu a sua senha?</a></div>';
+                    const forgotLink = h('div', { style: { textAlign: 'center', marginTop: '20px', fontSize: '11px' } }, h('a', { href: '#', style: { color: '#0033cc' } }, 'Esqueceu a sua senha?'));
+                    rightCol.appendChild(forgotLink);
 
                     const bottomJoin = h('div', { style: { borderTop: '1px solid #c4d4e9', marginTop: '20px', paddingTop: '10px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px' } }, 'Ainda não é membro? ', h('span', { style: { color: '#0033cc', textDecoration: 'underline', cursor: 'pointer' } }, 'ENTRE JÁ'));
                     rightCol.appendChild(bottomJoin);
@@ -623,7 +624,7 @@
             const renderYoutube = () => {
                 const wrapOuter = h('div', {
                     class: 'yt-legacy-view-outer',
-                    style: { background: '#e5e5e5', display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto', alignItems: 'center' }
+                    style: { background: '#e5e5e5', display: 'flex', flexDirection: 'column', height: '100%', width: '100%', flex: 1, overflowY: 'auto', overflowX: 'hidden', alignItems: 'center' }
                 });
                 const wrap = h('div', {
                     class: 'yt-legacy-view',
@@ -912,10 +913,15 @@
                 tabEls.forEach((el, i) => el.classList.toggle('xp-tab--active', i === idx));
                 addrUrl.textContent = tab.url;
                 browserBody.innerHTML = '';
-                if (tab.id === 'youtube') browserBody.appendChild(renderYoutube());
-                else if (tab.id === 'orkut') browserBody.appendChild(renderOrkut());
-                else if (tab.id === 'jogosonline') browserBody.appendChild(renderJogosOnline());
-                if (tab.wayback) {
+                if (tab.type === 'mockup') {
+                    if (tab.id === 'youtube') {
+                        const yt = renderYoutube();
+                        browserBody.appendChild(yt);
+                        if (yt.onClose) browserWrap._currentCleanup = yt.onClose;
+                    }
+                    else if (tab.id === 'orkut') browserBody.appendChild(renderOrkut());
+                    else if (tab.id === 'jogosonline') browserBody.appendChild(renderJogosOnline());
+                } else if (tab.wayback) {
                     if (tab.name === 'Tony Hawk Underground') {
                         const ifrWrap = h('div', { style: { width: '100%', height: '100%', overflow: 'hidden', background: '#000', display: 'flex', justifyContent: 'center' } });
                         const ifrCenter = h('div', { style: { width: '800px', height: '100%', flexShrink: 0, transform: 'scale(1.05)', transformOrigin: 'top center' } });
