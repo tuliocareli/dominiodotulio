@@ -401,7 +401,7 @@
                 { name: 'Orkut', url: 'http://www.orkut.com.br', type: 'mockup', id: 'orkut' },
                 { name: 'Jogos Online', url: 'http://www.jogosonline.com.br', type: 'mockup', id: 'jogosonline' },
                 { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', wayback: 'https://web.archive.org/web/20040803011553/http://www.eagames.com/official/nfs/underground2/us/home.jsp?ncc=1' },
-                { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com.br', type: 'mockup', id: 'cartoonnetwork' }
+                { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com.br', wayback: 'https://web.archive.org/web/20041229085952/http://cartoonnetwork.com.br/' }
             ];
 
             let activeIdx = 0;
@@ -440,7 +440,12 @@
                         h('div', { style: { padding: '20px', display: 'flex', gap: '20px', background: '#d4dded', flexWrap: 'wrap' } },
                             h('div', { style: { width: '160px', flexShrink: 0 } },
                                 h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #fff' } }),
-                                h('div', { style: { marginTop: '10px', fontWeight: 'bold', fontSize: '14px', color: '#0033cc' } }, 'tuliocareli')
+                                h('div', { style: { marginTop: '10px', fontWeight: 'bold', fontSize: '14px', color: '#0033cc' } }, 'tuliocareli'),
+                                h('div', { style: { marginTop: '20px', textAlign: 'center', border: '1px solid #c4d4e9', background: '#fff', padding: '10px' } },
+                                    h('h3', { style: { color: '#bf6000', fontSize: '12px', borderBottom: '1px solid #ccc', margin: '0 0 10px', textAlign: 'left', fontWeight: 'bold' } }, 'apps'),
+                                    h('div', { style: { width: '60px', height: '60px', background: '#b4c9e8', margin: '0 auto', cursor: 'pointer', border: '1px solid #99b' }, onclick: () => playBuddyPoke(), innerHTML: '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#0033cc; font-size:10px; font-weight:bold">Buddy<br>Poke</div>' }),
+                                    h('div', { style: { fontSize: '11px', color: '#0033cc', marginTop: '5px', cursor: 'pointer', textDecoration: 'underline' }, onclick: () => playBuddyPoke() }, 'BuddyPoke')
+                                )
                             ),
                             h('div', { style: { flex: 1, minWidth: '280px', background: '#fff', padding: '15px' } },
                                 h('h2', { style: { color: '#bf6000', borderBottom: '1px solid #ccc', paddingBottom: '5px', margin: '0 0 15px' } }, 'perfil'),
@@ -474,17 +479,48 @@
                         )
                     );
                     wrap.appendChild(inner);
+                    wrap.appendChild(inner);
+                }
+
+                function playBuddyPoke() {
+                    wrap.innerHTML = '';
+                    const inner = h('div', { class: 'xp-orkut-wrap', style: { paddingBottom: '30px' } },
+                        h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px', color: '#fff', fontSize: '18px', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' } },
+                            h('span', {}, 'orkut'),
+                            h('span', { style: { fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', marginTop: '4px' }, onclick: showProfile }, 'voltar ao perfil')
+                        ),
+                        h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#d4dded', minHeight: '500px', padding: '20px' } },
+                            h('div', { style: { width: '800px', height: '600px', background: '#fff', border: '1px solid #c4d4e9', boxShadow: '0 0 10px rgba(0,0,0,0.2)' } },
+                                (() => {
+                                    const d = h('div', { style: { width: '100%', height: '100%' } });
+                                    if (window.RufflePlayer) {
+                                        const ruffle = window.RufflePlayer.newest();
+                                        const player = ruffle.createPlayer();
+                                        d.appendChild(player);
+                                        player.style.width = '100%';
+                                        player.style.height = '100%';
+                                        player.load({ url: 'jogoflash/BuddyPokeOrkut.swf' });
+                                    } else {
+                                        d.innerHTML = '<div style="padding:20px;text-align:center">Ruffle Player não carregado.</div>';
+                                    }
+                                    return d;
+                                })()
+                            ),
+                            h('div', { style: { marginTop: '15px', color: '#666', fontSize: '11px', textAlign: 'center', maxWidth: '600px' } }, 'BuddyPoke criado por Dave Westwood and Randall Ho, está aqui por razões de documentação e nostalgia, todos os direitos aos criadores.')
+                        )
+                    );
+                    wrap.appendChild(inner);
                 }
 
                 const showLogin = () => {
                     wrap.innerHTML = '';
                     const topBar = h('div', { style: { background: '#c4d4e9', padding: '5px 15px', color: '#333', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #999', flexWrap: 'wrap' } });
-                    topBar.innerHTML = '<div style="font-weight:bold; margin-bottom:5px; font-size:11px">Início | Participar do orkut | Ajuda</div><div style="color:#d00; font-size:24px; font-weight:bold; letter-spacing:-2px; font-family:tahoma,sans-serif">orkut</div>';
+                    topBar.innerHTML = '<div style="font-weight:bold; margin-bottom:5px; font-size:11px">Início | Participar do orkut | Ajuda</div><div style="color:#d40078; font-size:24px; font-weight:bold; letter-spacing:-2px; font-family:tahoma,sans-serif">orkut</div>';
 
                     const loginBody = h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '30px', padding: '30px 20px 50px' } });
 
                     const leftCol = h('div', { style: { flex: 1, minWidth: '300px', textAlign: 'center' } });
-                    leftCol.innerHTML = '<div style="font-size:24px; font-family:tahoma,sans-serif; letter-spacing:-1px; margin-bottom:15px"><span style="color:#d00;font-weight:bold">o orkut</span><span style="font-size:14px; color:#333; font-weight:normal; letter-spacing:0"> é uma comunidade on-line que conecta pessoas<br>através de uma rede de amigos confiáveis.</span></div><p style="font-size:12px; margin-bottom:20px; text-align:justify; padding: 0 10%; color:#555">Proporcionamos um ponto de encontro on-line com um ambiente de confraternização, onde é possível fazer novos amigos e conhecer pessoas que têm os mesmos interesses. Participe do orkut para estabelecer seu circulo social e se conectar a ele.</p>';
+                    leftCol.innerHTML = '<div style="font-size:24px; font-family:tahoma,sans-serif; letter-spacing:-1px; margin-bottom:15px"><span style="color:#d40078;font-weight:bold">o orkut</span><span style="font-size:14px; color:#333; font-weight:normal; letter-spacing:0"> é uma comunidade on-line que conecta pessoas<br>através de uma rede de amigos confiáveis.</span></div><p style="font-size:12px; margin-bottom:20px; text-align:justify; padding: 0 10%; color:#555">Proporcionamos um ponto de encontro on-line com um ambiente de confraternização, onde é possível fazer novos amigos e conhecer pessoas que têm os mesmos interesses. Participe do orkut para estabelecer seu circulo social e se conectar a ele.</p>';
 
                     const grid = h('div', { style: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '5px' } });
                     ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_profile.png', 'imagens/orkut_amigo_1.png'].forEach(src => {
@@ -497,7 +533,7 @@
                     const rightCol = h('div', { style: { border: '1px solid #c4d4e9', background: '#f5f7fa', padding: '15px' } });
                     rightColWrap.appendChild(rightCol);
 
-                    rightCol.innerHTML = '<div style="font-weight:bold; text-align:center; font-size:12px; margin-bottom:10px; color:#000">login</div><div style="text-align:center; margin-bottom:15px; font-size:12px">Acesse o orkut com a sua<br><span style="font-size:17px; font-weight:bold; color:#0033cc; font-family:serif">conta do <span style="color:#d00">G</span><span style="color:#eada00">o</span><span style="color:#eada00">o</span><span style="color:#0033cc">g</span><span style="color:#0a0">l</span><span style="color:#d00">e</span></span></div>';
+                    rightCol.innerHTML = '<div style="font-weight:bold; text-align:center; font-size:12px; margin-bottom:10px; color:#000">login</div><div style="text-align:center; margin-bottom:15px; font-size:12px">Acesse o orkut com a sua<br><span style="font-size:17px; font-weight:bold; color:#0033cc; font-family:serif">conta do <span style="color:#d40078">G</span><span style="color:#eada00">o</span><span style="color:#eada00">o</span><span style="color:#0033cc">g</span><span style="color:#0a0">l</span><span style="color:#d40078">e</span></span></div>';
 
                     const eRow = h('div', { style: { marginBottom: '10px', display: 'flex', alignItems: 'center', fontSize: '11px' } }, h('span', { style: { width: '60px', textAlign: 'right', paddingRight: '5px', color: '#000' } }, 'E-mail:'), h('input', { type: 'text', value: 'tulio@email.com', style: { flex: 1, padding: '1px', border: '1px solid #7f9db9' } }));
                     const pRow = h('div', { style: { marginBottom: '10px', display: 'flex', alignItems: 'center', fontSize: '11px' } }, h('span', { style: { width: '60px', textAlign: 'right', paddingRight: '5px', color: '#000' } }, 'Senha:'), h('input', { type: 'password', value: '*******', style: { flex: 1, padding: '1px', border: '1px solid #7f9db9' } }));
@@ -543,9 +579,9 @@
                             h('div', { style: { color: '#004a99', fontSize: '14px', fontWeight: 'bold' } }, 'Os melhores jogos da internet!')
                         )
                     );
-                    const grid = h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '15px', padding: '15px', background: '#f0f8ff', flex: 1, minWidth: '0' } });
+                    const grid = h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '15px', padding: '15px', background: '#f0f8ff', flex: 1, minWidth: '0', alignContent: 'flex-start' } });
                     games.forEach(g => {
-                        const item = h('div', { style: { background: '#fff', padding: '8px', border: '1px solid #ccc', cursor: 'pointer', textAlign: 'center', transition: 'transform 0.2s', boxShadow: '1px 1px 3px rgba(0,0,0,0.1)' }, onclick: () => play(g), onmouseover: (e) => e.currentTarget.style.transform = 'scale(1.03)', onmouseout: (e) => e.currentTarget.style.transform = 'scale(1)' },
+                        const item = h('div', { style: { width: '130px', background: '#fff', padding: '8px', border: '1px solid #ccc', cursor: 'pointer', textAlign: 'center', transition: 'transform 0.2s', boxShadow: '1px 1px 3px rgba(0,0,0,0.1)' }, onclick: () => play(g), onmouseover: (e) => e.currentTarget.style.transform = 'scale(1.03)', onmouseout: (e) => e.currentTarget.style.transform = 'scale(1)' },
                             h('img', { src: g.thumb, style: { width: '100%', height: '80px', objectFit: 'cover', background: '#ddd' } }),
                             h('div', { style: { fontWeight: 'bold', marginTop: '5px', fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, g.name)
                         );
@@ -585,10 +621,15 @@
             };
 
             const renderYoutube = () => {
+                const wrapOuter = h('div', {
+                    class: 'yt-legacy-view-outer',
+                    style: { background: '#e5e5e5', display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto', alignItems: 'center' }
+                });
                 const wrap = h('div', {
                     class: 'yt-legacy-view',
-                    style: { background: '#fff', height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', fontFamily: 'Arial, sans-serif', fontSize: '12px' }
+                    style: { background: '#fff', width: '100%', maxWidth: '1006px', display: 'flex', flexDirection: 'column', fontFamily: 'Arial, sans-serif', fontSize: '12px', minHeight: '100%', boxShadow: '0 0 10px rgba(0,0,0,0.3)' }
                 });
+                wrapOuter.appendChild(wrap);
 
                 // TOP GLOBAL HEADER
                 const topNav = h('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '5px 15px', fontSize: '11px', color: '#0033cc' } });
@@ -849,11 +890,11 @@
                     }
                 };
 
-                wrap.onClose = () => {
+                wrapOuter.onClose = () => {
                     if (ytPlayer && ytPlayer.destroy) ytPlayer.destroy();
                 };
 
-                return wrap;
+                return wrapOuter;
             };
 
             const renderFlogao = () => h('div', { style: { padding: '20px' } }, 'Flogão Mockup');
@@ -874,12 +915,7 @@
                 if (tab.id === 'youtube') browserBody.appendChild(renderYoutube());
                 else if (tab.id === 'orkut') browserBody.appendChild(renderOrkut());
                 else if (tab.id === 'jogosonline') browserBody.appendChild(renderJogosOnline());
-                else if (tab.id === 'cartoonnetwork') {
-                    const wrap = h('div', { style: { width: '100%', height: '100%', background: '#fff' } });
-                    wrap.innerHTML = '<iframe src="https://web.archive.org/web/20041229085952/http://cartoonnetwork.com.br/" style="width:100%; height:100%; border:none"></iframe>';
-                    browserBody.appendChild(wrap);
-                }
-                else if (tab.wayback) {
+                if (tab.wayback) {
                     if (tab.name === 'Tony Hawk Underground') {
                         const ifrWrap = h('div', { style: { width: '100%', height: '100%', overflow: 'hidden', background: '#000', display: 'flex', justifyContent: 'center' } });
                         const ifrCenter = h('div', { style: { width: '800px', height: '100%', flexShrink: 0, transform: 'scale(1.05)', transformOrigin: 'top center' } });
