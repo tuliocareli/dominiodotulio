@@ -421,95 +421,216 @@
                 wrapOuter.appendChild(wrap);
 
                 const infoRows = [
-                    { label: 'relacionamento:', val: 'compromissado' },
-                    { label: 'aniversário:', val: '23 de abril' },
-                    { label: 'idade:', val: '28' },
-                    { label: 'interesses no orkut:', val: 'amigos' },
-                    { label: 'quem sou eu:', val: 'tecnicamente impressionante, esteticamente horrivel O_o' },
+                    { label: 'relacionamento:', val: 'solteiro(a)' },
+                    { label: 'aniversário:', val: '21 março' },
+                    { label: 'idade:', val: '20' },
+                    { label: 'interesses no orkut:', val: 'amigos, companheiros para atividades, namoro (mulheres)' },
+                    { label: 'quem sou eu:', val: 'nao sei tentando descobri! o>O as vezes so retardado as vezes chato pra cacete as vezes legl' },
+                    { label: 'filhos:', val: 'não' },
                     { label: 'etnia:', val: 'caucasiano (branco)' },
-                    { label: 'cidade natal:', val: 'BH' },
-                    { label: 'página web:', val: 'tuliocareli.com' }
+                    { label: 'humor:', val: 'extrovertido/extravagante' },
+                    { label: 'orientação sexual:', val: 'heterossexual' },
+                    { label: 'estilo:', val: 'urbano' },
+                    { label: 'fumo:', val: 'não' },
+                    { label: 'bebo:', val: 'não' },
+                    { label: 'animais de estimação:', val: 'não gosto de animais de estimação' },
+                    { label: 'moro:', val: 'com meus pais' },
+                    { label: 'cidade natal:', val: 'tangara da serra' },
+                    { label: 'página web:', val: h('a', { href: '#', style: { color: '#0033cc' } }, 'http://ryl2phoenix.com/') },
+                    { label: 'paixões:', val: 'nada lol' },
+                    { label: 'esportes:', val: 'nenhum =S' },
+                    { label: 'atividades:', val: 'lol n tenh XD' }
                 ];
 
                 const getScraps = () => JSON.parse(localStorage.getItem('orkut_scraps') || '[]');
 
                 function showProfile() {
                     wrap.innerHTML = '';
-                    const inner = h('div', { class: 'xp-orkut-wrap', style: { paddingBottom: '30px' } },
-                        h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px', color: '#fff', fontSize: '18px', fontWeight: 'bold' } }, 'orkut'),
-                        h('div', { style: { padding: '20px', display: 'flex', gap: '20px', background: '#d4dded', flexWrap: 'wrap' } },
-                            h('div', { style: { width: '160px', flexShrink: 0 } },
-                                h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #fff' } }),
-                                h('div', { style: { marginTop: '10px', fontWeight: 'bold', fontSize: '14px', color: '#0033cc' } }, 'tuliocareli'),
-                                h('div', { style: { marginTop: '20px', textAlign: 'center', border: '1px solid #c4d4e9', background: '#fff', padding: '10px' } },
-                                    h('h3', { style: { color: '#bf6000', fontSize: '12px', borderBottom: '1px solid #ccc', margin: '0 0 10px', textAlign: 'left', fontWeight: 'bold' } }, 'apps'),
-                                    h('div', { style: { width: '60px', height: '60px', background: '#b4c9e8', margin: '0 auto', cursor: 'pointer', border: '1px solid #99b' }, onclick: () => playBuddyPoke(), innerHTML: '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#0033cc; font-size:10px; font-weight:bold">Buddy<br>Poke</div>' }),
-                                    h('div', { style: { fontSize: '11px', color: '#0033cc', marginTop: '5px', cursor: 'pointer', textDecoration: 'underline' }, onclick: () => playBuddyPoke() }, 'BuddyPoke')
-                                )
-                            ),
-                            h('div', { style: { flex: 1, minWidth: '280px', background: '#fff', padding: '15px' } },
-                                h('h2', { style: { color: '#bf6000', borderBottom: '1px solid #ccc', paddingBottom: '5px', margin: '0 0 15px' } }, 'perfil'),
-                                infoRows.map(row => h('div', { style: { display: 'flex', marginBottom: '8px', fontSize: '12px' } },
-                                    h('span', { style: { width: '130px', color: '#666', textAlign: 'right', paddingRight: '10px' } }, row.label),
-                                    h('span', { style: { flex: 1, color: '#000' } }, row.val)
-                                )),
+                    wrapOuter.style.background = '#e8eef7'; // Classic light blue background
 
-                                // Scrapbook section
-                                h('div', { style: { marginTop: '30px', borderTop: '1px dashed #ccc', paddingTop: '15px', background: '#f5f5f5', padding: '15px' } },
-                                    h('h3', { style: { color: '#bf6000', margin: '0 0 10px' } }, 'página de recados (scraps)'),
-                                    h('div', { style: { fontSize: '11px', color: '#666', marginBottom: '10px' } }, 'Recados ficam salvos apenas neste navegador (LocalStorage).'),
-                                    h('textarea', { id: 'orkut_scrap_input', style: { width: '100%', height: '60px', marginBottom: '10px', boxSizing: 'border-box' } }),
-                                    h('button', {
-                                        style: { padding: '5px 15px', cursor: 'pointer' }, onclick: () => {
-                                            const t = document.getElementById('orkut_scrap_input').value;
-                                            if (t.trim()) {
-                                                const sc = getScraps();
-                                                sc.unshift({ text: t, date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString() });
-                                                localStorage.setItem('orkut_scraps', JSON.stringify(sc));
-                                                showProfile(); // re-render
-                                            }
-                                        }
-                                    }, 'Deixar Recado'),
-                                    h('div', { style: { marginTop: '20px' } }, ...getScraps().map(s => h('div', { style: { background: '#fff', padding: '10px', marginBottom: '10px', border: '1px solid #ddd' } },
-                                        h('div', { style: { fontSize: '10px', color: '#999', marginBottom: '5px', fontWeight: 'bold' } }, 'Anônimo (', s.date, ')'),
-                                        h('div', { style: { whiteSpace: 'pre-wrap' } }, s.text)
-                                    )))
-                                )
+                    const userName = "Gr3g0LLy FeLipe franca";
+                    const email = "armandotobias@gmail.com";
+
+                    // TOP HEADER
+                    const header = h('header', { style: { background: '#688cb8', padding: '0 15px', color: '#fff', fontSize: '11px', display: 'flex', alignItems: 'center', height: '35px', justifyContent: 'space-between' } },
+                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '15px' } },
+                            h('div', { style: { fontWeight: 'bold', fontSize: '20px', letterSpacing: '-1px', color: '#d40078', background: '#fff', padding: '0 5px', borderRadius: '4px' } }, 'orkut', h('span', { style: { fontSize: '9px', color: '#ccc', verticalAlign: 'top' } }, 'BETA')),
+                            h('span', { style: { cursor: 'pointer', background: '#e8eef7', color: '#688cb8', padding: '2px 5px', borderRadius: '3px' } }, 'Início'),
+                            h('span', { style: { cursor: 'pointer' } }, 'Página de recados'),
+                            h('span', { style: { cursor: 'pointer' } }, 'Amigos'),
+                            h('span', { style: { cursor: 'pointer' } }, 'Comunidades')
+                        ),
+                        h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px' } },
+                            h('span', { style: { fontWeight: 'bold' } }, email),
+                            h('span', { style: { cursor: 'pointer', textDecoration: 'underline' } }, 'Sair'),
+                            h('div', { style: { display: 'flex' } },
+                                h('input', { type: 'text', value: 'pesquisa do orkut', style: { padding: '1px 5px', fontSize: '11px', border: 'none', color: '#888' } }),
+                                h('div', { style: { background: '#3b5998', padding: '1px 5px', cursor: 'pointer' } }, '🔍')
                             )
                         )
                     );
-                    wrap.appendChild(inner);
-                    wrap.appendChild(inner);
+
+                    // COLUMNS CONTAINER
+                    const colsWrap = h('div', { style: { display: 'flex', padding: '10px', gap: '10px', alignItems: 'flex-start' } });
+
+                    // ── LEFT COLUMN ──
+                    const leftCol = h('div', { style: { width: '160px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '10px' } });
+
+                    leftCol.appendChild(h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #c4d4e9', padding: '2px', background: '#fff' } }));
+
+                    leftCol.appendChild(h('div', { style: { fontSize: '11px', lineHeight: '1.4' } },
+                        h('div', { style: { color: '#0033cc', fontWeight: 'bold' } }, userName),
+                        h('div', { style: { color: '#666' } }, 'masculino, solteiro(a)', h('br'), 'tangara da serra, Brasil')
+                    ));
+
+                    leftCol.appendChild(h('div', { style: { color: '#0033cc', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' } },
+                        h('span', { style: { border: '1px solid #0033cc', padding: '0 2px', borderRadius: '2px' } }, '+'), 'amigo',
+                        h('div', { style: { marginLeft: 'auto', fontSize: '10px' } }, 'mais »')
+                    ));
+
+                    // Nav menu "perfil", "recados", etc
+                    const navMenu = h('div', { style: { border: '1px solid #bfd0e6', background: '#fff', borderRadius: '4px', overflow: 'hidden' } });
+                    const makeNav = (label, icon, act = false) => h('div', { style: { padding: '4px 8px', fontSize: '12px', background: act ? '#e4f0f8' : '#fff', color: '#0033cc', borderBottom: '1px solid #e4f0f8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' } }, h('span', { style: { width: '12px', textAlign: 'center' } }, icon), label);
+                    navMenu.append(
+                        makeNav('perfil', '👤', true),
+                        makeNav('recados', '📝'),
+                        makeNav('fotos', '📷'),
+                        makeNav('vídeos', '📹'),
+                        makeNav('depoimentos', '🌼')
+                    );
+                    leftCol.appendChild(navMenu);
+
+                    // Apps menu (for buddy poke)
+                    const appsMenu = h('div', { style: { border: '1px solid #bfd0e6', background: '#fff', borderRadius: '4px', overflow: 'hidden', marginTop: '5px' } });
+                    appsMenu.appendChild(h('div', { style: { background: '#e4f0f8', padding: '2px 8px', color: '#0033cc', fontWeight: 'bold', fontSize: '11px' } }, 'apps'));
+                    const buddyPokeRow = h('div', { style: { padding: '5px', textAlign: 'center', cursor: 'pointer' }, onclick: playBuddyPoke },
+                        h('div', { style: { width: '100%', height: '40px', background: '#bfd0e6', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '11px', borderRadius: '2px' } }, 'BuddyPoke')
+                    );
+                    appsMenu.appendChild(buddyPokeRow);
+                    leftCol.appendChild(appsMenu);
+
+                    // ── MIDDLE COLUMN ──
+                    const midCol = h('div', { style: { flex: 1, minWidth: '350px', background: '#fff', border: '1px solid #bfd0e6', borderRadius: '8px', overflow: 'hidden' } });
+
+                    const midHeader = h('div', { style: { padding: '15px 20px 5px', borderBottom: '1px solid #bfd0e6' } });
+                    midHeader.appendChild(h('h1', { style: { margin: '0 0 10px', fontSize: '24px', fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif' } }, userName));
+
+                    const badgesRow = h('div', { style: { display: 'flex', gap: '15px', fontSize: '11px', color: '#666', alignItems: 'center', flexWrap: 'wrap' } });
+                    const bVal = (icon, lbl, v) => h('span', { style: { display: 'flex', gap: '3px', alignItems: 'center' } }, h('span', {}, lbl), h('span', {}, icon), h('span', { style: { color: '#0033cc' } }, v));
+                    badgesRow.append(
+                        bVal('📝', 'recados', '114'), bVal('📷', 'fotos', '0'), bVal('📹', 'vídeos', '5'), bVal('⭐', 'fãs', '15'),
+                        h('span', { style: { color: '#eada00' } }, 'confiável 😃😃😃'),
+                        h('span', { style: { color: '#89aedd' } }, 'legal 🧊🧊🧊'),
+                        h('span', { style: { color: '#d40078' } }, 'sexy 🔥🔥🔥')
+                    );
+                    midHeader.appendChild(badgesRow);
+
+                    // Tab social
+                    const tTab = h('div', { style: { display: 'flex', padding: '10px 10px 0' } });
+                    tTab.appendChild(h('div', { style: { background: '#89aedd', color: '#fff', fontWeight: 'bold', padding: '3px 10px', borderRadius: '6px 6px 0 0', fontSize: '11px' } }, 'social'));
+                    midHeader.appendChild(tTab);
+                    midCol.appendChild(midHeader);
+
+                    const rowsCont = h('div', { style: { padding: '10px', display: 'flex', flexDirection: 'column', gap: '2px' } });
+                    infoRows.forEach((r, i) => {
+                        const bg = i % 2 === 0 ? '#e4f0f8' : '#fff';
+                        rowsCont.appendChild(h('div', { style: { display: 'flex', background: bg, padding: '4px', fontSize: '11px', lineHeight: '1.3' } },
+                            h('div', { style: { width: '130px', textAlign: 'right', paddingRight: '10px', color: '#688cb8' } }, r.label),
+                            h('div', { style: { flex: 1, color: '#333' } }, typeof r.val === 'string' ? r.val : r.val)
+                        ));
+                    });
+                    midCol.appendChild(rowsCont);
+
+                    // Scraps Box (keep it here inside midCol as usual)
+                    const scrapsWrap = h('div', { style: { borderTop: '1px solid #bfd0e6', padding: '15px' } });
+                    scrapsWrap.innerHTML = '<div style="font-weight:bold; color:#0033cc; font-size:12px; margin-bottom:10px">página de recados (scraps)</div>';
+                    scrapsWrap.appendChild(h('textarea', { id: 'orkut_scrap_input', style: { width: '100%', height: '50px', marginBottom: '5px', border: '1px solid #bfd0e6' } }));
+                    scrapsWrap.appendChild(h('button', {
+                        style: { background: '#bfd0e6', border: 'none', padding: '3px 10px', cursor: 'pointer', fontSize: '11px', color: '#0033cc' }, onclick: () => {
+                            const t = document.getElementById('orkut_scrap_input').value;
+                            if (t.trim()) {
+                                const sc = getScraps();
+                                sc.unshift({ text: t, date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString() });
+                                localStorage.setItem('orkut_scraps', JSON.stringify(sc));
+                                showProfile();
+                            }
+                        }
+                    }, 'Deixar Recado'));
+
+                    const scrapsList = h('div', { style: { marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '10px' } });
+                    getScraps().forEach(s => {
+                        scrapsList.appendChild(h('div', { style: { background: '#f5f7fa', padding: '8px', border: '1px solid #bfd0e6', fontSize: '11px' } },
+                            h('div', { style: { color: '#0033cc', fontWeight: 'bold', marginBottom: '4px' } }, 'Anônimo ', h('span', { style: { fontWeight: 'normal', color: '#666', fontSize: '9px' } }, s.date)),
+                            h('div', { style: { whiteSpace: 'pre-wrap', color: '#333' } }, s.text)
+                        ));
+                    });
+                    scrapsWrap.appendChild(scrapsList);
+                    midCol.appendChild(scrapsWrap);
+
+
+                    // ── RIGHT COLUMN ──
+                    const rightCol = h('div', { style: { width: '220px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '10px' } });
+
+                    const makeBox = (title, count, isComm) => {
+                        const box = h('div', { style: { background: '#fff', border: '1px solid #bfd0e6', borderRadius: '4px', overflow: 'hidden' } });
+                        box.appendChild(h('div', { style: { background: '#e4f0f8', padding: '4px 8px', color: '#0033cc', fontSize: '12px', borderBottom: '1px solid #bfd0e6' } },
+                            h('b', {}, title), h('span', { style: { color: '#688cb8' } }, ' (', count, ')')
+                        ));
+                        const items = h('div', { style: { display: 'flex', flexWrap: 'wrap', padding: '10px', gap: '5px', justifyContent: 'center' } });
+
+                        const srcs = isComm
+                            ? ['imagens/comunidade_1.png', 'imagens/comunidade_2.png', 'imagens/comunidade_3.png']
+                            : ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_profile.png', 'imagens/orkut_amigo_1.png'];
+
+                        srcs.forEach((s, ix) => {
+                            const it = h('div', { style: { width: '55px', textAlign: 'center' } });
+                            it.appendChild(h('img', { src: s, style: { width: '100%', height: '55px', objectFit: 'cover', border: '1px solid #ccc' } }));
+                            if (!isComm) {
+                                it.appendChild(h('div', { style: { fontSize: '9px', color: '#0033cc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, 'Amigo ' + ix));
+                            }
+                            items.appendChild(it);
+                        });
+                        box.appendChild(items);
+                        if (!isComm) {
+                            box.appendChild(h('div', { style: { padding: '5px 8px', fontSize: '10px', color: '#0033cc', textDecoration: 'underline', cursor: 'pointer', background: '#f5f7fa', borderTop: '1px solid #bfd0e6' } }, 'ver todos'));
+                        }
+                        return box;
+                    };
+
+                    rightCol.append(makeBox('amigos', '51', false), makeBox('comunidades', '313', true));
+
+                    colsWrap.append(leftCol, midCol, rightCol);
+                    wrap.append(header, colsWrap);
                 }
 
                 function playBuddyPoke() {
                     wrap.innerHTML = '';
-                    const inner = h('div', { class: 'xp-orkut-wrap', style: { paddingBottom: '30px' } },
-                        h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px', color: '#fff', fontSize: '18px', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' } },
-                            h('span', {}, 'orkut'),
+                    const inner = h('div', { class: 'xp-orkut-wrap', style: { paddingBottom: '30px', background: '#e8eef7' } },
+                        h('header', { style: { background: '#688cb8', padding: '5px 20px', color: '#fff', fontSize: '18px', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                            h('div', { style: { display: 'flex', alignItems: 'center', gap: '5px' } }, h('span', { style: { color: '#fff' } }, 'orkut'), h('span', { style: { color: '#d4dded', fontSize: '14px' } }, 'apps')),
                             h('span', { style: { fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', marginTop: '4px' }, onclick: showProfile }, 'voltar ao perfil')
                         ),
-                        h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#d4dded', minHeight: '500px', padding: '20px' } },
-                            h('div', { style: { width: '800px', height: '600px', background: '#fff', border: '1px solid #c4d4e9', boxShadow: '0 0 10px rgba(0,0,0,0.2)' } },
-                                (() => {
-                                    const d = h('div', { style: { width: '100%', height: '100%' } });
-                                    if (window.RufflePlayer) {
-                                        const ruffle = window.RufflePlayer.newest();
-                                        const player = ruffle.createPlayer();
-                                        d.appendChild(player);
-                                        player.style.width = '100%';
-                                        player.style.height = '100%';
-                                        player.load({ url: 'jogoflash/BuddyPokeOrkut.swf' });
-                                    } else {
-                                        d.innerHTML = '<div style="padding:20px;text-align:center">Ruffle Player não carregado.</div>';
-                                    }
-                                    return d;
-                                })()
-                            ),
-                            h('div', { style: { marginTop: '15px', color: '#666', fontSize: '11px', textAlign: 'center', maxWidth: '600px' } }, 'BuddyPoke criado por Dave Westwood and Randall Ho, está aqui por razões de documentação e nostalgia, todos os direitos aos criadores.')
+                        h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '500px', padding: '20px' } },
+                            h('div', { id: 'buddy-poke-container', style: { width: '800px', height: '600px', background: '#000', border: '1px solid #bfd0e6', boxShadow: '0 0 10px rgba(0,0,0,0.2)' } }),
+                            h('div', { style: { marginTop: '15px', color: '#688cb8', fontSize: '11px', textAlign: 'center', maxWidth: '600px' } }, 'BuddyPoke criado por Dave Westwood and Randall Ho, está aqui por razões de documentação e nostalgia, todos os direitos aos criadores.')
                         )
                     );
                     wrap.appendChild(inner);
+
+                    // Defer ruffle instantiation so `#buddy-poke-container` is in DOM
+                    setTimeout(() => {
+                        const container = document.getElementById('buddy-poke-container');
+                        if (container && window.RufflePlayer) {
+                            const ruffle = window.RufflePlayer.newest();
+                            const player = ruffle.createPlayer();
+                            player.style.width = '100%';
+                            player.style.height = '100%';
+                            container.appendChild(player);
+                            player.load({ url: 'jogoflash/BuddyPokeOrkut.swf' });
+                        } else if (container) {
+                            container.innerHTML = '<div style="padding:20px;text-align:center;color:#fff">Ruffle Player não carregado. Verifique os scripts.</div>';
+                        }
+                    }, 50);
                 }
 
                 const showLogin = () => {
