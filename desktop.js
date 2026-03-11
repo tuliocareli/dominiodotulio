@@ -399,12 +399,9 @@
                 { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', wayback: 'https://web.archive.org/web/20031206081727/http://www.activision.com/microsite/thug/thug.html' },
                 { name: 'YouTube (2007)', url: 'http://www.youtube.com', type: 'mockup', id: 'youtube' },
                 { name: 'Orkut', url: 'http://www.orkut.com.br', type: 'mockup', id: 'orkut' },
-                { name: 'Flogão', url: 'http://www.flogao.com.br/tuliocareli', type: 'mockup', id: 'flogao' },
                 { name: 'Jogos Online', url: 'http://www.jogosonline.com.br', type: 'mockup', id: 'jogosonline' },
                 { name: 'NFS Underground 2', url: 'http://www.needforspeedunderground2.com', wayback: 'https://web.archive.org/web/20040803011553/http://www.eagames.com/official/nfs/underground2/us/home.jsp?ncc=1' },
-                { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com', img: 'imagens/cartoonnetwork.com.png' },
-                { name: 'Naruto Project', url: 'http://www.narutoproject.com.br', img: 'imagens/narutoproject.com.br.jpg' },
-                { name: 'MySpace', url: 'http://www.myspace.com', img: 'imagens/myspace.com.jpg' },
+                { name: 'Cartoon Network', url: 'http://www.cartoonnetwork.com.br', type: 'mockup', id: 'cartoonnetwork' }
             ];
 
             let activeIdx = 0;
@@ -419,6 +416,8 @@
 
             // ── Mockup Content Builders ──────────────────
             const renderOrkut = () => {
+                const wrap = h('div', { style: { width: '100%', height: '100%', overflowY: 'auto', background: '#fff', fontSize: '12px', fontFamily: 'Arial, sans-serif' } });
+
                 const infoRows = [
                     { label: 'relacionamento:', val: 'compromissado' },
                     { label: 'aniversário:', val: '23 de abril' },
@@ -429,28 +428,91 @@
                     { label: 'cidade natal:', val: 'BH' },
                     { label: 'página web:', val: 'tuliocareli.com' }
                 ];
-                const friends = [
-                    { name: 'BetoLol', img: 'imagens/orkut_amigo_1.png' },
-                    { name: 'ZedTHPS', img: 'imagens/orkut_amigo_2.png' },
-                    { name: 'Lets', img: 'imagens/orkut_amigo_3.png' },
-                    { name: 'NiNa_2004', img: 'imagens/orkut_amigo_7.png' }
-                ];
-                return h('div', { class: 'xp-orkut-wrap' },
-                    h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px', color: '#fff' } }, 'orkut'),
-                    h('div', { style: { padding: '20px', display: 'flex', gap: '20px', background: '#d4dded' } },
-                        h('div', { style: { width: '160px' } },
-                            h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #fff' } }),
-                            h('div', { style: { marginTop: '10px' } }, 'tuliocareli')
-                        ),
-                        h('div', { style: { flex: 1, background: '#fff', padding: '15px' } },
-                            h('h2', { style: { color: '#bf6000' } }, 'perfil'),
-                            infoRows.map(row => h('div', { style: { display: 'flex', marginBottom: '8px', fontSize: '12px' } },
-                                h('span', { style: { width: '120px', color: '#666', textAlign: 'right', paddingRight: '10px' } }, row.label),
-                                h('span', { style: { flex: 1, color: '#000' } }, row.val)
-                            ))
+
+                const getScraps = () => JSON.parse(localStorage.getItem('orkut_scraps') || '[]');
+
+                const showLogin = () => {
+                    wrap.innerHTML = '';
+                    const topBar = h('div', { style: { background: '#c4d4e9', padding: '5px 15px', color: '#333', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #999', flexWrap: 'wrap' } });
+                    topBar.innerHTML = '<div style="font-weight:bold; margin-bottom:5px">Início | Participar do orkut | Ajuda</div><div style="color:#d00; font-size:20px; font-weight:bold; letter-spacing:-1px">orkut</div>';
+
+                    const loginBody = h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '30px', padding: '20px' } });
+
+                    const leftCol = h('div', { style: { flex: 1, minWidth: '300px', textAlign: 'center' } });
+                    leftCol.innerHTML = '<div style="color:#d00; font-size:24px; font-weight:bold; letter-spacing:-1px; margin-bottom:10px">o orkut <span style="font-size:16px; color:#333; font-weight:normal; letter-spacing:0">é uma comunidade on-line que conecta pessoas<br>através de uma rede de amigos confiáveis.</span></div><p style="font-size:13px; margin-bottom:20px; text-align:justify; padding: 0 10%">Proporcionamos um ponto de encontro on-line com um ambiente de confraternização, onde é possível fazer novos amigos e conhecer pessoas que têm os mesmos interesses. Participe do orkut para estabelecer seu circulo social e se conectar a ele.</p>';
+
+                    const grid = h('div', { style: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '5px' } });
+                    ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_profile.png', 'imagens/orkut_amigo_1.png'].forEach(src => {
+                        grid.appendChild(h('img', { src, style: { width: '80px', height: '100px', objectFit: 'cover', border: '2px solid #fff', boxShadow: '1px 1px 3px rgba(0,0,0,0.3)', transform: `rotate(${Math.random() * 10 - 5}deg)` } }));
+                    });
+                    leftCol.appendChild(grid);
+                    leftCol.innerHTML += '<br><div style="color:#0033cc; text-decoration:underline; font-weight:bold; margin-top:20px; cursor:pointer">Leia mais sobre como manter o orkut bonito</div>';
+
+                    const rightCol = h('div', { style: { width: '100%', maxWidth: '300px', border: '1px solid #c4d4e9', background: '#f5f7fa', padding: '15px', alignSelf: 'flex-start' } });
+                    rightCol.innerHTML = '<div style="font-weight:bold; text-align:center; font-size:14px; margin-bottom:10px">login</div><div style="text-align:center; margin-bottom:15px">Acesse o orkut com a sua<br><span style="font-size:18px; font-weight:bold; color:#0033cc">conta do <span style="color:#d00">G</span><span style="color:#eada00">o</span><span style="color:#0033cc">o</span><span style="color:#0a0">g</span><span style="color:#0033cc">l</span><span style="color:#d00">e</span></span></div>';
+
+                    const eRow = h('div', { style: { marginBottom: '10px', display: 'flex', alignItems: 'center' } }, h('span', { style: { width: '60px', textAlign: 'right', paddingRight: '5px' } }, 'E-mail:'), h('input', { type: 'text', value: 'tuliocareli@gmail.com', style: { flex: 1 } }));
+                    const pRow = h('div', { style: { marginBottom: '10px', display: 'flex', alignItems: 'center' } }, h('span', { style: { width: '60px', textAlign: 'right', paddingRight: '5px' } }, 'Senha:'), h('input', { type: 'password', value: '*******', style: { flex: 1 } }));
+
+                    const subRow = h('div', { style: { textAlign: 'center', marginTop: '10px' } });
+                    const btn = h('button', { style: { padding: '2px 10px', cursor: 'pointer', background: '#e0e0e0', border: '1px solid #999', color: '#000' }, onclick: showProfile }, 'Login');
+                    subRow.append(h('div', { style: { marginBottom: '15px', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' } }, h('input', { type: 'checkbox', checked: true, style: { margin: 0, marginRight: '5px' } }), ' Salvar as minhas informações neste computador.'), btn);
+
+                    rightCol.append(eRow, pRow, subRow);
+                    rightCol.innerHTML += '<div style="text-align:center; margin-top:20px; font-size:11px"><a href="#" style="color:#0033cc">Esqueceu a sua senha?</a></div>';
+
+                    const bottomJoin = h('div', { style: { borderTop: '1px solid #c4d4e9', marginTop: '30px', paddingTop: '10px', textAlign: 'center', fontWeight: 'bold' } }, 'Ainda não é membro? ', h('span', { style: { color: '#0033cc', textDecoration: 'underline', cursor: 'pointer' } }, 'ENTRE JÁ'));
+                    rightCol.appendChild(bottomJoin);
+
+                    loginBody.append(leftCol, rightCol);
+                    wrap.append(topBar, loginBody);
+                };
+
+                const showProfile = () => {
+                    wrap.innerHTML = '';
+                    const inner = h('div', { class: 'xp-orkut-wrap', style: { paddingBottom: '30px' } },
+                        h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px', color: '#fff', fontSize: '18px', fontWeight: 'bold' } }, 'orkut'),
+                        h('div', { style: { padding: '20px', display: 'flex', gap: '20px', background: '#d4dded', flexWrap: 'wrap' } },
+                            h('div', { style: { width: '160px', flexShrink: 0 } },
+                                h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #fff' } }),
+                                h('div', { style: { marginTop: '10px', fontWeight: 'bold', fontSize: '14px', color: '#0033cc' } }, 'tuliocareli')
+                            ),
+                            h('div', { style: { flex: 1, minWidth: '280px', background: '#fff', padding: '15px' } },
+                                h('h2', { style: { color: '#bf6000', borderBottom: '1px solid #ccc', paddingBottom: '5px', margin: '0 0 15px' } }, 'perfil'),
+                                infoRows.map(row => h('div', { style: { display: 'flex', marginBottom: '8px', fontSize: '12px' } },
+                                    h('span', { style: { width: '130px', color: '#666', textAlign: 'right', paddingRight: '10px' } }, row.label),
+                                    h('span', { style: { flex: 1, color: '#000' } }, row.val)
+                                )),
+
+                                // Scrapbook section
+                                h('div', { style: { marginTop: '30px', borderTop: '1px dashed #ccc', paddingTop: '15px', background: '#f5f5f5', padding: '15px' } },
+                                    h('h3', { style: { color: '#bf6000', margin: '0 0 10px' } }, 'página de recados (scraps)'),
+                                    h('div', { style: { fontSize: '11px', color: '#666', marginBottom: '10px' } }, 'Recados ficam salvos apenas neste navegador (LocalStorage).'),
+                                    h('textarea', { id: 'orkut_scrap_input', style: { width: '100%', height: '60px', marginBottom: '10px', boxSizing: 'border-box' } }),
+                                    h('button', {
+                                        style: { padding: '5px 15px', cursor: 'pointer' }, onclick: () => {
+                                            const t = document.getElementById('orkut_scrap_input').value;
+                                            if (t.trim()) {
+                                                const sc = getScraps();
+                                                sc.unshift({ text: t, date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString() });
+                                                localStorage.setItem('orkut_scraps', JSON.stringify(sc));
+                                                showProfile(); // re-render
+                                            }
+                                        }
+                                    }, 'Deixar Recado'),
+                                    h('div', { style: { marginTop: '20px' } }, ...getScraps().map(s => h('div', { style: { background: '#fff', padding: '10px', marginBottom: '10px', border: '1px solid #ddd' } },
+                                        h('div', { style: { fontSize: '10px', color: '#999', marginBottom: '5px', fontWeight: 'bold' } }, 'Anônimo (', s.date, ')'),
+                                        h('div', { style: { whiteSpace: 'pre-wrap' } }, s.text)
+                                    )))
+                                )
+                            )
                         )
-                    )
-                );
+                    );
+                    wrap.appendChild(inner);
+                };
+
+                showLogin();
+                return wrap;
             };
 
             const renderJogosOnline = () => {
@@ -522,8 +584,8 @@
 
                 // LOGO & TABS AREA
                 const masthead = h('div', { style: { display: 'flex', alignItems: 'flex-end', padding: '10px 15px 0', gap: '15px' } });
-                const logoBox = h('div', { style: { width: '130px', textAlign: 'center', marginBottom: '5px' } });
-                logoBox.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/YouTube_logo_%282005-2011%29.svg/512px-YouTube_logo_%282005-2011%29.svg.png" style="width:110px"><div style="font-size:10px; color:#666; margin-top:-5px">Broadcast Yourself™</div>';
+                const logoBox = h('div', { style: { width: '130px', textAlign: 'center', marginBottom: '5px', cursor: 'pointer' } });
+                logoBox.innerHTML = '<div style="font-family:\'Arial Black\', Impact, sans-serif; font-size:26px; font-weight:bold; letter-spacing:-1px; color:#333; margin-bottom:0; line-height:1">You<span style="background:#cc0000; color:#fff; padding:0 3px; border-radius:5px; margin-left:2px">Tube</span></div><div style="font-size:10px; color:#666; margin-top:2px">Broadcast Yourself™</div>';
 
                 const tabsWrap = h('div', { style: { flex: 1, display: 'flex', gap: '5px' } });
                 ['Home', 'Videos', 'Channels', 'Community'].forEach(tab => {
@@ -537,9 +599,9 @@
                 const searchArea = h('div', { style: { background: '#eeeeee', borderTop: '1px solid #ccc', padding: '8px 15px', display: 'flex', alignItems: 'center', gap: '10px' } });
                 searchArea.innerHTML = '<input type="text" style="flex:1; max-width:350px; border:1px solid #999; padding:4px"><select style="padding:3px; border:1px solid #999; font-size:11px"><option>Videos</option></select><button style="padding:3px 15px; border:1px solid #999; background:#fff; cursor:pointer">Search</button><span style="color:#0033cc;text-decoration:underline;font-size:11px;cursor:pointer">advanced</span><div style="flex:1"></div><button style="padding:4px 20px; background:#ffe000; border:1px solid #e0c000; font-weight:bold; font-size:11px; cursor:pointer; color:#000; border-radius:3px">Upload</button>';
 
-                const header = h('div', { style: { width: '100%', maxWidth: '960px', margin: '0 auto', fontFamily: 'Arial' } }, topNav, masthead, searchArea);
+                const header = h('div', { style: { width: '100%', fontFamily: 'Arial' } }, topNav, masthead, searchArea);
 
-                const mainCont = h('div', { style: { display: 'flex', flexWrap: 'wrap', padding: '20px 15px', gap: '20px', background: '#fff', maxWidth: '960px', margin: '0 auto' } });
+                const mainCont = h('div', { style: { display: 'flex', flexWrap: 'wrap', padding: '20px 15px', gap: '20px', background: '#fff', width: '100%' } });
 
                 // LEFT COLUMN
                 const leftCol = h('div', { style: { flex: '1 1 480px', minWidth: '0' } });
@@ -646,16 +708,24 @@
                 const relatedList = h('div', { style: { maxHeight: '380px', overflowY: 'auto', padding: '10px', display: 'flex', flexDirection: 'column', gap: '10px' } });
 
                 const videos = [
-                    { img: 'https://img.youtube.com/vi/yU5KXTDCf-0/default.jpg', min: '3:51', t: 'GTA San Andreas Bigfoot + UFO', f: 'ScapeTheGoat', v: '1,235,901' },
-                    { img: 'https://img.youtube.com/vi/OiT1RyTZgcg/default.jpg', min: '1:24', t: 'Mario na fase do cogumelo do sol Tunadíssimo.', f: 'zegracagames', v: '5,407,110' },
-                    { img: 'https://img.youtube.com/vi/02vyPaYPdl8/default.jpg', min: '4:11', t: 'Erros Bizonhos 1', f: 'ZgracaRetro', v: '2,901,344' },
-                    { img: 'https://img.youtube.com/vi/HPPj6viIBmU/default.jpg', min: '1:44', t: 'Star Wars Kid', f: 'Jimi Love', v: '38,111,002' },
-                    { img: 'https://img.youtube.com/vi/Nffd0NZERKQ/default.jpg', min: '6:02', t: 'BRKs_EDU - Team Deathmatch - Modern Warfare', f: 'BRKsEDU', v: '5,012,778' },
-                    { img: 'https://img.youtube.com/vi/oHg5SJYRHA0/default.jpg', min: '3:32', t: 'RickRoll\'D', f: 'cotter548', v: '91,330,210' }
+                    { id: 'yU5KXTDCf-0', min: '3:51', t: 'GTA San Andreas Bigfoot + UFO', f: 'ScapeTheGoat', v: '1,235,901' },
+                    { id: 'OiT1RyTZgcg', min: '1:24', t: 'Mario na fase do cogumelo do sol Tunadíssimo.', f: 'zegracagames', v: '5,407,110' },
+                    { id: '02vyPaYPdl8', min: '4:11', t: 'Erros Bizonhos 1', f: 'ZgracaRetro', v: '2,901,344' },
+                    { id: 'HPPj6viIBmU', min: '1:44', t: 'Star Wars Kid', f: 'Jimi Love', v: '38,111,002' },
+                    { id: 'Nffd0NZERKQ', min: '6:02', t: 'BRKs_EDU - Team Deathmatch - Modern Warfare', f: 'BRKsEDU', v: '5,012,778' },
+                    { id: 'oHg5SJYRHA0', min: '3:32', t: 'RickRoll\'D', f: 'cotter548', v: '91,330,210' }
                 ];
 
                 videos.forEach((v, i) => {
-                    relatedList.innerHTML += '<div style="display:flex; gap:10px; padding:5px; cursor:pointer; background:' + (i === 0 ? '#ffffee' : 'none') + '; border:' + (i === 0 ? '1px dotted #cc9900' : 'none') + '" title="' + v.t + '"><div style="position:relative; width:90px; height:68px; background:#000; flex-shrink:0; border:1px solid #999; padding:2px; box-sizing:border-box; background:#fff"><div style="width:100%; height:100%; overflow:hidden; position:relative"><img src="' + v.img + '" style="width:100%; height:140%; object-fit:cover; margin-top:-15%; opacity:' + (i === 0 ? 1 : 0.8) + '"><div style="position:absolute; bottom:2px; right:2px; background:rgba(0,0,0,0.7); color:#fff; font-size:9px; padding:1px 3px">' + v.min + '</div></div></div><div style="font-size:11px; display:flex; flex-direction:column; gap:3px"><div style="color:#0033cc; font-weight:bold">' + v.t + '</div><div style="color:#666">From: ' + v.f + '</div><div style="color:#333">Views: ' + v.v + '</div></div></div>';
+                    const vEl = h('div', {});
+                    vEl.innerHTML = '<div style="display:flex; gap:10px; padding:5px; cursor:pointer; background:' + (i === 0 ? '#ffffee' : 'none') + '; border:' + (i === 0 ? '1px dotted #cc9900' : 'none') + '" title="' + v.t + '"><div style="position:relative; width:90px; height:68px; background:#000; flex-shrink:0; border:1px solid #999; padding:2px; box-sizing:border-box; background:#fff"><div style="width:100%; height:100%; overflow:hidden; position:relative"><img src="https://img.youtube.com/vi/' + v.id + '/default.jpg" style="width:100%; height:140%; object-fit:cover; margin-top:-15%; opacity:' + (i === 0 ? 1 : 0.8) + '"><div style="position:absolute; bottom:2px; right:2px; background:rgba(0,0,0,0.7); color:#fff; font-size:9px; padding:1px 3px">' + v.min + '</div></div></div><div style="font-size:11px; display:flex; flex-direction:column; gap:3px"><div style="color:#0033cc; font-weight:bold">' + v.t + '</div><div style="color:#666">From: ' + v.f + '</div><div style="color:#333">Views: ' + v.v + '</div></div></div>';
+                    vEl.onclick = () => {
+                        if (ytPlayer && ytPlayer.loadVideoById) {
+                            ytPlayer.loadVideoById(v.id);
+                            title.textContent = v.t;
+                        }
+                    };
+                    relatedList.appendChild(vEl);
                 });
 
                 relatedInfo.append(relatedTitle, relatedList);
@@ -789,10 +859,23 @@
                 if (tab.id === 'youtube') browserBody.appendChild(renderYoutube());
                 else if (tab.id === 'orkut') browserBody.appendChild(renderOrkut());
                 else if (tab.id === 'jogosonline') browserBody.appendChild(renderJogosOnline());
-                else if (tab.id === 'flogao') browserBody.appendChild(renderFlogao());
+                else if (tab.id === 'cartoonnetwork') {
+                    const wrap = h('div', { style: { width: '100%', height: '100%', background: '#fff' } });
+                    wrap.innerHTML = '<iframe src="https://web.archive.org/web/20041229085952/http://cartoonnetwork.com.br/" style="width:100%; height:100%; border:none"></iframe>';
+                    browserBody.appendChild(wrap);
+                }
                 else if (tab.wayback) {
-                    const ifr = h('iframe', { src: tab.wayback, style: { width: '100%', height: '100%', border: 'none' } });
-                    browserBody.appendChild(ifr);
+                    if (tab.name === 'Tony Hawk Underground') {
+                        const ifrWrap = h('div', { style: { width: '100%', height: '100%', overflow: 'hidden', background: '#000', display: 'flex', justifyContent: 'center' } });
+                        const ifrCenter = h('div', { style: { width: '800px', height: '100%', flexShrink: 0, transform: 'scale(1.05)', transformOrigin: 'top center' } });
+                        const ifr = h('iframe', { src: tab.wayback, style: { width: '100%', height: '100%', border: 'none' } });
+                        ifrCenter.appendChild(ifr);
+                        ifrWrap.appendChild(ifrCenter);
+                        browserBody.appendChild(ifrWrap);
+                    } else {
+                        const ifr = h('iframe', { src: tab.wayback, style: { width: '100%', height: '100%', border: 'none' } });
+                        browserBody.appendChild(ifr);
+                    }
                 } else if (tab.img) {
                     const img = h('img', { src: tab.img, style: { width: '100%', height: '100%', objectFit: 'contain' } });
                     browserBody.appendChild(img);
