@@ -416,7 +416,9 @@
 
             // ── Mockup Content Builders ──────────────────
             const renderOrkut = () => {
-                const wrap = h('div', { style: { width: '100%', height: '100%', overflowY: 'auto', background: '#fff', fontSize: '12px', fontFamily: 'Arial, sans-serif' } });
+                const wrapOuter = h('div', { style: { width: '100%', height: '100%', overflowY: 'auto', background: '#d4dded', fontSize: '12px', fontFamily: 'Arial, sans-serif', padding: '10px 0' } });
+                const wrap = h('div', { style: { maxWidth: '780px', margin: '0 auto', background: '#fff', minHeight: '100%', boxShadow: '0 0 5px rgba(0,0,0,0.1)' } });
+                wrapOuter.appendChild(wrap);
 
                 const infoRows = [
                     { label: 'relacionamento:', val: 'compromissado' },
@@ -431,40 +433,91 @@
 
                 const getScraps = () => JSON.parse(localStorage.getItem('orkut_scraps') || '[]');
 
+                function showProfile() {
+                    wrap.innerHTML = '';
+                    const inner = h('div', { class: 'xp-orkut-wrap', style: { paddingBottom: '30px' } },
+                        h('header', { class: 'xp-orkut-header', style: { background: '#5d7cae', padding: '5px 20px', color: '#fff', fontSize: '18px', fontWeight: 'bold' } }, 'orkut'),
+                        h('div', { style: { padding: '20px', display: 'flex', gap: '20px', background: '#d4dded', flexWrap: 'wrap' } },
+                            h('div', { style: { width: '160px', flexShrink: 0 } },
+                                h('img', { src: 'imagens/orkut_profile.png', style: { width: '100%', border: '1px solid #fff' } }),
+                                h('div', { style: { marginTop: '10px', fontWeight: 'bold', fontSize: '14px', color: '#0033cc' } }, 'tuliocareli')
+                            ),
+                            h('div', { style: { flex: 1, minWidth: '280px', background: '#fff', padding: '15px' } },
+                                h('h2', { style: { color: '#bf6000', borderBottom: '1px solid #ccc', paddingBottom: '5px', margin: '0 0 15px' } }, 'perfil'),
+                                infoRows.map(row => h('div', { style: { display: 'flex', marginBottom: '8px', fontSize: '12px' } },
+                                    h('span', { style: { width: '130px', color: '#666', textAlign: 'right', paddingRight: '10px' } }, row.label),
+                                    h('span', { style: { flex: 1, color: '#000' } }, row.val)
+                                )),
+
+                                // Scrapbook section
+                                h('div', { style: { marginTop: '30px', borderTop: '1px dashed #ccc', paddingTop: '15px', background: '#f5f5f5', padding: '15px' } },
+                                    h('h3', { style: { color: '#bf6000', margin: '0 0 10px' } }, 'página de recados (scraps)'),
+                                    h('div', { style: { fontSize: '11px', color: '#666', marginBottom: '10px' } }, 'Recados ficam salvos apenas neste navegador (LocalStorage).'),
+                                    h('textarea', { id: 'orkut_scrap_input', style: { width: '100%', height: '60px', marginBottom: '10px', boxSizing: 'border-box' } }),
+                                    h('button', {
+                                        style: { padding: '5px 15px', cursor: 'pointer' }, onclick: () => {
+                                            const t = document.getElementById('orkut_scrap_input').value;
+                                            if (t.trim()) {
+                                                const sc = getScraps();
+                                                sc.unshift({ text: t, date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString() });
+                                                localStorage.setItem('orkut_scraps', JSON.stringify(sc));
+                                                showProfile(); // re-render
+                                            }
+                                        }
+                                    }, 'Deixar Recado'),
+                                    h('div', { style: { marginTop: '20px' } }, ...getScraps().map(s => h('div', { style: { background: '#fff', padding: '10px', marginBottom: '10px', border: '1px solid #ddd' } },
+                                        h('div', { style: { fontSize: '10px', color: '#999', marginBottom: '5px', fontWeight: 'bold' } }, 'Anônimo (', s.date, ')'),
+                                        h('div', { style: { whiteSpace: 'pre-wrap' } }, s.text)
+                                    )))
+                                )
+                            )
+                        )
+                    );
+                    wrap.appendChild(inner);
+                }
+
                 const showLogin = () => {
                     wrap.innerHTML = '';
                     const topBar = h('div', { style: { background: '#c4d4e9', padding: '5px 15px', color: '#333', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #999', flexWrap: 'wrap' } });
-                    topBar.innerHTML = '<div style="font-weight:bold; margin-bottom:5px">Início | Participar do orkut | Ajuda</div><div style="color:#d00; font-size:20px; font-weight:bold; letter-spacing:-1px">orkut</div>';
+                    topBar.innerHTML = '<div style="font-weight:bold; margin-bottom:5px; font-size:11px">Início | Participar do orkut | Ajuda</div><div style="color:#d00; font-size:24px; font-weight:bold; letter-spacing:-2px; font-family:tahoma,sans-serif">orkut</div>';
 
-                    const loginBody = h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '30px', padding: '20px' } });
+                    const loginBody = h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '30px', padding: '30px 20px 50px' } });
 
                     const leftCol = h('div', { style: { flex: 1, minWidth: '300px', textAlign: 'center' } });
-                    leftCol.innerHTML = '<div style="color:#d00; font-size:24px; font-weight:bold; letter-spacing:-1px; margin-bottom:10px">o orkut <span style="font-size:16px; color:#333; font-weight:normal; letter-spacing:0">é uma comunidade on-line que conecta pessoas<br>através de uma rede de amigos confiáveis.</span></div><p style="font-size:13px; margin-bottom:20px; text-align:justify; padding: 0 10%">Proporcionamos um ponto de encontro on-line com um ambiente de confraternização, onde é possível fazer novos amigos e conhecer pessoas que têm os mesmos interesses. Participe do orkut para estabelecer seu circulo social e se conectar a ele.</p>';
+                    leftCol.innerHTML = '<div style="font-size:24px; font-family:tahoma,sans-serif; letter-spacing:-1px; margin-bottom:15px"><span style="color:#d00;font-weight:bold">o orkut</span><span style="font-size:14px; color:#333; font-weight:normal; letter-spacing:0"> é uma comunidade on-line que conecta pessoas<br>através de uma rede de amigos confiáveis.</span></div><p style="font-size:12px; margin-bottom:20px; text-align:justify; padding: 0 10%; color:#555">Proporcionamos um ponto de encontro on-line com um ambiente de confraternização, onde é possível fazer novos amigos e conhecer pessoas que têm os mesmos interesses. Participe do orkut para estabelecer seu circulo social e se conectar a ele.</p>';
 
                     const grid = h('div', { style: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '5px' } });
                     ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_profile.png', 'imagens/orkut_amigo_1.png'].forEach(src => {
-                        grid.appendChild(h('img', { src, style: { width: '80px', height: '100px', objectFit: 'cover', border: '2px solid #fff', boxShadow: '1px 1px 3px rgba(0,0,0,0.3)', transform: `rotate(${Math.random() * 10 - 5}deg)` } }));
+                        grid.appendChild(h('img', { src, style: { width: '80px', height: '100px', objectFit: 'cover', border: '2px solid #fff', boxShadow: '1px 1px 3px rgba(0,0,0,0.3)', transform: `rotate(${Math.random() * 8 - 4}deg)` } }));
                     });
                     leftCol.appendChild(grid);
-                    leftCol.innerHTML += '<br><div style="color:#0033cc; text-decoration:underline; font-weight:bold; margin-top:20px; cursor:pointer">Leia mais sobre como manter o orkut bonito</div>';
+                    leftCol.innerHTML += '<br><div style="color:#0033cc; text-decoration:underline; font-size:12px; font-weight:bold; margin-top:25px; cursor:pointer">Leia mais sobre como manter o orkut bonito</div>';
 
-                    const rightCol = h('div', { style: { width: '100%', maxWidth: '300px', border: '1px solid #c4d4e9', background: '#f5f7fa', padding: '15px', alignSelf: 'flex-start' } });
-                    rightCol.innerHTML = '<div style="font-weight:bold; text-align:center; font-size:14px; margin-bottom:10px">login</div><div style="text-align:center; margin-bottom:15px">Acesse o orkut com a sua<br><span style="font-size:18px; font-weight:bold; color:#0033cc">conta do <span style="color:#d00">G</span><span style="color:#eada00">o</span><span style="color:#0033cc">o</span><span style="color:#0a0">g</span><span style="color:#0033cc">l</span><span style="color:#d00">e</span></span></div>';
+                    const rightColWrap = h('div', { style: { width: '100%', maxWidth: '280px', alignSelf: 'flex-start' } });
+                    const rightCol = h('div', { style: { border: '1px solid #c4d4e9', background: '#f5f7fa', padding: '15px' } });
+                    rightColWrap.appendChild(rightCol);
 
-                    const eRow = h('div', { style: { marginBottom: '10px', display: 'flex', alignItems: 'center' } }, h('span', { style: { width: '60px', textAlign: 'right', paddingRight: '5px' } }, 'E-mail:'), h('input', { type: 'text', value: 'tuliocareli@gmail.com', style: { flex: 1 } }));
-                    const pRow = h('div', { style: { marginBottom: '10px', display: 'flex', alignItems: 'center' } }, h('span', { style: { width: '60px', textAlign: 'right', paddingRight: '5px' } }, 'Senha:'), h('input', { type: 'password', value: '*******', style: { flex: 1 } }));
+                    rightCol.innerHTML = '<div style="font-weight:bold; text-align:center; font-size:12px; margin-bottom:10px; color:#000">login</div><div style="text-align:center; margin-bottom:15px; font-size:12px">Acesse o orkut com a sua<br><span style="font-size:17px; font-weight:bold; color:#0033cc; font-family:serif">conta do <span style="color:#d00">G</span><span style="color:#eada00">o</span><span style="color:#eada00">o</span><span style="color:#0033cc">g</span><span style="color:#0a0">l</span><span style="color:#d00">e</span></span></div>';
 
-                    const subRow = h('div', { style: { textAlign: 'center', marginTop: '10px' } });
-                    const btn = h('button', { style: { padding: '2px 10px', cursor: 'pointer', background: '#e0e0e0', border: '1px solid #999', color: '#000' }, onclick: showProfile }, 'Login');
-                    subRow.append(h('div', { style: { marginBottom: '15px', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' } }, h('input', { type: 'checkbox', checked: true, style: { margin: 0, marginRight: '5px' } }), ' Salvar as minhas informações neste computador.'), btn);
+                    const eRow = h('div', { style: { marginBottom: '10px', display: 'flex', alignItems: 'center', fontSize: '11px' } }, h('span', { style: { width: '60px', textAlign: 'right', paddingRight: '5px', color: '#000' } }, 'E-mail:'), h('input', { type: 'text', value: 'tulio@email.com', style: { flex: 1, padding: '1px', border: '1px solid #7f9db9' } }));
+                    const pRow = h('div', { style: { marginBottom: '10px', display: 'flex', alignItems: 'center', fontSize: '11px' } }, h('span', { style: { width: '60px', textAlign: 'right', paddingRight: '5px', color: '#000' } }, 'Senha:'), h('input', { type: 'password', value: '*******', style: { flex: 1, padding: '1px', border: '1px solid #7f9db9' } }));
+
+                    const subRow = h('div', { style: { textAlign: 'center', marginLeft: '65px', marginTop: '5px' } });
+                    const cbWrap = h('div', { style: { marginBottom: '10px', fontSize: '10px', color: '#333', display: 'flex', alignItems: 'flex-start', textAlign: 'left' } });
+                    cbWrap.appendChild(h('input', { type: 'checkbox', checked: true, style: { margin: '2px 5px 0 0' } }));
+                    cbWrap.appendChild(document.createTextNode('Salvar as minhas informações neste computador.'));
+
+                    const btn = h('button', { style: { padding: '2px 12px', cursor: 'pointer', background: '#e0e0e0', border: '1px solid #999', color: '#000', fontSize: '11px' }, onclick: showProfile }, 'Login');
+
+                    subRow.append(cbWrap, h('div', { style: { textAlign: 'left' } }, btn));
 
                     rightCol.append(eRow, pRow, subRow);
                     rightCol.innerHTML += '<div style="text-align:center; margin-top:20px; font-size:11px"><a href="#" style="color:#0033cc">Esqueceu a sua senha?</a></div>';
 
-                    const bottomJoin = h('div', { style: { borderTop: '1px solid #c4d4e9', marginTop: '30px', paddingTop: '10px', textAlign: 'center', fontWeight: 'bold' } }, 'Ainda não é membro? ', h('span', { style: { color: '#0033cc', textDecoration: 'underline', cursor: 'pointer' } }, 'ENTRE JÁ'));
+                    const bottomJoin = h('div', { style: { borderTop: '1px solid #c4d4e9', marginTop: '20px', paddingTop: '10px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px' } }, 'Ainda não é membro? ', h('span', { style: { color: '#0033cc', textDecoration: 'underline', cursor: 'pointer' } }, 'ENTRE JÁ'));
                     rightCol.appendChild(bottomJoin);
 
-                    loginBody.append(leftCol, rightCol);
+                    loginBody.append(leftCol, rightColWrap);
                     wrap.append(topBar, loginBody);
                 };
 
@@ -512,7 +565,7 @@
                 };
 
                 showLogin();
-                return wrap;
+                return wrapOuter;
             };
 
             const renderJogosOnline = () => {
@@ -598,6 +651,8 @@
                 // SEARCH BAR & UPLOAD
                 const searchArea = h('div', { style: { background: '#eeeeee', borderTop: '1px solid #ccc', padding: '8px 15px', display: 'flex', alignItems: 'center', gap: '10px' } });
                 searchArea.innerHTML = '<input type="text" style="flex:1; max-width:350px; border:1px solid #999; padding:4px"><select style="padding:3px; border:1px solid #999; font-size:11px"><option>Videos</option></select><button style="padding:3px 15px; border:1px solid #999; background:#fff; cursor:pointer">Search</button><span style="color:#0033cc;text-decoration:underline;font-size:11px;cursor:pointer">advanced</span><div style="flex:1"></div><button style="padding:4px 20px; background:#ffe000; border:1px solid #e0c000; font-weight:bold; font-size:11px; cursor:pointer; color:#000; border-radius:3px">Upload</button>';
+
+                const innerWrap = h('div', { style: { width: '100%', maxWidth: '1000px', margin: '0 auto', background: '#fff' } });
 
                 const header = h('div', { style: { width: '100%', fontFamily: 'Arial' } }, topNav, masthead, searchArea);
 
@@ -732,7 +787,8 @@
                 rightCol.append(mainInfo, relatedInfo);
 
                 mainCont.append(leftCol, rightCol);
-                wrap.append(header, mainCont);
+                innerWrap.append(header, mainCont);
+                wrap.append(innerWrap);
 
                 // --- Interaction and Sync ---
                 let ytPlayer;
