@@ -516,13 +516,30 @@
                     style: { background: '#fff', height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', fontFamily: 'Arial, sans-serif', fontSize: '12px' }
                 });
 
-                // Top Search Bar Mockup
-                const header = h('div', { style: { display: 'flex', justifyContent: 'center', padding: '15px 10px', background: '#d4dde8' } },
-                    h('input', { type: 'text', style: { width: '100%', maxWidth: '400px', border: '1px solid #7f9db9', padding: '3px 5px' } }),
-                    h('button', { style: { marginLeft: '5px', padding: '2px 10px', background: '#e0e0e0', border: '1px solid #aaa', cursor: 'pointer' } }, 'Search')
-                );
+                // TOP GLOBAL HEADER
+                const topNav = h('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '5px 15px', fontSize: '11px', color: '#0033cc' } });
+                topNav.innerHTML = '<div style="color:#333">Worldwide (All) | <span style="text-decoration:underline;cursor:pointer">English</span></div><div><span style="font-weight:bold;text-decoration:underline;cursor:pointer;color:#0033cc">Sign Up</span> | <span style="text-decoration:underline;cursor:pointer">QuickList (0)</span> | <span style="text-decoration:underline;cursor:pointer">Help</span> | <span style="text-decoration:underline;cursor:pointer">Sign In</span></div>';
 
-                const mainCont = h('div', { style: { display: 'flex', flexWrap: 'wrap', padding: '20px', gap: '20px', background: '#fff' } });
+                // LOGO & TABS AREA
+                const masthead = h('div', { style: { display: 'flex', alignItems: 'flex-end', padding: '10px 15px 0', gap: '15px' } });
+                const logoBox = h('div', { style: { width: '130px', textAlign: 'center', marginBottom: '5px' } });
+                logoBox.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/YouTube_logo_%282005-2011%29.svg/512px-YouTube_logo_%282005-2011%29.svg.png" style="width:110px"><div style="font-size:10px; color:#666; margin-top:-5px">Broadcast Yourself™</div>';
+
+                const tabsWrap = h('div', { style: { flex: 1, display: 'flex', gap: '5px' } });
+                ['Home', 'Videos', 'Channels', 'Community'].forEach(tab => {
+                    const t = h('div', { style: { padding: '5px 15px', background: '#e2ebf6', borderRadius: '4px 4px 0 0', fontWeight: 'bold', fontSize: '13px', color: '#0033cc', cursor: 'pointer', border: '1px solid #c8d8ec', borderBottom: 'none' } }, tab);
+                    tabsWrap.appendChild(t);
+                });
+
+                masthead.append(logoBox, tabsWrap);
+
+                // SEARCH BAR & UPLOAD
+                const searchArea = h('div', { style: { background: '#eeeeee', borderTop: '1px solid #ccc', padding: '8px 15px', display: 'flex', alignItems: 'center', gap: '10px' } });
+                searchArea.innerHTML = '<input type="text" style="flex:1; max-width:350px; border:1px solid #999; padding:4px"><select style="padding:3px; border:1px solid #999; font-size:11px"><option>Videos</option></select><button style="padding:3px 15px; border:1px solid #999; background:#fff; cursor:pointer">Search</button><span style="color:#0033cc;text-decoration:underline;font-size:11px;cursor:pointer">advanced</span><div style="flex:1"></div><button style="padding:4px 20px; background:#ffe000; border:1px solid #e0c000; font-weight:bold; font-size:11px; cursor:pointer; color:#000; border-radius:3px">Upload</button>';
+
+                const header = h('div', { style: { width: '100%', maxWidth: '960px', margin: '0 auto', fontFamily: 'Arial' } }, topNav, masthead, searchArea);
+
+                const mainCont = h('div', { style: { display: 'flex', flexWrap: 'wrap', padding: '20px 15px', gap: '20px', background: '#fff', maxWidth: '960px', margin: '0 auto' } });
 
                 // LEFT COLUMN
                 const leftCol = h('div', { style: { flex: '1 1 480px', minWidth: '0' } });
