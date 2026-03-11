@@ -458,10 +458,7 @@
                 const games = [
                     { id: 'motocross', name: 'TG Motocross 2', swf: 'jogoflash/TG_Motocross_2.swf', thumb: 'imagens/jogos_motocross.png', category: 'Esportes' },
                     { id: 'bmx', name: 'BMX Stunts', swf: 'jogoflash/bmx.swf', thumb: 'imagens/jogos_bmx.png', category: 'Ação' },
-                    { id: 'ride', name: 'Create a Ride', swf: 'jogoflash/createaride.swf', thumb: 'imagens/jogos_ride.png', category: 'Corrida' },
-                    { id: 'habbo', name: 'Habbo Hotel Mockup', swf: 'jogoflash/habbo.swf', thumb: 'imagens/jogos_extras.png', category: 'Social' },
-                    { id: 'sonic', name: 'Sonic Flash', swf: 'jogoflash/sonic.swf', thumb: 'imagens/jogos_extras.png', category: 'Ação' },
-                    { id: 'mario', name: 'Super Mario 63', swf: 'jogoflash/mario.swf', thumb: 'imagens/jogos_extras.png', category: 'Aventura' }
+                    { id: 'ride', name: 'Create a Ride', swf: 'jogoflash/createaride.swf', thumb: 'imagens/jogos_ride.png', category: 'Corrida' }
                 ];
 
                 const showHome = () => {
@@ -484,7 +481,7 @@
                         h('div', { style: { background: '#ff9900', color: '#fff', padding: '10px', textAlign: 'center', fontWeight: 'bold', marginBottom: '15px', borderRadius: '4px' } }, 'CURTA NO ORKUT!'),
                         h('div', { style: { background: '#fff', border: '1px solid #ccc', padding: '10px' } },
                             h('h4', { style: { margin: '0 0 10px', color: '#004a99' } }, 'Ranking Viral'),
-                            ['TG Motocross 2', 'BMX Stunts', 'Sonic Flash', 'Mario 63'].map((n, i) => h('div', { style: { marginBottom: '5px', display: 'flex', gap: '5px' } },
+                            ['TG Motocross 2', 'BMX Stunts', 'Create a Ride'].map((n, i) => h('div', { style: { marginBottom: '5px', display: 'flex', gap: '5px' } },
                                 h('span', { style: { fontWeight: 'bold', color: '#ff9900' } }, i + 1 + '.'),
                                 h('span', {}, n)
                             ))
