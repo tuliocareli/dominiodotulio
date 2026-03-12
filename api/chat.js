@@ -46,7 +46,17 @@ OBJETIVO E FORMATO DA CONVERSA:
 - Responda de forma CURTA (máximo 1 a 3 frases curtas). Estamos no MSN, ninguém manda textão.`;
 
 module.exports = async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Segurança: Permitir o domínio oficial, localhost e apenas URLs deste projeto na Vercel
+    const origin = req.headers.origin;
+    // Regex: Aceita 'dominiodotulio.vercel.app' ou URLs de preview como 'dominiodotulio-git-main.vercel.app'
+    const isMyVercelProject = origin && /^https:\/\/dominiodotulio.*\.vercel\.app$/.test(origin);
+    const allowedOrigins = ['https://tuliocareli.com', 'http://localhost:3000', 'http://127.0.0.1:5500'];
+
+    if (isMyVercelProject || allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+        res.setHeader('Access-Control-Allow-Origin', 'https://tuliocareli.com');
+    }
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
