@@ -568,8 +568,8 @@
                         const items = h('div', { style: { display: 'flex', flexWrap: 'wrap', padding: '10px', gap: '5px', justifyContent: 'center' } });
 
                         const srcs = isComm
-                            ? ['imagens/comunidade_1.png', 'imagens/comunidade_2.png', 'imagens/comunidade_3.png']
-                            : ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_profile.png', 'imagens/orkut_amigo_1.png'];
+                            ? ['imagens/orkut_communities.png', 'imagens/NIBXVEi.png', 'imagens/v2XKEcN.png']
+                            : ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_amigo_4.png', 'imagens/orkut_amigo_5.png'];
 
                         srcs.forEach((s, ix) => {
                             const it = h('div', { style: { width: '55px', textAlign: 'center' } });
