@@ -614,7 +614,12 @@
                         ),
                         h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '500px', padding: '20px' } },
                             h('div', { id: 'buddy-poke-container', style: { width: '800px', height: '600px', background: '#000', border: '1px solid #bfd0e6', boxShadow: '0 0 10px rgba(0,0,0,0.2)' } }),
-                            h('div', { style: { marginTop: '15px', color: '#688cb8', fontSize: '11px', textAlign: 'center', maxWidth: '600px' } }, 'BuddyPoke criado por Dave Westwood and Randall Ho, está aqui por razões de documentação e nostalgia, todos os direitos aos criadores.')
+                            h('div', { style: { marginTop: '15px', color: '#688cb8', fontSize: '11px', textAlign: 'center', maxWidth: '600px', background: '#d4dded', padding: '10px', borderRadius: '4px', border: '1px dashed #688cb8' } },
+                                h('b', {}, '⚠️ INFO DO LABORATÓRIO: '),
+                                'Como os servidores originais do Orkut viraram poeira estelar há mais de uma década e o WebAssembly do emulador Ruffle não renderiza texturas e shaders ActionScript 3, seu BuddyPoke abraçou seu modo "Fantasma" e não carrega a roupinha original. Funcional, porém pálido! 👻',
+                                h('br'), h('br'),
+                                h('span', { style: { fontSize: '9px' } }, 'BuddyPoke criado por Dave Westwood and Randall Ho, está aqui por razões de documentação pura. Todos os direitos reservados aos geniais criadores originais.')
+                            )
                         )
                     );
                     wrap.appendChild(inner);
