@@ -730,15 +730,20 @@
                     wrap.innerHTML = '';
                     const head = h('div', { style: { background: '#004a99', padding: '10px', color: '#fff', display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }, onclick: showHome }, 'Voltar');
                     const gameCont = h('div', { style: { flex: 1, background: '#000', display: 'flex', justifyContent: 'center', alignItems: 'center' } });
-                    if (window.RufflePlayer) {
-                        const ruffle = window.RufflePlayer.newest();
-                        const player = ruffle.createPlayer();
-                        gameCont.appendChild(player);
-                        player.style.width = '640px'; player.style.height = '480px';
-                        player.load({ url: game.swf });
-                    }
                     wrap.appendChild(head); wrap.appendChild(gameCont);
                     wrap.appendChild(h('div', { style: { padding: '10px', textAlign: 'center', fontSize: '10px' } }, 'Direito de criação dos jogos para seus respectivos criadores.'));
+
+                    setTimeout(() => {
+                        if (window.RufflePlayer) {
+                            const ruffle = window.RufflePlayer.newest();
+                            const player = ruffle.createPlayer();
+                            gameCont.appendChild(player);
+                            player.style.width = '640px'; player.style.height = '480px';
+                            player.load({ url: game.swf });
+                        } else {
+                            gameCont.innerHTML = '<div style="color:#fff; padding:20px;">Ruffle Engine não carregada.</div>';
+                        }
+                    }, 50);
                 };
                 showHome();
                 return wrap;
@@ -1025,7 +1030,7 @@
                 return wrapOuter;
             };
 
-            const renderFlogao = () => h('div', { style: { padding: '20px' } }, 'Flogão Mockup');
+
 
             const tabEls = TABS.map((tab, i) => {
                 const el = h('div', { class: 'xp-tab' + (i === activeIdx ? ' xp-tab--active' : ''), onclick: () => switchTab(i) }, tab.name);
