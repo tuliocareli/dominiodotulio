@@ -567,15 +567,28 @@
                         ));
                         const items = h('div', { style: { display: 'flex', flexWrap: 'wrap', padding: '10px', gap: '5px', justifyContent: 'center' } });
 
-                        const srcs = isComm
-                            ? ['imagens/orkut_communities.png', 'imagens/NIBXVEi.png', 'imagens/v2XKEcN.png']
-                            : ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_amigo_4.png', 'imagens/orkut_amigo_5.png'];
+                        const amgData = [
+                            { s: 'imagens/orkut_amigo_1.png', n: '×_× LëoNåRdø ×_×' },
+                            { s: 'imagens/orkut_amigo_2.png', n: '•°o.O MåyåRå O.o°•' },
+                            { s: 'imagens/orkut_amigo_3.png', n: '*°•.☆ Gabi ☆.•°*' },
+                            { s: 'imagens/orkut_amigo_7.png', n: '~(¯`·. FëLiPë .·´¯)~' },
+                            { s: 'imagens/orkut_amigo_4.png', n: '¤ۣۜ๘ CåSåNoVå ¤ۣۜ๘' },
+                            { s: 'imagens/orkut_amigo_5.png', n: 'ॐ MåR¢ëLø ॐ' }
+                        ];
 
-                        srcs.forEach((s, ix) => {
-                            const it = h('div', { style: { width: '55px', textAlign: 'center' } });
-                            it.appendChild(h('img', { src: s, style: { width: '100%', height: '55px', objectFit: 'cover', border: '1px solid #ccc' } }));
+                        const commData = [
+                            { s: 'imagens/orkut_communities.png', n: 'Eu já acessei a internet' },
+                            { s: 'imagens/NIBXVEi.png', n: 'Queria sorvete mas era feijão' },
+                            { s: 'imagens/v2XKEcN.png', n: 'Não fui eu, foi meu eu lírico' }
+                        ];
+
+                        const itemsData = isComm ? commData : amgData;
+
+                        itemsData.forEach((item) => {
+                            const it = h('div', { style: { width: '55px', textAlign: 'center' }, title: item.n });
+                            it.appendChild(h('img', { src: item.s, style: { width: '100%', height: '55px', objectFit: 'cover', border: '1px solid #ccc' } }));
                             if (!isComm) {
-                                it.appendChild(h('div', { style: { fontSize: '9px', color: '#0033cc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, 'Amigo ' + ix));
+                                it.appendChild(h('div', { style: { fontSize: '9px', color: '#0033cc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, item.n));
                             }
                             items.appendChild(it);
                         });
