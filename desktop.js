@@ -633,7 +633,7 @@
                     leftCol.innerHTML = '<div style="font-size:24px; font-family:tahoma,sans-serif; letter-spacing:-1px; margin-bottom:15px"><span style="color:#d40078;font-weight:bold">o orkut</span><span style="font-size:14px; color:#333; font-weight:normal; letter-spacing:0"> é uma comunidade on-line que conecta pessoas<br>através de uma rede de amigos confiáveis.</span></div><p style="font-size:12px; margin-bottom:20px; text-align:justify; padding: 0 10%; color:#555">Proporcionamos um ponto de encontro on-line com um ambiente de confraternização, onde é possível fazer novos amigos e conhecer pessoas que têm os mesmos interesses. Participe do orkut para estabelecer seu circulo social e se conectar a ele.</p>';
 
                     const grid = h('div', { style: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '5px' } });
-                    ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_profile.png', 'imagens/orkut_amigo_1.png'].forEach(src => {
+                    ['imagens/orkut_amigo_1.png', 'imagens/orkut_amigo_2.png', 'imagens/orkut_amigo_3.png', 'imagens/orkut_amigo_7.png', 'imagens/orkut_amigo_4.png', 'imagens/orkut_amigo_8.png'].forEach(src => {
                         grid.appendChild(h('img', { src, style: { width: '80px', height: '100px', objectFit: 'cover', border: '2px solid #fff', boxShadow: '1px 1px 3px rgba(0,0,0,0.3)', transform: `rotate(${Math.random() * 8 - 4}deg)` } }));
                     });
                     leftCol.appendChild(grid);
