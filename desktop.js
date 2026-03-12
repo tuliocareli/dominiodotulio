@@ -2427,6 +2427,9 @@
                     localStorage.setItem(storageKey, JSON.stringify(history));
                 };
 
+                const escHTML = (str) => String(str).replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
+
+
                 const renderHistory = () => {
                     chatBox.innerHTML = `<div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- ${contactName} acabou de entrar ---</div>`;
 
@@ -2450,11 +2453,11 @@
                                 appendSystemMessage(msg.text, msg.color, false);
                             } else if (msg.sender === 'Você') {
                                 const msgWrap = document.createElement('div');
-                                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${msg.text}</div>`;
+                                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${escHTML(msg.text)}</div>`;
                                 chatBox.appendChild(msgWrap);
                             } else {
                                 const botWrap = document.createElement('div');
-                                botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${msg.text}</div>`;
+                                botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${escHTML(msg.text)}</div>`;
                                 chatBox.appendChild(botWrap);
                             }
                         });
@@ -2573,7 +2576,7 @@
 
                 const appendBotMessage = (resp) => {
                     const botWrap = document.createElement('div');
-                    botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${resp}</div>`;
+                    botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${escHTML(resp)}</div>`;
                     chatBox.appendChild(botWrap);
                     chatBox.scrollTop = chatBox.scrollHeight;
                     history.push({ sender: contactName, text: resp });
@@ -2606,7 +2609,7 @@
 
                     // Render User Message
                     const msgWrap = document.createElement('div');
-                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${rawMsg}</div>`;
+                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${escHTML(rawMsg)}</div>`;
                     chatBox.appendChild(msgWrap);
                     history.push({ sender: 'Você', text: rawMsg });
                     saveHistory();
