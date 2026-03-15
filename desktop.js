@@ -3192,44 +3192,67 @@ NUTTERTOOLS - Armas Pesadas
         },
 
         doom: () => {
-            const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', color: '#0f0', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace' } });
-            const loader = h('div', { id: 'doom-loader' }, 'CARREGANDO DOOM...');
+            const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', color: '#0f0', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', textAlign: 'center', padding: '20px' } });
+            const loader = h('div', { id: 'doom-loader' }, 'INICIANDO PROTOCOLO DOS...');
+            const progress = h('div', { style: { marginTop: '10px', fontSize: '10px', color: '#0a0' } }, 'Aguardando motor emulado...');
             wrap.appendChild(loader);
+            wrap.appendChild(progress);
 
-            const canvas = h('canvas', { id: 'jsdos-canvas', style: { width: '100%', height: '100%', display: 'none' } });
+            const canvas = h('canvas', { id: 'jsdos-canvas', style: { width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, opacity: 0, pointerEvents: 'none' } });
             wrap.appendChild(canvas);
 
             const loadJsDos = () => {
                 if (window.Dos) return Promise.resolve();
                 return new Promise((resolve) => {
+                    progress.textContent = 'Baixando bibliotecas JS-DOS (v7)...';
                     const script = document.createElement('script');
                     script.src = "https://js-dos.com/v7/build/releases/latest/js-dos.js";
-                    script.onload = resolve;
+                    script.onload = () => {
+                        const style = document.createElement('link');
+                        style.rel = "stylesheet";
+                        style.href = "https://js-dos.com/v7/build/releases/latest/js-dos.css";
+                        document.head.appendChild(style);
+                        resolve();
+                    };
                     document.head.appendChild(script);
-                    const style = document.createElement('link');
-                    style.rel = "stylesheet";
-                    style.href = "https://js-dos.com/v7/build/releases/latest/js-dos.css";
-                    document.head.appendChild(style);
                 });
             };
 
-            loadJsDos().then(() => {
-                const checkReady = setInterval(() => {
-                    if (typeof Dos !== 'undefined') {
-                        clearInterval(checkReady);
-                        Dos(canvas, {
-                            style: "unset", // Prevenir injeção de CSS que quebra o layout da janela
-                        }).run("https://js-dos.com/v7/build/releases/latest/bundle/doom.jsdos").then((ci) => {
-                            loader.style.display = 'none';
-                            canvas.style.display = 'block';
-                            canvas.style.imageRendering = 'pixelated';
-                        }).catch((err) => {
-                            console.error("Doom error:", err);
-                            loader.textContent = "ERRO AO CARREGAR DOOM. Verifique sua conexão.";
-                        });
+            // Pequeno delay para garantir que o wrap foi montado no DOM
+            setTimeout(() => {
+                loadJsDos().then(() => {
+                    progress.textContent = 'Motor pronto. Solicitando WAD do shareware...';
+                    
+                    if (typeof Dos === 'undefined') {
+                        loader.textContent = 'ERRO CRÍTICO';
+                        progress.textContent = 'Falha ao injetar script do emulador.';
+                        return;
                     }
-                }, 100);
-            });
+
+                    Dos(canvas, {
+                        style: "unset",
+                    }).run("https://js-dos.com/v7/build/releases/latest/bundle/doom.jsdos").then((ci) => {
+                        loader.textContent = 'CONECTADO';
+                        progress.textContent = 'Warping to Phobos...';
+                        
+                        // O JS-DOS v7 às vezes demora um pouco mais pra renderizar o primeiro frame
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                            progress.style.display = 'none';
+                            canvas.style.opacity = '1';
+                            canvas.style.pointerEvents = 'all';
+                            canvas.style.imageRendering = 'pixelated';
+                            // Focar no canvas para capturar teclado imediatamente
+                            canvas.focus();
+                        }, 500);
+                    }).catch((err) => {
+                        console.error("Doom error:", err);
+                        loader.style.color = 'red';
+                        loader.textContent = 'ERRO DE CARREGAMENTO';
+                        progress.textContent = 'O motor WASM falhou ao iniciar os binários.';
+                    });
+                });
+            }, 300);
 
             return wrap;
         },
