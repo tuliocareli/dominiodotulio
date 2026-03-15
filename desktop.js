@@ -53,7 +53,7 @@
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
-        { id: 'doom', icon: '💀', label: 'doom.exe' },
+        { id: 'doom', icon: 'jogosicon/doom.png', label: 'doom.exe' },
         { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
@@ -3192,8 +3192,11 @@ NUTTERTOOLS - Armas Pesadas
         },
 
         doom: () => {
-            const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', position: 'relative' } });
-            const canvas = h('canvas', { id: 'jsdos-canvas', style: { width: '100%', height: '100%' } });
+            const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', color: '#0f0', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace' } });
+            const loader = h('div', { id: 'doom-loader' }, 'CARREGANDO DOOM...');
+            wrap.appendChild(loader);
+
+            const canvas = h('canvas', { id: 'jsdos-canvas', style: { width: '100%', height: '100%', display: 'none' } });
             wrap.appendChild(canvas);
 
             const loadJsDos = () => {
@@ -3211,7 +3214,21 @@ NUTTERTOOLS - Armas Pesadas
             };
 
             loadJsDos().then(() => {
-                Dos(canvas).run("https://js-dos.com/v7/build/releases/latest/bundle/doom.jsdos");
+                const checkReady = setInterval(() => {
+                    if (typeof Dos !== 'undefined') {
+                        clearInterval(checkReady);
+                        Dos(canvas, {
+                            style: "unset", // Prevenir injeção de CSS que quebra o layout da janela
+                        }).run("https://js-dos.com/v7/build/releases/latest/bundle/doom.jsdos").then((ci) => {
+                            loader.style.display = 'none';
+                            canvas.style.display = 'block';
+                            canvas.style.imageRendering = 'pixelated';
+                        }).catch((err) => {
+                            console.error("Doom error:", err);
+                            loader.textContent = "ERRO AO CARREGAR DOOM. Verifique sua conexão.";
+                        });
+                    }
+                }, 100);
             });
 
             return wrap;
@@ -3251,11 +3268,15 @@ NUTTERTOOLS - Armas Pesadas
         const title = icon ? icon.label : id;
         const fallbackIcon = id.includes('.exe') ? '🎮' : '📁';
 
+        const titleIcon = (icon?.icon && icon.icon.includes('.')) 
+            ? h('img', { src: icon.icon, style: { width: '16px', height: '16px', marginRight: '6px', verticalAlign: 'middle' } })
+            : (icon?.icon || fallbackIcon);
+
         // Posição em cascata
         const offset = (Object.keys(openWindows).length % 6) * 24;
 
         const titlebar = h('div', { class: 'xp-win-titlebar' },
-            h('div', { class: 'xp-win-title' }, (icon?.icon || fallbackIcon) + ' ' + title),
+            h('div', { class: 'xp-win-title' }, titleIcon, ' ', title),
             h('div', { class: 'xp-win-btns' },
                 h('button', { class: 'xp-btn xp-btn--min', onclick: () => minimizeWin(id) }, '─'),
                 h('button', { class: 'xp-btn xp-btn--max', onclick: () => maximizeWin(id) }, '□'),
@@ -3271,7 +3292,7 @@ NUTTERTOOLS - Armas Pesadas
             h('div', { class: 'xp-addr-val' }, `C:\\TULIO\\${title.toUpperCase().replace(' ', '_')}`),
         ) : null;
 
-        const body = h('div', { class: 'xp-win-body' }, (CONTENT[id] || CONTENT.mycomputer)());
+        const body = h('div', { class: 'xp-win-body', style: id === 'doom' ? { overflow: 'hidden', background: '#000' } : {} }, (CONTENT[id] || CONTENT.mycomputer)());
 
         const WIN_SIZES = {
             ie: { w: '820px', h: '560px' },
@@ -3410,7 +3431,13 @@ NUTTERTOOLS - Armas Pesadas
                         focusWin(w);
                     }
                 },
-            }, (icon?.icon || '🗂️') + ' ' + (icon?.label || id));
+            });
+
+            const tbIcon = (icon?.icon && icon.icon.includes('.')) 
+                ? h('img', { src: icon.icon, style: { width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' } })
+                : (icon?.icon || '🗂️');
+
+            btn.appendChild(h('span', {}, tbIcon, ' ', (icon?.label || id)));
             bar.appendChild(btn);
         });
     }
@@ -3432,12 +3459,16 @@ NUTTERTOOLS - Armas Pesadas
         menu.appendChild(h('div', { class: 'xp-sm-header' },
             h('span', { class: 'xp-sm-user' }, '👤 TULIO CARELI'),
         ));
-        const list = h('div', { class: 'xp-sm-list' }, ...items.map(it =>
-            h('button', { class: 'xp-sm-item', onclick: it.action },
-                h('span', { class: 'xp-sm-icon' }, it.icon),
+        const list = h('div', { class: 'xp-sm-list' }, ...items.map(it => {
+            const smIcon = (typeof it.icon === 'string' && it.icon.includes('.'))
+                ? h('img', { src: it.icon, style: { width: '24px', height: '24px' } })
+                : h('span', { class: 'xp-sm-icon' }, it.icon);
+
+            return h('button', { class: 'xp-sm-item', onclick: it.action },
+                smIcon,
                 h('span', {}, it.label),
-            )
-        ));
+            );
+        }));
         menu.appendChild(list);
     }
 
@@ -3576,10 +3607,14 @@ NUTTERTOOLS - Armas Pesadas
                         document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
                         e.currentTarget.classList.add('xp-icon--selected');
                     },
-                },
-                    h('div', { class: 'xp-di-img' }, ic.icon),
-                    h('div', { class: 'xp-di-label' }, ic.label)
-                );
+                });
+
+                const deskIcon = (ic.icon && ic.icon.includes('.'))
+                    ? h('img', { src: ic.icon, style: { width: '32px', height: '32px' } })
+                    : ic.icon;
+
+                el.appendChild(h('div', { class: 'xp-di-img' }, deskIcon));
+                el.appendChild(h('div', { class: 'xp-di-label' }, ic.label));
 
                 if (ic.id === 'readme') {
                     el.classList.add('xp-icon--readme');
