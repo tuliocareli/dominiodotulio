@@ -10,6 +10,7 @@
     // ── DATA ─────────────────────────────────────────
     const DATA = {
         games: [
+            'Doom',
             'Tony Hawk Underground',
             'GTA San Andreas',
             'Tibia', 'The Sims 2', 'Half-Life 2',
@@ -52,6 +53,7 @@
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
+        { id: 'doom', icon: '💀', label: 'doom.exe' },
         { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
@@ -281,7 +283,8 @@
             h('div', {
                 class: 'xp-file-item',
                 ondblclick: () => {
-                    if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
+                    if (g === 'Doom') openWin('doom');
+                    else if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
                     else if (g === 'Tibia') openWin('Tibia.exe');
                     else if (g === 'M.U.G.E.N.') openWin('M.U.G.E.N..exe');
                     else if (g === 'GTA San Andreas') openWin('GTA San Andreas.exe');
@@ -295,7 +298,8 @@
                     const now = Date.now();
                     const last = this.dataset.lastTap || 0;
                     if (now - last < 300) {
-                        if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
+                        if (g === 'Doom') openWin('doom');
+                        else if (g === 'Tony Hawk Underground') openWin('Tony Hawk Underground.exe');
                         else if (g === 'Tibia') openWin('Tibia.exe');
                         else if (g === 'M.U.G.E.N.') openWin('M.U.G.E.N..exe');
                         else if (g === 'GTA San Andreas') openWin('GTA San Andreas.exe');
@@ -3186,6 +3190,32 @@ NUTTERTOOLS - Armas Pesadas
 
             return wrap;
         },
+
+        doom: () => {
+            const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', position: 'relative' } });
+            const canvas = h('canvas', { id: 'jsdos-canvas', style: { width: '100%', height: '100%' } });
+            wrap.appendChild(canvas);
+
+            const loadJsDos = () => {
+                if (window.Dos) return Promise.resolve();
+                return new Promise((resolve) => {
+                    const script = document.createElement('script');
+                    script.src = "https://js-dos.com/v7/build/releases/latest/js-dos.js";
+                    script.onload = resolve;
+                    document.head.appendChild(script);
+                    const style = document.createElement('link');
+                    style.rel = "stylesheet";
+                    style.href = "https://js-dos.com/v7/build/releases/latest/js-dos.css";
+                    document.head.appendChild(style);
+                });
+            };
+
+            loadJsDos().then(() => {
+                Dos(canvas).run("https://js-dos.com/v7/build/releases/latest/bundle/doom.jsdos");
+            });
+
+            return wrap;
+        },
     };
 
 
@@ -3264,6 +3294,7 @@ NUTTERTOOLS - Armas Pesadas
             'Grand Chase.exe': { w: '640px', h: '480px' },
             mysterious_folder: { w: '400px', h: '300px' },
             secret_readme: { w: '440px', h: '340px' },
+            doom: { w: '640px', h: '400px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
