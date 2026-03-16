@@ -3239,8 +3239,8 @@ NUTTERTOOLS - Armas Pesadas
                         return;
                     }
 
-                    // Trocado para CDN do dos.zone que é mais robusto para WADs
-                    const bundleUrl = "https://cdn.dos.zone/custom/dos/doom.jsdos";
+                    // Usando pacote JSDOS local com os arquivos fornecidos
+                    const bundleUrl = "shareware_doom_iwad/doom.jsdos";
 
                     Dos(canvas, {
                         wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/wdosbox.js",
