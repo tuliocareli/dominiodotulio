@@ -3213,13 +3213,17 @@ NUTTERTOOLS - Armas Pesadas
                 return new Promise((resolve) => {
                     progress.textContent = 'Baixando bibliotecas JS-DOS...';
                     const script = document.createElement('script');
-                    script.src = "https://js-dos.com/v7/build/releases/latest/js-dos.js";
+                    script.src = "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/js-dos.js";
                     script.onload = () => {
                         const style = document.createElement('link');
                         style.rel = "stylesheet";
-                        style.href = "https://js-dos.com/v7/build/releases/latest/js-dos.css";
+                        style.href = "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/js-dos.css";
                         document.head.appendChild(style);
                         resolve();
+                    };
+                    script.onerror = () => {
+                        loader.textContent = 'FALHA NA REDE';
+                        progress.textContent = 'Não foi possível carregar as bibliotecas do JS-DOS.';
                     };
                     document.head.appendChild(script);
                 });
