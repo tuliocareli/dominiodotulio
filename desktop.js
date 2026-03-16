@@ -2757,7 +2757,7 @@ Esse sistema foi construído para ser o lar das minhas idéias estranhas, experi
 
 Algumas coisas funcionam e outras se quebram, e é intencional.
 
-Inspiração máxima no portfólio do Ryo Lu.`;
+Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).`;
 
             const textarea = h('textarea', {
                 readonly: true,
