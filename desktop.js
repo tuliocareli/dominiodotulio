@@ -3243,6 +3243,7 @@ NUTTERTOOLS - Armas Pesadas
                     const bundleUrl = "https://cdn.dos.zone/custom/dos/doom.jsdos";
 
                     Dos(canvas, {
+                        wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/wdosbox.js",
                         style: "unset",
                     }).run(bundleUrl, {
                         onProgress: (stage, total, loaded) => {
