@@ -39,7 +39,7 @@
     // ── ICON DEFINITIONS ─────────────────────────────
     const ICONS = [
         { id: 'mycomputer', icon: '🖥️', label: 'Meu Computador' },
-        { id: 'prince', icon: 'jogosicon/Prince_of_Persia_1989.svg', label: 'Prince_Of_Persia.exe' },
+        { id: 'keen', icon: 'jogosicon/keen.ico', label: 'Cmd_Keen.exe' },
         { id: 'ie', icon: '🌐', label: 'TC Explorer' },
         { id: 'winamp', icon: '🎧', label: 'Tulioamp' },
         { id: 'paint', icon: '🎨', label: 'Tulio Paint' },
@@ -3415,17 +3415,17 @@ NUTTERTOOLS - Armas Pesadas
             return wrap;
         },
 
-        prince: () => {
+        keen: () => {
             const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
             
             const loading = h('div', { style: { color: '#0f0', fontFamily: 'monospace', padding: '20px', textAlign: 'center', fontSize: '14px' } }, 
                 'CARREGANDO ENGINE JS-DOS...',
                 h('div', { style: { marginTop: '15px', color: '#ffea00', fontSize: '12px' } }, 
                     '⚔️ CONTROLES:', h('br'),
-                    'Setas Direcionais: Andar/Pular/Abaixar', h('br'),
-                    'Shift: Mover devagar / Descer com calma / Erguer Espada / Atacar', h('br'),
-                    'Mouse não habilitado neste jogo', h('br'),
-                    '(Use a tecla ESC duas vezes para pausar/sair)'
+                    'Setas Direcionais: Andar', h('br'),
+                    'Ctrl / Alt: Pular / Pogo-Stick', h('br'),
+                    'Espaço: Atirar', h('br'),
+                    '(Use a tecla ESC para dar Pausa)'
                 )
             );
             wrap.appendChild(loading);
@@ -3462,7 +3462,7 @@ NUTTERTOOLS - Armas Pesadas
                         return;
                     }
                     
-                    loading.textContent = 'Descompactando pacote do Príncipe e executando...';
+                    loading.textContent = 'Descompactando pacote do Keen e executando...';
                     
                     try {
                         if (window.emulators) {
@@ -3471,7 +3471,7 @@ NUTTERTOOLS - Armas Pesadas
 
                         Dos(dosWrap, {
                             style: "unset"
-                        }).run("jogos/prince.jsdos").then(ci => {
+                        }).run("jogos/keen.jsdos").then(ci => {
                             loading.style.display = 'none';
                             
                             wrap.onClose = () => {
@@ -3560,7 +3560,7 @@ NUTTERTOOLS - Armas Pesadas
             h('div', { class: 'xp-addr-val' }, `C:\\TULIO\\${title.toUpperCase().replace(' ', '_')}`),
         ) : null;
 
-        const body = h('div', { class: 'xp-win-body', style: (id === 'doom' || id === 'prince') ? { overflow: 'hidden', background: '#000' } : {} }, (CONTENT[id] || CONTENT.mycomputer)());
+        const body = h('div', { class: 'xp-win-body', style: (id === 'doom' || id === 'keen') ? { overflow: 'hidden', background: '#000' } : {} }, (CONTENT[id] || CONTENT.mycomputer)());
 
         const WIN_SIZES = {
             ie: { w: '820px', h: '560px' },
@@ -3578,7 +3578,7 @@ NUTTERTOOLS - Armas Pesadas
             tulionet: { w: '380px', h: '360px' },
             tuliowire: { w: '550px', h: '400px' },
             accelerator: { w: '350px', h: '300px' },
-            prince: { w: '640px', h: '400px' },
+            keen: { w: '640px', h: '400px' },
             mysterious_folder: { w: '400px', h: '300px' },
             secret_readme: { w: '440px', h: '340px' },
             doom: { w: '640px', h: '400px' },
