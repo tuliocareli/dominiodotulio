@@ -53,6 +53,7 @@
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
+        { id: 'doom', icon: 'jogosicon/doom_classic.gif', label: 'doom.exe' },
         { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
@@ -3186,6 +3187,73 @@ NUTTERTOOLS - Armas Pesadas
                     };
                 }
             }, 50);
+
+            return wrap;
+        },
+
+        doom: () => {
+            const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
+            
+            const loading = h('div', { style: { color: '#0f0', fontFamily: 'monospace', padding: '20px', textAlign: 'center', fontSize: '14px' } }, 'CARREGANDO SISTEMA DOS...');
+            wrap.appendChild(loading);
+            
+            const dosWrap = h('div', { style: { width: '100%', height: '100%' } });
+            wrap.appendChild(dosWrap);
+
+            const loadLocalJsDos = () => {
+                if (window.Dos) return Promise.resolve();
+                return new Promise((resolve) => {
+                    loading.textContent = 'Inicializando Subsistemas Base...';
+                    const script = document.createElement('script');
+                    script.src = "libs/js-dos/js-dos.js";
+                    script.onload = () => {
+                        const style = document.createElement('link');
+                        style.rel = "stylesheet";
+                        style.href = "libs/js-dos/js-dos.css";
+                        document.head.appendChild(style);
+                        resolve();
+                    };
+                    script.onerror = () => {
+                        loading.textContent = 'Erro ao carregar Kernel JSDOS local.';
+                        loading.style.color = 'red';
+                    };
+                    document.head.appendChild(script);
+                });
+            };
+
+            setTimeout(() => {
+                loadLocalJsDos().then(() => {
+                    if (typeof Dos === 'undefined') {
+                        loading.textContent = 'Falha crítica: Motor Dos Ausente.';
+                        loading.style.color = 'red';
+                        return;
+                    }
+                    
+                    loading.textContent = 'Descompactando arquivos e executando...';
+                    
+                    try {
+                        Dos(dosWrap, {
+                            wdosboxUrl: "libs/js-dos/wdosbox.js", // Engine WebAssembly Local
+                            style: "unset"
+                        }).run("jogos/doom/doom.jsdos").then(ci => {
+                            loading.style.display = 'none'; // Esconde o texto quando rodar
+                            
+                            // Limpeza de memória ultra-conservadora ao clicar no "X" dessa janela
+                            wrap.onClose = () => {
+                                try { ci.exit(); } catch(e) {}
+                            };
+                        }).catch(e => {
+                            loading.style.display = 'block';
+                            loading.style.color = 'red';
+                            loading.textContent = 'Falha no boot da versão empacotada.';
+                        });
+                    } catch (e) {
+                         loading.style.display = 'block';
+                         loading.style.color = 'red';
+                         loading.textContent = 'Engine Crash.';
+                    }
+                });
+            }, 400);
 
             return wrap;
         },
