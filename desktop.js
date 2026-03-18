@@ -53,7 +53,7 @@
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
-        { id: 'doom', icon: 'jogosicon/doom.png', label: 'doom.exe' },
+        { id: 'doom', icon: 'jogosicon/doom_classic.gif', label: 'doom.exe' },
         { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
@@ -3239,12 +3239,13 @@ NUTTERTOOLS - Armas Pesadas
                         return;
                     }
 
-                    // Usando pacote .zip (mais compatível com servidores) e caminho absoluto da raiz
-                    const bundleUrl = "/shareware_doom_iwad/doom.zip";
+                    // Usando pacote .zip (mais compatível com servidores) e caminho relativo da raiz
+                    const bundleUrl = "shareware_doom_iwad/doom.zip";
 
                     Dos(canvas, {
-                        wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/wdosbox.js",
+                        wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/wdosbox.wasm.js",
                         style: "unset",
+                        log: false
                     }).run(bundleUrl, {
                         onProgress: (stage, total, loaded) => {
                             const p = Math.floor((loaded / total) * 100) || 0;
@@ -3267,6 +3268,12 @@ NUTTERTOOLS - Armas Pesadas
                             // Focar no canvas para capturar teclado imediatamente
                             canvas.focus();
                         }, 800);
+                        
+                        wrap.onClose = () => {
+                            try {
+                                ci.exit();
+                            } catch(e) {}
+                        };
                     }).catch((err) => {
                         console.error("Doom error:", err);
                         loader.style.color = 'red';
