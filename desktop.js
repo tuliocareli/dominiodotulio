@@ -52,6 +52,7 @@
         { id: 'calculator', icon: '📟', label: 'Calculadora' },
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
+        { id: 'tuliowire', icon: '🍋', label: 'TulioShare PRO' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
         { id: 'doom', icon: 'jogosicon/doom_classic.ico', label: 'doom.exe' },
         { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
@@ -3191,6 +3192,150 @@ NUTTERTOOLS - Armas Pesadas
             return wrap;
         },
 
+        tuliowire: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#fff', fontSize: '12px', fontFamily: 'Tahoma' } });
+
+            const header = h('div', { style: { display: 'flex', alignItems: 'center', background: '#e4ecf7', padding: '8px', borderBottom: '1px solid #8ba0c5' } });
+            header.innerHTML = `<span style="font-size:20px; margin-right:8px">🍋</span> <strong style="color: #1c4b9e">TulioShare PRO - Design & UX Edition</strong>`;
+
+            const tabs = h('div', { style: { display: 'flex', gap: '4px', background: '#f5f5f5', padding: '4px 8px 0', borderBottom: '1px solid #ccc' } });
+            tabs.innerHTML = `
+                <div style="padding: 4px 12px; background: #fff; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #333; cursor: default; font-weight: bold;">Pesquisar Recursos</div>
+                <div style="padding: 4px 12px; background: #e0e0e0; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #666; cursor: default">Transferências (4)</div>
+                <div style="padding: 4px 12px; background: #e0e0e0; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #666; cursor: default">Biblioteca UI</div>
+            `;
+
+            const tableWrap = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto' } });
+
+            // Fake Corporate Adware Popups
+            setTimeout(() => {
+                const ads = [
+                    { t: "ALERTA DA QA", msg: "🚨 Seu Design System tem botões desalinhados em 1px! Baixe mais Grid agora!", color: "#ff0000" },
+                    { t: "PARABÉNS DESIGNER!", msg: "Você é o 1.000º a arredondar uma borda em 4px! Clique para seu prêmio.", color: "#ffff00", tColor: "#000" },
+                    { t: "AVISO DO DEV", msg: "O Frontend disse que não vai seguir o seu Figma... O que você faz? [Revisar Auto Layout]", color: "#0055eb", tColor: "#fff" }
+                ];
+
+                ads.forEach((ad, i) => {
+                    const pop = document.createElement('div');
+                    pop.style.position = 'absolute';
+                    pop.style.top = (20 + (Math.random() * 40)) + '%';
+                    pop.style.left = (10 + (Math.random() * 50)) + '%';
+                    pop.style.width = '300px';
+                    pop.style.backgroundColor = '#ece9d8';
+                    pop.style.border = '2px solid #0055eb';
+                    pop.style.boxShadow = '5px 5px 15px rgba(0,0,0,0.5)';
+                    pop.style.zIndex = 10000 + i;
+                    pop.style.fontFamily = 'Tahoma';
+
+                    const titlebar = document.createElement('div');
+                    titlebar.style.background = 'linear-gradient(180deg, #094af3, #001272)';
+                    titlebar.style.color = '#fff';
+                    titlebar.style.padding = '3px 6px';
+                    titlebar.style.fontSize = '12px';
+                    titlebar.style.fontWeight = 'bold';
+                    titlebar.style.display = 'flex';
+                    titlebar.style.justifyContent = 'space-between';
+
+                    const titleTxt = document.createElement('span');
+                    titleTxt.innerText = ad.t;
+
+                    const closeBtn = document.createElement('button');
+                    closeBtn.innerText = 'X';
+                    closeBtn.style.background = '#e95648';
+                    closeBtn.style.color = '#fff';
+                    closeBtn.style.border = '1px solid #fff';
+                    closeBtn.style.cursor = 'pointer';
+                    closeBtn.onclick = () => pop.remove();
+
+                    titlebar.appendChild(titleTxt);
+                    titlebar.appendChild(closeBtn);
+
+                    const content = document.createElement('div');
+                    content.style.padding = '15px';
+                    content.style.lineHeight = '1.4';
+                    content.style.textAlign = 'center';
+                    content.style.background = ad.color;
+                    content.style.color = ad.tColor || '#fff';
+                    content.style.fontWeight = 'bold';
+                    content.style.fontSize = '12px';
+                    content.style.cursor = 'pointer';
+                    content.innerText = ad.msg;
+                    content.onclick = () => pop.remove();
+
+                    pop.appendChild(titlebar);
+                    pop.appendChild(content);
+                    document.getElementById('xpDesktopArea').appendChild(pop);
+
+                    let blink = setInterval(() => {
+                        if (!pop.parentNode) { clearInterval(blink); return; }
+                        pop.style.borderColor = pop.style.borderColor === 'red' ? '#0055eb' : 'red';
+                    }, 500);
+                });
+            }, 1000);
+
+            const table = document.createElement('table');
+            table.style.width = '100%';
+            table.style.borderCollapse = 'collapse';
+            table.style.textAlign = 'left';
+
+            table.innerHTML = `
+                <thead>
+                    <tr style="background:#f0f0f0; border-bottom:1px solid #ccc; font-size: 11px;">
+                        <th style="padding:4px">Nome do Arquivo Figma / UX</th>
+                        <th style="padding:4px; max-width: 50px;">Tamanho</th>
+                        <th style="padding:4px; min-width: 100px;">Progresso</th>
+                        <th style="padding:4px; max-width: 60px;">Velocidade</th>
+                        <th style="padding:4px; width: 60px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">[UX_Research]_Entrevista_Usuario_Chorando.wav.exe</td>
+                        <td style="padding:4px; color:#666">32 KB</td>
+                        <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:100%;background:#0c0;height:100%"></div></div></td>
+                        <td style="padding:4px; color:#666">Concluído</td>
+                        <td style="padding:4px; color:#0c0;">Baixado</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">Componente_Botao_72_Variantes_Inuteis.fig</td>
+                        <td style="padding:4px; color:#666">45 MB</td>
+                        <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:14%;background:#0c0;height:100%"></div></div></td>
+                        <td style="padding:4px; color:#666">1.5 kb/s</td>
+                        <td style="padding:4px; color:#666">Pendente</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">Figma_Crackeado_Sem_Virus_Confia.vbs</td>
+                        <td style="padding:4px; color:#666">1.1 MB</td>
+                        <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:98%;background:#0c0;height:100%"></div></div></td>
+                        <td style="padding:4px; color:#666">0.0 kb/s</td>
+                        <td style="padding:4px; color:#666; color: red;">Estagnado</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #eee">
+                        <td style="padding:4px; color:#333">Reuniao_Diaria_Design_Critique_Sem_Fim.mp3</td>
+                        <td style="padding:4px; color:#666">2.1 GB</td>
+                        <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:4%;background:#0c0;height:100%"></div></div></td>
+                        <td style="padding:4px; color:#666">0.1 kb/s</td>
+                        <td style="padding:4px; color:#666">Infinito</td>
+                    </tr>
+                </tbody>
+            `;
+
+            tableWrap.appendChild(table);
+
+            const status = h('div', { style: { padding: '6px', background: '#ece9d8', borderTop: '1px solid #ccc', color: '#555', fontSize: '11px', display: 'flex', justifyContent: 'space-between' } });
+            status.innerHTML = `
+                <span>Conectado a 1.204 Designers P2P.</span>
+                <span style="color:#094af3; cursor:pointer;" onclick="alert('Dica de Portfólio:\\n\\nEi, quem faz download num portfólio web!?\\n\\nAproveite o tempo que o arquivo estagnou para navegar nas páginas e dar uma lida em meus cases de estudo em PDF (que são reais e sem vírus, prometo!) 😉');">👉 Clique p/ Ajuda Profissional</span>
+            `;
+
+            wrap.appendChild(header);
+            wrap.appendChild(tabs);
+            wrap.appendChild(tableWrap);
+            wrap.appendChild(status);
+
+            return wrap;
+        },
+
         doom: () => {
             const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
             
@@ -3345,6 +3490,7 @@ NUTTERTOOLS - Armas Pesadas
             terminal: { w: '500px', h: '320px' },
             gta_cheats: { w: '440px', h: '400px' },
             tulionet: { w: '380px', h: '360px' },
+            tuliowire: { w: '550px', h: '400px' },
             accelerator: { w: '350px', h: '300px' },
             'Tibia.exe': { w: '640px', h: '480px' },
             'M.U.G.E.N..exe': { w: '640px', h: '480px' },
