@@ -3232,12 +3232,13 @@ NUTTERTOOLS - Armas Pesadas
                     loading.textContent = 'Descompactando arquivos e executando...';
                     
                     try {
+                        // Força a engine emulators oculta do js-dos a buscar os núcleos e o wasm do diretório correto
+                        if (window.emulators) {
+                            window.emulators.pathPrefix = "libs/js-dos/";
+                        }
+
                         Dos(dosWrap, {
-                            style: "unset",
-                            // Força a engine js-dos a nunca assumir "/" para os arquivos de virtualização 
-                            // dizendo pra ela que a root do site que guarda o wdosbox é a nossa pasta "libs/js-dos"
-                            pathPrefix: "libs/js-dos/",
-                            wdosboxUrl: "libs/js-dos/wdosbox.js"
+                            style: "unset"
                         }).run("jogos/doom/doom.jsdos").then(ci => {
                             loading.style.display = 'none'; // Esconde o texto quando rodar
                             
