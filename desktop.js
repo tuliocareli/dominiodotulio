@@ -3213,11 +3213,11 @@ NUTTERTOOLS - Armas Pesadas
                 return new Promise((resolve) => {
                     progress.textContent = 'Baixando bibliotecas JS-DOS...';
                     const script = document.createElement('script');
-                    script.src = "https://js-dos.com/6.22/current/js-dos.js";
+                    script.src = "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/js-dos.js";
                     script.onload = () => {
                         const style = document.createElement('link');
                         style.rel = "stylesheet";
-                        style.href = "https://js-dos.com/6.22/current/js-dos.css";
+                        style.href = "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/js-dos.css";
                         document.head.appendChild(style);
                         resolve();
                     };
@@ -3239,47 +3239,44 @@ NUTTERTOOLS - Armas Pesadas
                         return;
                     }
 
-                    // Usando pacote .zip (mais compatível com servidores) referenciado a partir da raiz hospedada
-                    const bundleUrl = window.location.origin + "/shareware_doom_iwad/doom.zip";
+                    // Referenciando da raiz da hospedagem/projeto local
+                    const bundleUrl = "shareware_doom_iwad/doom.zip";
 
                     Dos(canvas, {
-                        wdosboxUrl: "https://js-dos.com/6.22/current/wdosbox.wasm.js",
-                        style: "unset",
-                        log: false
-                    }).ready((fs, main) => {
-                        fs.extract(bundleUrl).then(() => {
-                            main(["-c", "cd DOOM", "-c", "DOOM.EXE"]).then((ci) => {
-                                loader.textContent = 'PRONTO';
-                                progBarFill.style.width = '100%';
-                                progress.textContent = 'Enviando sinal de vídeo...';
+                        wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/wdosbox.js",
+                        style: "unset"
+                    }).run(bundleUrl, {
+                        onProgress: (stage, total, loaded) => {
+                            const p = Math.floor((loaded / total) * 100) || 0;
+                            loader.textContent = `CARREGANDO: ${p}%`;
+                            progBarFill.style.width = p + '%';
+                            progress.textContent = `Fase: ${stage} (${(loaded / 1024 / 1024).toFixed(1)}MB / ${(total / 1024 / 1024).toFixed(1)}MB)`;
+                        }
+                    }).then((ci) => {
+                        loader.textContent = 'PRONTO';
+                        progBarFill.style.width = '100%';
+                        progress.textContent = 'Enviando sinal de vídeo...';
 
-                                setTimeout(() => {
-                                    wrap.querySelectorAll('div').forEach(d => {
-                                        if (d.id !== 'jsdos-canvas') d.style.display = 'none';
-                                    });
-                                    canvas.style.opacity = '1';
-                                    canvas.style.pointerEvents = 'all';
-                                    canvas.style.imageRendering = 'pixelated';
-                                    canvas.focus();
-                                }, 800);
-
-                                wrap.onClose = () => {
-                                    try {
-                                        ci.exit();
-                                    } catch(e) {}
-                                };
+                        setTimeout(() => {
+                            wrap.querySelectorAll('div').forEach(d => {
+                                if (d.id !== 'jsdos-canvas') d.style.display = 'none';
                             });
-                        }).catch((err) => {
-                            console.error("Doom error:", err);
-                            loader.style.color = 'red';
-                            loader.textContent = 'FALHA NO BOOT';
-                            progress.textContent = 'Erro ao baixar ou extrair o jogo.';
-                        });
+                            canvas.style.opacity = '1';
+                            canvas.style.pointerEvents = 'all';
+                            canvas.style.imageRendering = 'pixelated';
+                            canvas.focus();
+                        }, 800);
+
+                        wrap.onClose = () => {
+                            try {
+                                ci.exit();
+                            } catch(e) {}
+                        };
                     }).catch((err) => {
                         console.error("Doom engine error:", err);
                         loader.style.color = 'red';
-                        loader.textContent = 'FALHA NA VIRTUALIZAÇÃO';
-                        progress.textContent = 'Erro ao inicializar WASM engine.';
+                        loader.textContent = 'FALHA NO BOOT';
+                        progress.textContent = 'Verifique o caminho ou console.';
                     });
                 });
             }, 500);
