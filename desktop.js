@@ -39,7 +39,7 @@
     // ── ICON DEFINITIONS ─────────────────────────────
     const ICONS = [
         { id: 'mycomputer', icon: '🖥️', label: 'Meu Computador' },
-        { id: 'games', icon: '🎮', label: 'Meus Games' },
+        { id: 'prince', icon: 'jogosicon/Prince_of_Persia_1989.svg', label: 'Prince_Of_Persia.exe' },
         { id: 'ie', icon: '🌐', label: 'TC Explorer' },
         { id: 'winamp', icon: '🎧', label: 'Tulioamp' },
         { id: 'paint', icon: '🎨', label: 'Tulio Paint' },
@@ -3415,6 +3415,84 @@ NUTTERTOOLS - Armas Pesadas
             return wrap;
         },
 
+        prince: () => {
+            const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
+            
+            const loading = h('div', { style: { color: '#0f0', fontFamily: 'monospace', padding: '20px', textAlign: 'center', fontSize: '14px' } }, 
+                'CARREGANDO ENGINE JS-DOS...',
+                h('div', { style: { marginTop: '15px', color: '#ffea00', fontSize: '12px' } }, 
+                    '⚔️ CONTROLES:', h('br'),
+                    'Setas Direcionais: Andar/Pular/Abaixar', h('br'),
+                    'Shift: Mover devagar / Descer com calma / Erguer Espada / Atacar', h('br'),
+                    'Mouse não habilitado neste jogo', h('br'),
+                    '(Use a tecla ESC duas vezes para pausar/sair)'
+                )
+            );
+            wrap.appendChild(loading);
+            
+            const dosWrap = h('div', { style: { width: '100%', height: '100%' } });
+            wrap.appendChild(dosWrap);
+
+            const loadLocalJsDos = () => {
+                if (window.Dos) return Promise.resolve();
+                return new Promise((resolve) => {
+                    loading.textContent = 'Inicializando Subsistemas Base...';
+                    const script = document.createElement('script');
+                    script.src = "libs/js-dos/js-dos.js";
+                    script.onload = () => {
+                        const style = document.createElement('link');
+                        style.rel = "stylesheet";
+                        style.href = "libs/js-dos/js-dos.css";
+                        document.head.appendChild(style);
+                        resolve();
+                    };
+                    script.onerror = () => {
+                        loading.textContent = 'Erro ao carregar Kernel JSDOS local.';
+                        loading.style.color = 'red';
+                    };
+                    document.head.appendChild(script);
+                });
+            };
+
+            setTimeout(() => {
+                loadLocalJsDos().then(() => {
+                    if (typeof Dos === 'undefined') {
+                        loading.textContent = 'Falha crítica: Motor Dos Ausente.';
+                        loading.style.color = 'red';
+                        return;
+                    }
+                    
+                    loading.textContent = 'Descompactando pacote do Príncipe e executando...';
+                    
+                    try {
+                        if (window.emulators) {
+                            window.emulators.pathPrefix = "libs/js-dos/";
+                        }
+
+                        Dos(dosWrap, {
+                            style: "unset"
+                        }).run("jogos/prince.jsdos").then(ci => {
+                            loading.style.display = 'none';
+                            
+                            wrap.onClose = () => {
+                                try { ci.exit(); } catch(e) {}
+                            };
+                        }).catch(e => {
+                            loading.style.display = 'block';
+                            loading.style.color = 'red';
+                            loading.textContent = 'Falha no boot da versão empacotada.';
+                        });
+                    } catch (e) {
+                         loading.style.display = 'block';
+                         loading.style.color = 'red';
+                         loading.textContent = 'Engine Crash.';
+                    }
+                });
+            }, 400);
+
+            return wrap;
+        },
+
     };
 
 
@@ -3482,7 +3560,7 @@ NUTTERTOOLS - Armas Pesadas
             h('div', { class: 'xp-addr-val' }, `C:\\TULIO\\${title.toUpperCase().replace(' ', '_')}`),
         ) : null;
 
-        const body = h('div', { class: 'xp-win-body', style: id === 'doom' ? { overflow: 'hidden', background: '#000' } : {} }, (CONTENT[id] || CONTENT.mycomputer)());
+        const body = h('div', { class: 'xp-win-body', style: (id === 'doom' || id === 'prince') ? { overflow: 'hidden', background: '#000' } : {} }, (CONTENT[id] || CONTENT.mycomputer)());
 
         const WIN_SIZES = {
             ie: { w: '820px', h: '560px' },
@@ -3500,10 +3578,7 @@ NUTTERTOOLS - Armas Pesadas
             tulionet: { w: '380px', h: '360px' },
             tuliowire: { w: '550px', h: '400px' },
             accelerator: { w: '350px', h: '300px' },
-            'Tibia.exe': { w: '640px', h: '480px' },
-            'M.U.G.E.N..exe': { w: '640px', h: '480px' },
-            'GTA San Andreas.exe': { w: '640px', h: '480px' },
-            'Grand Chase.exe': { w: '640px', h: '480px' },
+            prince: { w: '640px', h: '400px' },
             mysterious_folder: { w: '400px', h: '300px' },
             secret_readme: { w: '440px', h: '340px' },
             doom: { w: '640px', h: '400px' },
