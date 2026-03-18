@@ -3239,11 +3239,11 @@ NUTTERTOOLS - Armas Pesadas
                         return;
                     }
 
-                    // Usando pacote .zip (mais compatível com servidores) e caminho relativo da raiz
-                    const bundleUrl = "shareware_doom_iwad/doom.zip";
+                    // Usando pacote .zip (mais compatível com servidores) referenciado a partir da raiz hospedada
+                    const bundleUrl = window.location.origin + "/shareware_doom_iwad/doom.zip";
 
                     Dos(canvas, {
-                        wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/wdosbox.wasm.js",
+                        wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/wdosbox.js",
                         style: "unset",
                         log: false
                     }).run(bundleUrl, {
