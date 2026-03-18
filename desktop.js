@@ -53,7 +53,7 @@
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
-        { id: 'doom', icon: 'https://icon-icons.com/icons2/1411/PNG/512/Doom_icon-icons.com_96859.png', label: 'doom.exe' },
+        { id: 'doom', icon: 'jogosicon/doom_classic.ico', label: 'doom.exe' },
         { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
