@@ -3194,7 +3194,15 @@ NUTTERTOOLS - Armas Pesadas
         doom: () => {
             const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
             
-            const loading = h('div', { style: { color: '#0f0', fontFamily: 'monospace', padding: '20px', textAlign: 'center', fontSize: '14px' } }, 'CARREGANDO SISTEMA DOS...');
+            const loading = h('div', { style: { color: '#0f0', fontFamily: 'monospace', padding: '20px', textAlign: 'center', fontSize: '14px' } }, 
+                'CARREGANDO ENGINE JS-DOS...',
+                h('div', { style: { marginTop: '15px', color: '#ffea00', fontSize: '12px' } }, 
+                    '⚔️ CONTROLES:', h('br'),
+                    'Setas: Andar e Virar | CTRL: Atirar | Espaço: Abrir Portas', h('br'),
+                    'Mouse: Movimento / Tiro', h('br'),
+                    '(Use a tecla ESC para libertar o mouse do jogo)'
+                )
+            );
             wrap.appendChild(loading);
             
             const dosWrap = h('div', { style: { width: '100%', height: '100%' } });
