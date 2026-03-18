@@ -3445,6 +3445,14 @@ NUTTERTOOLS - Armas Pesadas
         }
 
         playSfx('click');
+        
+        // VERCEL ANALYTICS: Log when someone clicks an icon
+        if (window.va) {
+            window.va('event', 'app_opened', { 
+                app_name: id,
+                from_device: window.innerWidth < 768 ? 'Mobile' : 'Desktop'
+            });
+        }
 
         const icon = ICONS.find(i => i.id === id);
         const title = icon ? icon.label : id;
