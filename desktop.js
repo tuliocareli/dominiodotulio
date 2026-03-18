@@ -3903,11 +3903,9 @@ NUTTERTOOLS - Armas Pesadas
 
         // Aguarda a tela ficar exposta (ex. 2.5s)
         setTimeout(() => {
-            // Remove janelas de forma síncrona
+            // Remove janelas disparando os callbacks de limpeza de memória (vital pro Doom)
             Object.keys(openWindows).forEach(id => {
-                const w = openWindows[id];
-                if (w) w.remove();
-                delete openWindows[id];
+                closeWin(id);
             });
 
             // Reseta estados de maximização e online
@@ -3979,7 +3977,7 @@ NUTTERTOOLS - Armas Pesadas
                     mounted = false;
                     shuttingDown = false;
                     isOnline = false;
-                    for (let key in openWindows) delete openWindows[key];
+                    Object.keys(openWindows).forEach(id => closeWin(id));
 
                     // Trigger Boot again
                     buildDesktop();
