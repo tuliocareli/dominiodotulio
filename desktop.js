@@ -3233,8 +3233,11 @@ NUTTERTOOLS - Armas Pesadas
                     
                     try {
                         Dos(dosWrap, {
-                            wdosboxUrl: "libs/js-dos/wdosbox.js", // Engine WebAssembly Local
-                            style: "unset"
+                            style: "unset",
+                            // Força a engine js-dos a nunca assumir "/" para os arquivos de virtualização 
+                            // dizendo pra ela que a root do site que guarda o wdosbox é a nossa pasta "libs/js-dos"
+                            pathPrefix: "libs/js-dos/",
+                            wdosboxUrl: "libs/js-dos/wdosbox.js"
                         }).run("jogos/doom/doom.jsdos").then(ci => {
                             loading.style.display = 'none'; // Esconde o texto quando rodar
                             
