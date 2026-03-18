@@ -53,7 +53,6 @@
         { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
         { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
         { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
-        { id: 'doom', icon: 'jogosicon/doom_classic.gif', label: 'doom.exe' },
         { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
@@ -3191,98 +3190,6 @@ NUTTERTOOLS - Armas Pesadas
             return wrap;
         },
 
-        doom: () => {
-            const wrap = h('div', { class: 'xp-doom-container', style: { width: '100%', height: '100%', background: '#000', color: '#0f0', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', textAlign: 'center', padding: '20px' } });
-            const loader = h('div', { id: 'doom-loader', style: { fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' } }, 'INICIANDO PROTOCOLO DOS...');
-            
-            // Barra de progresso visual
-            const progBarWrap = h('div', { style: { width: '200px', height: '10px', border: '1px solid #0f0', position: 'relative', marginBottom: '10px' } });
-            const progBarFill = h('div', { style: { width: '0%', height: '100%', background: '#0f0', transition: 'width 0.1s' } });
-            progBarWrap.appendChild(progBarFill);
-            
-            const progress = h('div', { id: 'doom-status', style: { fontSize: '12px', color: '#0a0' } }, 'Aguardando motor...');
-            wrap.appendChild(loader);
-            wrap.appendChild(progBarWrap);
-            wrap.appendChild(progress);
-
-            const canvas = h('canvas', { id: 'jsdos-canvas', style: { width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, opacity: 0, pointerEvents: 'none' } });
-            wrap.appendChild(canvas);
-
-            const loadJsDos = () => {
-                if (window.Dos) return Promise.resolve();
-                return new Promise((resolve) => {
-                    progress.textContent = 'Baixando bibliotecas JS-DOS...';
-                    const script = document.createElement('script');
-                    script.src = "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/js-dos.js";
-                    script.onload = () => {
-                        const style = document.createElement('link');
-                        style.rel = "stylesheet";
-                        style.href = "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/js-dos.css";
-                        document.head.appendChild(style);
-                        resolve();
-                    };
-                    script.onerror = () => {
-                        loader.textContent = 'FALHA NA REDE';
-                        progress.textContent = 'Não foi possível carregar as bibliotecas do JS-DOS.';
-                    };
-                    document.head.appendChild(script);
-                });
-            };
-
-            setTimeout(() => {
-                loadJsDos().then(() => {
-                    progress.textContent = 'Conectando ao CDN de Maryland...';
-                    
-                    if (typeof Dos === 'undefined') {
-                        loader.textContent = 'ERRO CRÍTICO';
-                        progress.textContent = 'Objeto Dos não encontrado.';
-                        return;
-                    }
-
-                    // Referenciando da raiz da hospedagem/projeto local
-                    const bundleUrl = "shareware_doom_iwad/doom.zip";
-
-                    Dos(canvas, {
-                        wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@7.5.0/dist/wdosbox.js",
-                        style: "unset"
-                    }).run(bundleUrl, {
-                        onProgress: (stage, total, loaded) => {
-                            const p = Math.floor((loaded / total) * 100) || 0;
-                            loader.textContent = `CARREGANDO: ${p}%`;
-                            progBarFill.style.width = p + '%';
-                            progress.textContent = `Fase: ${stage} (${(loaded / 1024 / 1024).toFixed(1)}MB / ${(total / 1024 / 1024).toFixed(1)}MB)`;
-                        }
-                    }).then((ci) => {
-                        loader.textContent = 'PRONTO';
-                        progBarFill.style.width = '100%';
-                        progress.textContent = 'Enviando sinal de vídeo...';
-
-                        setTimeout(() => {
-                            wrap.querySelectorAll('div').forEach(d => {
-                                if (d.id !== 'jsdos-canvas') d.style.display = 'none';
-                            });
-                            canvas.style.opacity = '1';
-                            canvas.style.pointerEvents = 'all';
-                            canvas.style.imageRendering = 'pixelated';
-                            canvas.focus();
-                        }, 800);
-
-                        wrap.onClose = () => {
-                            try {
-                                ci.exit();
-                            } catch(e) {}
-                        };
-                    }).catch((err) => {
-                        console.error("Doom engine error:", err);
-                        loader.style.color = 'red';
-                        loader.textContent = 'FALHA NO BOOT';
-                        progress.textContent = 'Verifique o caminho ou console.';
-                    });
-                });
-            }, 500);
-
-            return wrap;
-        },
     };
 
 
