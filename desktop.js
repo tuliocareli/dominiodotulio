@@ -3196,13 +3196,13 @@ NUTTERTOOLS - Armas Pesadas
             const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#fff', fontSize: '12px', fontFamily: 'Tahoma' } });
 
             const header = h('div', { style: { display: 'flex', alignItems: 'center', background: '#e4ecf7', padding: '8px', borderBottom: '1px solid #8ba0c5' } });
-            header.innerHTML = `<span style="font-size:20px; margin-right:8px">🍋</span> <strong style="color: #1c4b9e">TulioShare PRO - Design & UX Edition</strong>`;
+            header.innerHTML = `<span style="font-size:20px; margin-right:8px">🍋</span> <strong style="color: #1c4b9e">TulioShare PRO - Classic 2000s Edition</strong>`;
 
             const tabs = h('div', { style: { display: 'flex', gap: '4px', background: '#f5f5f5', padding: '4px 8px 0', borderBottom: '1px solid #ccc' } });
             tabs.innerHTML = `
                 <div style="padding: 4px 12px; background: #fff; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #333; cursor: default; font-weight: bold;">Pesquisar Recursos</div>
                 <div style="padding: 4px 12px; background: #e0e0e0; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #666; cursor: default">Transferências (4)</div>
-                <div style="padding: 4px 12px; background: #e0e0e0; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #666; cursor: default">Biblioteca UI</div>
+                <div style="padding: 4px 12px; background: #e0e0e0; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; color: #666; cursor: default">Biblioteca Pessoal</div>
             `;
 
             const tableWrap = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto' } });
@@ -3210,9 +3210,9 @@ NUTTERTOOLS - Armas Pesadas
             // Fake Corporate Adware Popups
             setTimeout(() => {
                 const ads = [
-                    { t: "ALERTA DA QA", msg: "🚨 Seu Design System tem botões desalinhados em 1px! Baixe mais Grid agora!", color: "#ff0000" },
-                    { t: "PARABÉNS DESIGNER!", msg: "Você é o 1.000º a arredondar uma borda em 4px! Clique para seu prêmio.", color: "#ffff00", tColor: "#000" },
-                    { t: "AVISO DO DEV", msg: "O Frontend disse que não vai seguir o seu Figma... O que você faz? [Revisar Auto Layout]", color: "#0055eb", tColor: "#fff" }
+                    { t: "ALERTA DE SEGURANÇA", msg: "🚨 Seu sistema encontrou 99 erros. Deseja baixar mais memória RAM agora?", color: "#ff0000" },
+                    { t: "PARABÉNS INTERNAUTA!", msg: "Você é o 1.000.000º visitante do dia! Clique aqui para resgatar seu prêmio.", color: "#ffff00", tColor: "#000" },
+                    { t: "MENSAGEM NÃO LIDA", msg: "Alguém adicionou você na lista de contatos! Clique para visualizar a webcam.", color: "#0055eb", tColor: "#fff" }
                 ];
 
                 ads.forEach((ad, i) => {
@@ -3281,7 +3281,7 @@ NUTTERTOOLS - Armas Pesadas
             table.innerHTML = `
                 <thead>
                     <tr style="background:#f0f0f0; border-bottom:1px solid #ccc; font-size: 11px;">
-                        <th style="padding:4px">Nome do Arquivo Figma / UX</th>
+                        <th style="padding:4px">Nome do Arquivo</th>
                         <th style="padding:4px; max-width: 50px;">Tamanho</th>
                         <th style="padding:4px; min-width: 100px;">Progresso</th>
                         <th style="padding:4px; max-width: 60px;">Velocidade</th>
@@ -3290,28 +3290,28 @@ NUTTERTOOLS - Armas Pesadas
                 </thead>
                 <tbody>
                     <tr style="border-bottom:1px solid #eee">
-                        <td style="padding:4px; color:#333">[UX_Research]_Entrevista_Usuario_Chorando.wav.exe</td>
+                        <td style="padding:4px; color:#333">Musica_Acustica_Show_Ao_Vivo_HQ.mp3.exe</td>
                         <td style="padding:4px; color:#666">32 KB</td>
                         <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:100%;background:#0c0;height:100%"></div></div></td>
                         <td style="padding:4px; color:#666">Concluído</td>
-                        <td style="padding:4px; color:#0c0;">Baixado</td>
+                        <td style="padding:4px; color:#0c0; cursor: pointer" onclick="alert('Dica de Portfólio:\\n\\nBrincadeiras à parte, arquivos executáveis misteriosos não são uma boa! 😂\\n\\nAproveite a visita para abrir os meus projetos legítimos ali no canto ou ver meu currículo!');">👉 Baixado</td>
                     </tr>
                     <tr style="border-bottom:1px solid #eee">
-                        <td style="padding:4px; color:#333">Componente_Botao_72_Variantes_Inuteis.fig</td>
+                        <td style="padding:4px; color:#333">Super_Animacao_Japonesa_Ep01_Legendado.rmvb</td>
                         <td style="padding:4px; color:#666">45 MB</td>
                         <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:14%;background:#0c0;height:100%"></div></div></td>
                         <td style="padding:4px; color:#666">1.5 kb/s</td>
                         <td style="padding:4px; color:#666">Pendente</td>
                     </tr>
                     <tr style="border-bottom:1px solid #eee">
-                        <td style="padding:4px; color:#333">Figma_Crackeado_Sem_Virus_Confia.vbs</td>
+                        <td style="padding:4px; color:#333">Gerador_De_Chaves_Premium_Antivirus.vbs</td>
                         <td style="padding:4px; color:#666">1.1 MB</td>
                         <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:98%;background:#0c0;height:100%"></div></div></td>
                         <td style="padding:4px; color:#666">0.0 kb/s</td>
                         <td style="padding:4px; color:#666; color: red;">Estagnado</td>
                     </tr>
                     <tr style="border-bottom:1px solid #eee">
-                        <td style="padding:4px; color:#333">Reuniao_Diaria_Design_Critique_Sem_Fim.mp3</td>
+                        <td style="padding:4px; color:#333">Jogo_De_Corrida_De_Rua_Tuning_RIP.rar</td>
                         <td style="padding:4px; color:#666">2.1 GB</td>
                         <td style="padding:4px;"><div style="width:100%;background:#ddd;height:12px;border:1px solid #aaa"><div style="width:4%;background:#0c0;height:100%"></div></div></td>
                         <td style="padding:4px; color:#666">0.1 kb/s</td>
