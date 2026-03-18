@@ -39,7 +39,6 @@
     // ── ICON DEFINITIONS ─────────────────────────────
     const ICONS = [
         { id: 'mycomputer', icon: '🖥️', label: 'Meu Computador' },
-        { id: 'keen', icon: 'jogosicon/keen.ico', label: 'Cmd_Keen.exe' },
         { id: 'ie', icon: '🌐', label: 'TC Explorer' },
         { id: 'winamp', icon: '🎧', label: 'Tulioamp' },
         { id: 'paint', icon: '🎨', label: 'Tulio Paint' },
