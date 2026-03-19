@@ -58,6 +58,7 @@
         { id: 'readme', icon: '📄', label: 'README.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'bsod', icon: '💽', label: 'Limpar_Cache_Rapido.exe' },
+        { id: 'meus_projetos', icon: '📁', label: 'Meus Projetos' },
         { id: 'trash', icon: '🗑️', label: 'Lixeira' },
     ];
 
@@ -3492,6 +3493,40 @@ NUTTERTOOLS - Armas Pesadas
             return wrap;
         },
 
+        meus_projetos: () => {
+            const projetos = [
+                { icon: '🌐', name: 'Redesign Web GuiaVet', url: 'https://tuliocareli.com/portfolio/redesign-web-guiavet/' },
+                { icon: '🏥', name: 'Redesign Site IPGC', url: 'https://tuliocareli.com/portfolio/redesign-site-ipgc/' },
+                { icon: '🤝', name: 'Fábrica de Parcerias IPGC', url: 'https://tuliocareli.com/portfolio/fabrica-de-parcerias-ipgc/' },
+                { icon: '🏎️', name: 'Pitstop Velox', url: 'https://tuliocareli.com/portfolio/pitstop-velox/' },
+                { icon: '🎁', name: 'Kit Colaborador IPGC', url: 'https://tuliocareli.com/portfolio/kit-colaborador-ipgc/' },
+            ];
+
+            return h('div', { class: 'xp-file-view' },
+                ...projetos.map(p =>
+                    h('div', {
+                        class: 'xp-file-item',
+                        style: { cursor: 'pointer' },
+                        title: 'Duplo-clique para abrir: ' + p.url,
+                        ondblclick: () => window.open(p.url, '_blank', 'noopener,noreferrer'),
+                        ontouchstart: function (e) {
+                            const now = Date.now();
+                            const last = this.dataset.lastTap || 0;
+                            if (now - last < 300) {
+                                window.open(p.url, '_blank', 'noopener,noreferrer');
+                                e.preventDefault();
+                            }
+                            this.dataset.lastTap = now;
+                        },
+                    },
+                        h('span', { class: 'xp-fi-icon' }, p.icon),
+                        h('span', { class: 'xp-fi-name' }, p.name),
+                        h('span', { class: 'xp-fi-detail' }, '🔗 tuliocareli.com'),
+                    )
+                )
+            );
+        },
+
     };
 
 
@@ -3553,7 +3588,7 @@ NUTTERTOOLS - Armas Pesadas
 
         // Barra de endereço mockada (apenas para o browser ou pastas do sistema)
         // O browser 'ie' já tem sua própria barra interna, então removemos a genérica dele
-        const showAddr = ['mycomputer', 'games', 'trash', 'mysterious_folder'].includes(id);
+        const showAddr = ['mycomputer', 'games', 'trash', 'mysterious_folder', 'meus_projetos'].includes(id);
         const addrbar = showAddr ? h('div', { class: 'xp-win-addrbar' },
             h('span', { class: 'xp-addr-label' }, 'Endereço:'),
             h('div', { class: 'xp-addr-val' }, `C:\\TULIO\\${title.toUpperCase().replace(' ', '_')}`),
