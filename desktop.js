@@ -1840,48 +1840,353 @@
         },
 
         minesweeper: () => {
+            // ── DIFFICULTY CONFIG ────────────────────────────
+            const DIFFICULTIES = {
+                beginner:     { label: 'Iniciante',    rows: 9,  cols: 9,  mines: 10 },
+                intermediate: { label: 'Intermediário', rows: 16, cols: 16, mines: 40 },
+                expert:       { label: 'Especialista', rows: 16, cols: 30, mines: 99 },
+            };
+            const LS_KEY = 'ms_best_times';
+
+            const loadBests = () => JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+            const saveBest = (diff, secs) => {
+                const b = loadBests();
+                if (!b[diff] || secs < b[diff]) b[diff] = secs;
+                localStorage.setItem(LS_KEY, JSON.stringify(b));
+            };
+
+            // ── STATE ────────────────────────────────────────
+            let diffKey = 'beginner';
+            let board = [];          // flat array of cell objects
+            let rows = 0, cols = 0, totalMines = 0;
+            let gameState = 'idle'; // idle | playing | won | lost
+            let timerVal = 0;
+            let timerInterval = null;
+            let flagCount = 0;
+            let firstClick = true;
+
+            // ── ROOT ELEMENT ─────────────────────────────────
             const wrap = h('div', { class: 'xp-minesweeper' });
-            const header = h('div', { class: 'xp-ms-header' });
-            const p1 = h('div', { class: 'xp-ms-counter' }, '010');
-            const face = h('button', { class: 'xp-ms-face' }, '🙂');
-            const p2 = h('div', { class: 'xp-ms-counter' }, '000');
-            header.appendChild(p1); header.appendChild(face); header.appendChild(p2);
 
-            const grid = h('div', { class: 'xp-ms-grid' });
-            let gameOver = false;
+            // ── MENU BAR ─────────────────────────────────────
+            const menuBar = h('div', { class: 'xp-ms-menubar' });
+            const makeMenu = (label, items) => {
+                const menuWrap = h('div', { class: 'xp-ms-menu-wrap' });
+                const menuBtn = h('button', { class: 'xp-ms-menu-btn' }, label);
+                const dropdown = h('div', { class: 'xp-ms-dropdown' });
 
-            const cells = [];
-            for (let i = 0; i < 64; i++) {
-                const cell = h('button', { class: 'xp-ms-cell' });
-                cell.onclick = () => {
-                    if (gameOver) return;
-                    gameOver = true;
-                    face.textContent = '😵';
-                    cell.style.backgroundColor = 'red';
-                    // Reveal all troll
-                    cells.forEach(c => {
-                        c.classList.add('xp-ms-revealed');
-                        c.textContent = Math.random() > 0.7 ? '💣' : (Math.floor(Math.random() * 3) || '');
-                    });
-                    cell.textContent = '💣';
-                    setTimeout(() => alert('ERRO FATAL. VOCÊ PISOU NA MINA! KABOOM!'), 100);
+                items.forEach(item => {
+                    if (item === '---') {
+                        dropdown.appendChild(h('div', { class: 'xp-ms-separator' }));
+                        return;
+                    }
+                    const entry = h('button', { class: 'xp-ms-drop-item', onclick: () => {
+                        dropdown.classList.remove('xp-ms-dropdown--open');
+                        item.action();
+                    }}, item.label);
+                    if (item.checked) entry.classList.add('xp-ms-drop-checked');
+                    dropdown.appendChild(entry);
+                });
+
+                menuBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    const wasOpen = dropdown.classList.contains('xp-ms-dropdown--open');
+                    document.querySelectorAll('.xp-ms-dropdown--open').forEach(d => d.classList.remove('xp-ms-dropdown--open'));
+                    if (!wasOpen) dropdown.classList.add('xp-ms-dropdown--open');
                 };
-                cells.push(cell);
-                grid.appendChild(cell);
-            }
 
-            face.onclick = () => {
-                gameOver = false;
-                face.textContent = '🙂';
-                cells.forEach(c => {
-                    c.classList.remove('xp-ms-revealed');
-                    c.textContent = '';
-                    c.style.backgroundColor = '';
+                menuWrap.appendChild(menuBtn);
+                menuWrap.appendChild(dropdown);
+                return menuWrap;
+            };
+
+            // ── HEADER ───────────────────────────────────────
+            const mineCounter = h('div', { class: 'xp-ms-counter' }, '010');
+            const faceBtn     = h('button', { class: 'xp-ms-face' }, '🙂');
+            const timerEl     = h('div', { class: 'xp-ms-counter' }, '000');
+            const msHeader    = h('div', { class: 'xp-ms-header' }, mineCounter, faceBtn, timerEl);
+
+            // ── GRID ─────────────────────────────────────────
+            const gridEl = h('div', { class: 'xp-ms-grid' });
+
+            // ── RECORDS PANEL ────────────────────────────────
+            const recordsEl = h('div', { class: 'xp-ms-records' });
+
+            // ── HELPER FUNCTIONS ─────────────────────────────
+            const pad3 = n => String(Math.min(999, Math.max(0, n))).padStart(3, '0');
+
+            const idx = (r, c) => r * cols + c;
+
+            const neighbors = (r, c) => {
+                const result = [];
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        if (dr === 0 && dc === 0) continue;
+                        const nr = r + dr, nc = c + dc;
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) result.push(idx(nr, nc));
+                    }
+                }
+                return result;
+            };
+
+            const stopTimer = () => { clearInterval(timerInterval); timerInterval = null; };
+
+            const startTimer = () => {
+                stopTimer();
+                timerInterval = setInterval(() => {
+                    timerVal++;
+                    timerEl.textContent = pad3(timerVal);
+                    if (timerVal >= 999) stopTimer();
+                }, 1000);
+            };
+
+            const updateRecords = () => {
+                const bests = loadBests();
+                recordsEl.innerHTML = '';
+                recordsEl.appendChild(h('div', { class: 'xp-ms-rec-title' }, '🏆 Melhores Tempos'));
+                Object.entries(DIFFICULTIES).forEach(([key, cfg]) => {
+                    const t = bests[key];
+                    const val = t !== undefined ? `${t}s` : '---';
+                    recordsEl.appendChild(h('div', { class: 'xp-ms-rec-row' },
+                        h('span', {}, cfg.label + ':'),
+                        h('span', { class: 'xp-ms-rec-val' }, val)
+                    ));
                 });
             };
 
-            wrap.appendChild(header);
-            wrap.appendChild(grid);
+            // ── PLACE MINES (avoiding first click) ──────────
+            const placeMines = (safeIdx) => {
+                let placed = 0;
+                while (placed < totalMines) {
+                    const r = Math.floor(Math.random() * rows);
+                    const c = Math.floor(Math.random() * cols);
+                    const i = idx(r, c);
+                    if (i === safeIdx) continue;
+                    // Also avoid neighbors of first click for better UX
+                    if (neighbors(r, c).includes(safeIdx)) continue;
+                    if (board[i].mine) continue;
+                    board[i].mine = true;
+                    placed++;
+                }
+                // Compute adjacent counts
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const cell = board[idx(r, c)];
+                        if (cell.mine) { cell.adj = 0; continue; }
+                        cell.adj = neighbors(r, c).filter(i => board[i].mine).length;
+                    }
+                }
+            };
+
+            // ── NUMBER COLORS (classic WinXP) ────────────────
+            const numColors = ['', '#0000ff', '#007b00', '#ff0000', '#00007b', '#7b0000', '#007b7b', '#000', '#808080'];
+
+            // ── REVEAL cell (flood fill BFS) ─────────────────
+            const revealCell = (startI) => {
+                const queue = [startI];
+                const visited = new Set();
+                while (queue.length) {
+                    const i = queue.shift();
+                    if (visited.has(i)) continue;
+                    visited.add(i);
+                    const cell = board[i];
+                    if (cell.flagged || cell.revealed) continue;
+                    cell.revealed = true;
+                    const el = cell.el;
+                    el.classList.add('xp-ms-revealed');
+                    el.disabled = true;
+                    if (cell.adj > 0) {
+                        el.textContent = cell.adj;
+                        el.style.color = numColors[cell.adj] || '#000';
+                    }
+                    // If empty (adj=0) and not mine, spread to neighbors
+                    if (cell.adj === 0 && !cell.mine) {
+                        const r = Math.floor(i / cols), c = i % cols;
+                        neighbors(r, c).forEach(ni => { if (!visited.has(ni)) queue.push(ni); });
+                    }
+                }
+            };
+
+            // ── CHECK WIN ────────────────────────────────────
+            const checkWin = () => {
+                const unrevealed = board.filter(c => !c.revealed);
+                return unrevealed.length === totalMines && unrevealed.every(c => c.mine);
+            };
+
+            // ── GAME OVER (loss) ─────────────────────────────
+            const triggerLoss = (clickedI) => {
+                stopTimer();
+                gameState = 'lost';
+                faceBtn.textContent = '😵';
+                board.forEach((cell, i) => {
+                    if (cell.mine) {
+                        cell.el.classList.add('xp-ms-revealed');
+                        cell.el.disabled = true;
+                        if (i === clickedI) {
+                            cell.el.textContent = '💣';
+                            cell.el.classList.add('xp-ms-hit');
+                        } else if (!cell.flagged) {
+                            cell.el.textContent = '💣';
+                        }
+                    } else if (cell.flagged && !cell.mine) {
+                        cell.el.textContent = '❌';
+                    }
+                });
+            };
+
+            // ── GAME WIN ─────────────────────────────────────
+            const triggerWin = () => {
+                stopTimer();
+                gameState = 'won';
+                faceBtn.textContent = '😎';
+                // Flag all remaining mines
+                board.forEach(cell => {
+                    if (cell.mine && !cell.flagged) {
+                        cell.flagged = true;
+                        cell.el.textContent = '🚩';
+                    }
+                });
+                flagCount = totalMines;
+                mineCounter.textContent = pad3(0);
+                saveBest(diffKey, timerVal);
+                updateRecords();
+            };
+
+            // ── INIT GAME ──────────────────────────────────── 
+            const initGame = (key) => {
+                diffKey = key;
+                stopTimer();
+                timerVal = 0;
+                flagCount = 0;
+                firstClick = true;
+                gameState = 'idle';
+                faceBtn.textContent = '🙂';
+
+                const cfg = DIFFICULTIES[key];
+                rows = cfg.rows;
+                cols = cfg.cols;
+                totalMines = cfg.mines;
+
+                mineCounter.textContent = pad3(totalMines);
+                timerEl.textContent = '000';
+
+                // Build board data
+                board = Array.from({ length: rows * cols }, (_, i) => ({
+                    mine: false,
+                    revealed: false,
+                    flagged: false,
+                    adj: 0,
+                    el: null,
+                }));
+
+                // Build grid DOM
+                gridEl.innerHTML = '';
+                gridEl.style.gridTemplateColumns = `repeat(${cols}, 16px)`;
+
+                board.forEach((cell, i) => {
+                    const r = Math.floor(i / cols), c = i % cols;
+                    const el = document.createElement('button');
+                    el.className = 'xp-ms-cell';
+                    el.title = '';
+                    cell.el = el;
+
+                    // Left click: reveal
+                    el.addEventListener('click', () => {
+                        if (gameState === 'won' || gameState === 'lost') return;
+                        if (cell.flagged || cell.revealed) return;
+
+                        // First click: place mines then start timer
+                        if (firstClick) {
+                            firstClick = false;
+                            placeMines(i);
+                            gameState = 'playing';
+                            startTimer();
+                        }
+
+                        if (cell.mine) {
+                            triggerLoss(i);
+                            return;
+                        }
+
+                        revealCell(i);
+
+                        if (checkWin()) triggerWin();
+                    });
+
+                    // Right click: flag
+                    el.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        if (gameState === 'won' || gameState === 'lost') return;
+                        if (cell.revealed) return;
+                        if (!cell.flagged && flagCount >= totalMines) return;
+
+                        cell.flagged = !cell.flagged;
+                        el.textContent = cell.flagged ? '🚩' : '';
+                        flagCount += cell.flagged ? 1 : -1;
+                        mineCounter.textContent = pad3(totalMines - flagCount);
+                    });
+
+                    // Face: 😮 while pressing
+                    el.addEventListener('mousedown', () => {
+                        if (gameState === 'playing' || gameState === 'idle') faceBtn.textContent = '😮';
+                    });
+                    el.addEventListener('mouseup', () => {
+                        if (gameState === 'playing' || gameState === 'idle') faceBtn.textContent = '🙂';
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        if (gameState === 'playing' || gameState === 'idle') faceBtn.textContent = '🙂';
+                    });
+
+                    gridEl.appendChild(el);
+                });
+
+                // Update menu checks
+                document.querySelectorAll('.xp-ms-drop-item[data-diff]').forEach(el => {
+                    el.classList.toggle('xp-ms-drop-checked', el.dataset.diff === key);
+                });
+
+                updateRecords();
+            };
+
+            // ── FACE BUTTON (new game) ───────────────────────
+            faceBtn.onclick = () => initGame(diffKey);
+
+            // ── BUILD MENU ────────────────────────────────────
+            const gameMenu = makeMenu('Jogo', [
+                { label: 'Novo Jogo', action: () => initGame(diffKey) },
+                '---',
+                { label: 'Iniciante',     action: () => initGame('beginner') },
+                { label: 'Intermediário', action: () => initGame('intermediate') },
+                { label: 'Especialista',  action: () => initGame('expert') },
+                '---',
+                { label: 'Limpar Recordes', action: () => {
+                    localStorage.removeItem(LS_KEY);
+                    updateRecords();
+                }},
+            ]);
+            // Tag each diff item so we can update checked state
+            const diffLabels = ['Iniciante', 'Intermediário', 'Especialista'];
+            const diffKeys   = ['beginner', 'intermediate', 'expert'];
+            gameMenu.querySelectorAll('.xp-ms-drop-item').forEach(el => {
+                const idx2 = diffLabels.indexOf(el.textContent);
+                if (idx2 >= 0) el.dataset.diff = diffKeys[idx2];
+            });
+
+            menuBar.appendChild(gameMenu);
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.xp-ms-dropdown--open').forEach(d => d.classList.remove('xp-ms-dropdown--open'));
+            });
+
+            wrap.appendChild(menuBar);
+            wrap.appendChild(msHeader);
+            wrap.appendChild(gridEl);
+            wrap.appendChild(recordsEl);
+
+            // Start on beginner by default
+            initGame('beginner');
+
             return wrap;
         },
 
@@ -3601,7 +3906,7 @@ NUTTERTOOLS - Armas Pesadas
             paint: { w: '500px', h: '420px' },
             earth: { w: '600px', h: '380px' },
             calculator: { w: '260px', h: '340px' },
-            minesweeper: { w: '300px', h: '360px' },
+            minesweeper: { w: '220px' },
             burningrom: { w: '480px', h: '420px' },
             messenger: { w: '480px', h: '380px' },
             winamp: { w: '280px', h: '580px' },

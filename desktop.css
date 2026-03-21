@@ -1517,11 +1517,9 @@
     color: #008;
 }
 
-/* ── MINESWEEPER MOCK ─────────────────────── */
+/* ── MINESWEEPER ─────────────────────────────── */
 .xp-minesweeper {
     background: #c0c0c0;
-    height: 100%;
-    padding: 10px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -1529,34 +1527,118 @@
     border-top: 2px solid #fff;
     border-right: 2px solid #808080;
     border-bottom: 2px solid #808080;
+    overflow: auto;
+    user-select: none;
 }
 
+/* ── Menu bar ── */
+.xp-ms-menubar {
+    display: flex;
+    background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+    flex-shrink: 0;
+}
+
+.xp-ms-menu-wrap {
+    position: relative;
+}
+
+.xp-ms-menu-btn {
+    background: none;
+    border: none;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    padding: 2px 6px;
+    cursor: pointer;
+    color: #000;
+}
+
+.xp-ms-menu-btn:hover,
+.xp-ms-menu-btn:active {
+    background: #000080;
+    color: #fff;
+}
+
+.xp-ms-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #c0c0c0;
+    border: 1px solid #808080;
+    border-top: none;
+    z-index: 9999;
+    min-width: 150px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+
+.xp-ms-dropdown--open {
+    display: block;
+}
+
+.xp-ms-drop-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    padding: 3px 20px 3px 24px;
+    cursor: pointer;
+    color: #000;
+    white-space: nowrap;
+    position: relative;
+}
+
+.xp-ms-drop-item:hover {
+    background: #000080;
+    color: #fff;
+}
+
+.xp-ms-drop-checked::before {
+    content: '✔';
+    position: absolute;
+    left: 6px;
+    font-size: 10px;
+}
+
+.xp-ms-separator {
+    height: 1px;
+    background: #808080;
+    margin: 2px 4px;
+}
+
+/* ── Header (counters + face) ── */
 .xp-ms-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #c0c0c0;
-    border: 2px inset #fff;
-    border-right-color: #dfdfdf;
-    border-bottom-color: #dfdfdf;
-    padding: 4px 6px;
-    margin-bottom: 10px;
+    border: 3px inset #808080;
+    border-left-color: #fff;
+    border-top-color: #fff;
+    padding: 6px 8px;
+    margin: 6px;
+    flex-shrink: 0;
 }
 
 .xp-ms-counter {
     background: #000;
     color: #f00;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 22px;
-    padding: 2px 4px;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    font-size: 24px;
+    padding: 2px 5px;
     line-height: 1;
-    border: 1px inset #808080;
+    border: 2px inset #808080;
+    min-width: 3ch;
+    letter-spacing: 2px;
 }
 
 .xp-ms-face {
     width: 26px;
     height: 26px;
-    font-size: 14px;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1566,6 +1648,7 @@
     border-bottom-color: #808080;
     cursor: pointer;
     padding: 0;
+    line-height: 1;
 }
 
 .xp-ms-face:active {
@@ -1574,35 +1657,80 @@
     border-bottom-color: #fff;
 }
 
+/* ── Grid ── */
 .xp-ms-grid {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    flex-grow: 1;
-    border: 2px inset #fff;
-    border-right-color: #dfdfdf;
-    border-bottom-color: #dfdfdf;
+    margin: 0 6px 6px 6px;
+    border: 3px inset #808080;
+    border-left-color: #fff;
+    border-top-color: #fff;
     background: #808080;
+    gap: 0;
+    flex-shrink: 0;
 }
 
 .xp-ms-cell {
+    width: 16px;
+    height: 16px;
     background: #c0c0c0;
-    border: 2px outset #fff;
+    border: 2px solid #fff;
     border-right-color: #808080;
     border-bottom-color: #808080;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
+    font-family: 'Tahoma', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    padding: 0;
+    line-height: 1;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
-.xp-ms-cell:active,
-.xp-ms-revealed {
+.xp-ms-cell:active:not(:disabled) {
     border: 1px solid #808080;
-    border-right-color: #dfdfdf;
-    border-bottom-color: #dfdfdf;
     background: #c0c0c0;
+}
+
+.xp-ms-revealed {
+    border: 1px solid #808080 !important;
+    background: #c0c0c0 !important;
+    cursor: default;
+}
+
+.xp-ms-hit {
+    background: #ff0000 !important;
+}
+
+/* ── Records panel ── */
+.xp-ms-records {
+    border-top: 1px solid #808080;
+    padding: 5px 8px;
+    background: #c0c0c0;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.xp-ms-rec-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #000080;
+}
+
+.xp-ms-rec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1px 0;
+    color: #000;
+}
+
+.xp-ms-rec-val {
+    font-family: 'Share Tech Mono', monospace;
+    color: #800000;
+    font-weight: bold;
 }
 
 /* ── PAINT MOCK ─────────────────────── */
