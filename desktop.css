@@ -1520,15 +1520,22 @@
 /* ── MINESWEEPER ─────────────────────────────── */
 .xp-minesweeper {
     background: #c0c0c0;
-    display: flex;
+    overflow: auto;
+    user-select: none;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.xp-ms-content {
+    display: inline-flex;
     flex-direction: column;
+    width: fit-content;
     box-sizing: border-box;
     border-left: 2px solid #fff;
     border-top: 2px solid #fff;
     border-right: 2px solid #808080;
     border-bottom: 2px solid #808080;
-    overflow: auto;
-    user-select: none;
+    background: #c0c0c0;
 }
 
 /* ── Menu bar ── */

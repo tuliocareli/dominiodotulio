@@ -2179,10 +2179,13 @@
                 document.querySelectorAll('.xp-ms-dropdown--open').forEach(d => d.classList.remove('xp-ms-dropdown--open'));
             });
 
-            wrap.appendChild(menuBar);
-            wrap.appendChild(msHeader);
-            wrap.appendChild(gridEl);
-            wrap.appendChild(recordsEl);
+            // Inner wrapper keeps the game layout compact regardless of window size
+            const gameContent = h('div', { class: 'xp-ms-content' });
+            gameContent.appendChild(menuBar);
+            gameContent.appendChild(msHeader);
+            gameContent.appendChild(gridEl);
+            gameContent.appendChild(recordsEl);
+            wrap.appendChild(gameContent);
 
             // Start on beginner by default
             initGame('beginner');
