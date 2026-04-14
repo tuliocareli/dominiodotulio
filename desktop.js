@@ -4285,7 +4285,10 @@ NUTTERTOOLS - Armas Pesadas
             delete maximized[id];
         } else {
             maximized[id] = { left: w.style.left, top: w.style.top, width: w.style.width, height: w.style.height };
-            Object.assign(w.style, { left: '0px', top: '0px', width: '100%', height: 'calc(100% - 40px)' });
+            const area = document.getElementById('xpDesktopArea');
+            const areaH = area ? area.clientHeight + 'px' : '100%';
+            const areaW = area ? area.clientWidth + 'px' : '100%';
+            Object.assign(w.style, { left: '0px', top: '0px', width: areaW, height: areaH });
         }
     }
 
