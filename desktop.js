@@ -56,6 +56,7 @@
         { id: 'doom', icon: 'jogosicon/doom_classic.ico', label: 'doom.exe' },
         { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
         { id: 'readme', icon: '📄', label: 'README.txt' },
+        { id: 'userflow', icon: '📄', label: 'User Flow and Documentation.txt' },
         { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
         { id: 'bsod', icon: '💽', label: 'Limpar_Cache_Rapido.exe' },
         { id: 'meus_projetos', icon: '📁', label: 'Meus Projetos' },
@@ -3075,6 +3076,209 @@ Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).`;
                     flex: '1', width: '100%', resize: 'none', border: 'none', padding: '12px',
                     fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', lineHeight: '1.2',
                     outline: 'none', color: '#000', background: '#fff', overflow: 'hidden'
+                }
+            }, text);
+
+            wrap.appendChild(menu);
+            wrap.appendChild(textarea);
+            return wrap;
+        },
+
+        userflow: () => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' } });
+
+            const menu = h('div', { style: { display: 'flex', gap: '10px', padding: '2px 8px', background: '#ece9d8', borderBottom: '1px solid #aca899', fontSize: '11px', fontFamily: 'Tahoma' } });
+            ['Arquivo', 'Editar', 'Formatar', 'Exibir', 'Ajuda'].forEach(m => {
+                menu.appendChild(h('span', { style: { cursor: 'pointer' } }, m));
+            });
+
+            const text = `================================================================================
+  TC UNDERGROUND — USER FLOW & DOCUMENTATION
+  Domain Expansion Interface v1.0
+  tuliocareli.com/underground
+================================================================================
+
+  "Este é o meu laboratório digital.
+   Um ambiente seguro para experimentos de interface,
+   integrações complexas de API e brincadeiras visuais
+   que seriam arriscadas demais para o portfólio principal."
+
+                                                         — Túlio Careli
+
+
+================================================================================
+  1. SITEMAP
+================================================================================
+
+  [PÁGINA PRINCIPAL — index.html]
+  │
+  ├── INTRO: Domain Expansion (tela cheia animada, auto-fecha em 3.5s)
+  │
+  ├── HEADER
+  │   ├── Logo TC Underground
+  │   ├── Terminal typewriter (loop com frases do sistema)
+  │   ├── Botão >> VOLTAR AO PORTFÓLIO → tuliocareli.com
+  │   └── Botão INICIAR → abre o TC Underground OS
+  │
+  ├── SIDEBAR ESQUERDA
+  │   ├── TulioAmp (player de música simulado)
+  │   │   ├── Equalizer interativo (faders arrastáveis)
+  │   │   └── Playlist com 11 faixas
+  │   ├── Banner YouTube (link → @Fonzarelli23)
+  │   └── Spotify // Now Playing (widget mock animado)
+  │
+  ├── CONTEÚDO CENTRAL
+  │   ├── Message Log (texto descritivo do lab)
+  │   ├── Painel: O QUE ESTOU ASSISTINDO (grid de imagens)
+  │   ├── Painel: O QUE ESTOU LENDO (grid de capas de livros)
+  │   └── Painel: O QUE ESTOU OUVINDO (grid de artistas)
+  │
+  ├── SIDEBAR DIREITA
+  │   ├── THPS Score Widget (placar animado estilo Tony Hawk)
+  │   ├── Links Sociais: Steam / Letterboxd / Enjoei
+  │   ├── GIF Pokemon // Now Roaming
+  │   └── GIF Gato // Companion
+  │
+  ├── FOOTER
+  │   ├── Logo + links (Steam, Letterboxd, YouTube)
+  │   ├── Status do sistema (online/Spotify)
+  │   ├── Relógio em tempo real (HH:MM:SS)
+  │   └── Botão INICIAR (alternativo) → abre o TC Underground OS
+  │
+  └── CLIPPY HELPER (📎 — aparece após 10s sem o OS aberto)
+
+
+================================================================================
+  2. USER FLOW — TC UNDERGROUND OS (Desktop Simulado)
+================================================================================
+
+  ENTRADA NO OS:
+  ─────────────
+  Usuário clica em [INICIAR] (header ou footer)
+       │
+       ▼
+  SFX: startup.mp3 toca
+       │
+       ▼
+  Desktop XP-style é montado (lazy mount — só renderiza 1 vez)
+       │
+       ▼
+  Grade de ícones exibida + Taskbar + Relógio do sistema
+       │
+       ▼
+  Clippy OS (📎) aparece com dica contextual
+
+
+  ÍCONES DO DESKTOP (clique duplo para abrir janela):
+  ────────────────────────────────────────────────────
+  🖥️  Meu Computador → Disco Local / CD-ROM / Impressora / Monitor
+  🌐  TC Explorer → abas: THUG (2003), YouTube 2007, Orkut, Jogos Online,
+                          NFS UG2 (2004), Cartoon Network (2004)
+  🎧  Tulioamp → player WinAmp-style (modo desktop)
+  🎨  Tulio Paint → canvas de pintura interativo
+  🌎  Tulio Earth → globo interativo
+  💿  Tulio Burning ROM → simulação de gravação de CD
+  💬  Tulio Messenger → chat com Túlio AI (Gemini) — MSN-style
+  📝  TulioPad → bloco de notas editável
+  🎬  Tulio Media Player → Windows Media Player style
+  🖼️  Imagens → galeria/visualizador
+  📟  Calculadora → funcional
+  💣  Campo Minado → Minesweeper jogável
+  ☎️  TulioNet 56K → simulação de conexão discada com som DTMF
+  🍋  TulioShare PRO → LimeWire/eMule mockup
+  🚀  Internet_Acelerator.exe → "vírus" falso, ghost trail ao arrastar
+  doom.exe → Doom clássico
+  ⬛  terminal.exe → terminal hacker animado
+  📄  README.txt → apresentação do sistema
+  📄  User Flow and Documentation.txt → este arquivo
+  📄  GTA_Cheats.txt → lista de cheats
+  💽  Limpar_Cache_Rapido.exe → BSOD falso
+  📁  Meus Projetos → links do portfólio
+  🗑️  Lixeira
+  📂  mysterious_folder (SECRETO — aparece após N interações)
+
+  SAÍDA DO OS:
+  ─────────────
+  [Iniciar] → [Desligar] → SFX shutdown.mp3 → Desktop desmontado
+
+
+================================================================================
+  3. TECNOLOGIAS UTILIZADAS
+================================================================================
+
+  FRONTEND
+  ────────
+  HTML5 + CSS3 + JavaScript Vanilla (ES6+)
+  CSS: style.css, desktop.css, apps.css, thps.css
+  JS:  desktop.js (OS), script.js (página principal)
+
+  Canvas API — starfield + matrix rain (intro e header)
+  Drag & Drop manual — janelas arrastáveis sem libs
+  requestAnimationFrame — animações contínuas
+  localStorage — scraps do Orkut persistidos
+  Web Audio API — SFX e tons DTMF do TulioNet
+  CSS Custom Properties — sistema de design neon/retrô
+
+  BACKEND / DEPLOY
+  ────────────────
+  Plataforma: Vercel (Serverless Functions)
+  Runtime:    Node.js 24.x
+  Entry:      api/chat.js
+
+  Analytics:  Vercel Web Analytics (sem cookies)
+
+
+================================================================================
+  4. APIs E INTEGRAÇÕES
+================================================================================
+
+  GOOGLE GEMINI API
+  ─────────────────
+  Propósito : Chat com o "Túlio AI" no Tulio Messenger
+  Pacote    : @google/generative-ai ^0.21.0
+  Modelo    : gemini-flash-latest
+  Endpoint  : POST /api/chat
+  Auth      : GEMINI_API_KEY (env var Vercel — nunca exposta)
+  Persona   : Túlio Careli, designer de BH, MSN 2005, anti-jailbreak
+
+  YOUTUBE IFRAME API
+  ──────────────────
+  Propósito : Vídeos do @Fonzarelli23 no TC Explorer (aba YouTube 2007)
+  SDK       : https://www.youtube.com/iframe_api (lazy load)
+  Auth      : Pública (iframe embed)
+
+  WAYBACK MACHINE / INTERNET ARCHIVE
+  ────────────────────────────────────
+  Propósito : Sites históricos no TC Explorer
+  Sites     : THUG (2003), NFS UG2 (2004), Cartoon Network BR (2004)
+  Método    : iframe → web.archive.org
+
+  RUFFLE (Flash Emulator)
+  ───────────────────────
+  Propósito : Rodar arquivos .SWF no browser moderno
+  Apps      : BuddyPoke, TG Motocross 2, BMX Stunts, Create a Ride
+  CDN       : https://unpkg.com/@ruffle-rs/ruffle
+  Limitação : AS3 sem servidor original → modo "fantasma" parcial
+
+  LOCALSTORAGE
+  ────────────
+  Propósito : Persistir scraps do Orkut simulado
+  Chave     : "orkut_scraps" → JSON Array
+
+
+================================================================================
+  FIM DO DOCUMENTO
+  TC UNDERGROUND // Domain Expansion Interface v1.0
+  © 2005 TULIOCARELI.COM — TODOS OS DIREITOS RESERVADOS
+================================================================================`;
+
+            const textarea = h('textarea', {
+                readonly: true,
+                spellcheck: 'false',
+                style: {
+                    flex: '1', width: '100%', resize: 'none', border: 'none', padding: '12px',
+                    fontFamily: '"Courier New", Courier, monospace', fontSize: '12px', lineHeight: '1.3',
+                    outline: 'none', color: '#000', background: '#fff', overflowY: 'auto'
                 }
             }, text);
 
