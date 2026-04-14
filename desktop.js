@@ -136,28 +136,33 @@
     const revealSecretFolder = () => {
         if (secretsRevealed) return;
         secretsRevealed = true;
-        const secretIcon = { id: 'mysterious_folder', icon: '📂', label: 'mysterious_folder' };
-        ICONS.push(secretIcon);
+        const secretIc = { id: 'mysterious_folder', icon: '📂', label: 'mysterious_folder' };
+        ICONS.push(secretIc);
 
-        const grid = document.querySelector('.xp-icons-grid');
-        if (grid) {
+        const area = document.getElementById('xpDesktopArea');
+        if (area) {
+            // Place near bottom-right, slightly random
+            const x = Math.max(0, area.clientWidth - 120 - Math.floor(Math.random() * 80));
+            const y = Math.max(0, area.clientHeight - 120 - Math.floor(Math.random() * 60));
+
             const iconEl = h('div', {
                 class: 'xp-desk-icon xp-icon--secret',
-                style: { opacity: '0', transition: 'opacity 1s ease' },
+                style: { position: 'absolute', left: x + 'px', top: y + 'px', opacity: '0', transition: 'opacity 1s ease' },
                 ondblclick: () => openWin('mysterious_folder'),
                 onclick: e => {
                     document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
-                    e.currentTarget.classList.add('xp-icon--selected');
+                    iconEl.classList.add('xp-icon--selected');
                 },
             },
                 h('div', { class: 'xp-di-img' }, '📂'),
                 h('div', { class: 'xp-di-label' }, 'mysterious_folder'),
             );
-            grid.appendChild(iconEl);
+            area.appendChild(iconEl);
             setTimeout(() => iconEl.style.opacity = '1', 100);
             clippySpeak("Você encontrou algo que não deveria...");
         }
     };
+
 
     // ── HELPERS ───────────────────────────────────────
     const h = (tag, attrs = {}, ...children) => {
@@ -252,6 +257,77 @@
         Object.values(openWindows).forEach(w => w && w.classList.remove('xp-win--active'));
         win.classList.add('xp-win--active');
         updateTaskbar();
+    }
+
+    // ── RESIZE WINDOW ────────────────────────────────
+    const ASPECT_RATIO_APPS = new Set(['earth', 'doom', 'keen', 'paint']);
+
+    function makeResizable(win, id) {
+        const DIRS = ['n','ne','e','se','s','sw','w','nw'];
+        let resizing = false, dir = '', startX = 0, startY = 0;
+        let origLeft = 0, origTop = 0, origW = 0, origH = 0;
+        const keepRatio = ASPECT_RATIO_APPS.has(id);
+        const MIN_W = 260, MIN_H = 180;
+
+        DIRS.forEach(d => {
+            const handle = document.createElement('div');
+            handle.className = `xp-resize xp-resize-${d}`;
+            win.appendChild(handle);
+
+            handle.addEventListener('mousedown', e => {
+                e.preventDefault();
+                e.stopPropagation();
+                focusWin(win);
+                dir = d;
+                resizing = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                origLeft = parseInt(win.style.left) || 0;
+                origTop  = parseInt(win.style.top)  || 0;
+                origW    = win.offsetWidth;
+                origH    = win.offsetHeight;
+                document.body.style.userSelect = 'none';
+                win.style.transition = 'none';
+            });
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (!resizing) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            let newW = origW, newH = origH, newL = origLeft, newT = origTop;
+            const ratio = origW / origH;
+
+            if (dir.includes('e')) newW = Math.max(MIN_W, origW + dx);
+            if (dir.includes('s')) newH = Math.max(MIN_H, origH + dy);
+            if (dir.includes('w')) {
+                newW = Math.max(MIN_W, origW - dx);
+                newL = origLeft + (origW - newW);
+            }
+            if (dir.includes('n')) {
+                newH = Math.max(MIN_H, origH - dy);
+                newT = origTop + (origH - newH);
+            }
+
+            if (keepRatio) {
+                // Lock ratio using the dominant axis
+                if (dir === 'e' || dir === 'w') { newH = newW / ratio; }
+                else if (dir === 's' || dir === 'n') { newW = newH * ratio; }
+                else { newH = newW / ratio; } // corners: width drives
+            }
+
+            win.style.width  = newW + 'px';
+            win.style.height = newH + 'px';
+            win.style.left   = newL + 'px';
+            win.style.top    = newT + 'px';
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!resizing) return;
+            resizing = false;
+            dir = '';
+            document.body.style.userSelect = '';
+        });
     }
 
     // ── WINDOW CONTENT BUILDERS ──────────────────────
@@ -4175,6 +4251,7 @@ NUTTERTOOLS - Armas Pesadas
 
         // Animação de abertura
         requestAnimationFrame(() => win.classList.add('xp-win--open'));
+        makeResizable(win, id);
     }
 
     function closeWin(id) {
@@ -4406,41 +4483,152 @@ NUTTERTOOLS - Armas Pesadas
         desk.appendChild(boot);
 
         // WALLPAPER AREA
-        const area = h('div', { id: 'xpDesktopArea' },
-            // ICONS GRID
-            h('div', { class: 'xp-icons-grid' }, ...ICONS.map(ic => {
-                const el = h('div', {
-                    class: 'xp-desk-icon',
-                    ondblclick: () => openWin(ic.id),
-                    ontouchstart: function (e) {
-                        const now = Date.now();
-                        const last = this.dataset.lastTap || 0;
-                        if (now - last < 300) {
-                            openWin(ic.id);
-                            e.preventDefault();
-                        }
-                        this.dataset.lastTap = now;
-                    },
-                    onclick: e => {
-                        document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
-                        e.currentTarget.classList.add('xp-icon--selected');
-                    },
-                });
+        const area = h('div', { id: 'xpDesktopArea' });
 
-                const deskIcon = (ic.icon && ic.icon.includes('.'))
-                    ? h('img', { src: ic.icon, style: { width: '32px', height: '32px' } })
-                    : ic.icon;
+        // ── ICON POSITIONS ──────────────────────────────
+        // Initial layout: column-first, 84px grid, 12px margin
+        const ICON_COL_W = 84;
+        const ICON_ROW_H = 84;
+        const ICON_MARGIN = 12;
+        const iconPositions = {}; // id -> { x, y }
 
-                el.appendChild(h('div', { class: 'xp-di-img' }, deskIcon));
-                el.appendChild(h('div', { class: 'xp-di-label' }, ic.label));
+        function initIconPosition(ic, index) {
+            if (iconPositions[ic.id]) return iconPositions[ic.id];
+            const col = Math.floor(index * ICON_ROW_H / (window.innerHeight - 40 - ICON_MARGIN * 2));
+            const row = index - col * Math.floor((window.innerHeight - 40 - ICON_MARGIN * 2) / ICON_ROW_H);
+            const x = ICON_MARGIN + col * ICON_COL_W;
+            const y = ICON_MARGIN + row * ICON_ROW_H;
+            iconPositions[ic.id] = { x, y };
+            return iconPositions[ic.id];
+        }
 
-                if (ic.id === 'readme') {
-                    el.classList.add('xp-icon--readme');
+        function makeIconDraggable(el, ic) {
+            let dragging = false;
+            let startMouseX = 0, startMouseY = 0;
+            let startElX = 0, startElY = 0;
+            let hasMoved = false;
+
+            const onStart = (clientX, clientY) => {
+                dragging = true;
+                hasMoved = false;
+                startMouseX = clientX;
+                startMouseY = clientY;
+                startElX = parseInt(el.style.left) || 0;
+                startElY = parseInt(el.style.top) || 0;
+                el.style.transition = 'none';
+                el.style.zIndex = 9999;
+                document.body.style.userSelect = 'none';
+            };
+
+            const onMove = (clientX, clientY) => {
+                if (!dragging) return;
+                const dx = clientX - startMouseX;
+                const dy = clientY - startMouseY;
+                if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+                    if (!hasMoved) el.classList.add('xp-icon--dragging');
+                    hasMoved = true;
                 }
+                if (!hasMoved) return;
 
-                return el;
-            }))
-        );
+                const desk = document.getElementById('xpDesktopArea');
+                if (!desk) return;
+                const maxX = desk.clientWidth - el.offsetWidth;
+                const maxY = desk.clientHeight - el.offsetHeight;
+                el.style.left = Math.max(0, Math.min(maxX, startElX + dx)) + 'px';
+                el.style.top  = Math.max(0, Math.min(maxY, startElY + dy)) + 'px';
+            };
+
+            const onEnd = () => {
+                if (!dragging) return;
+                dragging = false;
+                el.style.zIndex = '';
+                el.classList.remove('xp-icon--dragging');
+                document.body.style.userSelect = '';
+
+                if (hasMoved) {
+                    // Snap to nearest 84px grid cell
+                    const x = Math.round(parseInt(el.style.left) / ICON_COL_W) * ICON_COL_W;
+                    const y = Math.round(parseInt(el.style.top)  / ICON_ROW_H) * ICON_ROW_H;
+                    el.style.left = Math.max(0, x) + 'px';
+                    el.style.top  = Math.max(0, y) + 'px';
+                    iconPositions[ic.id] = { x: parseInt(el.style.left), y: parseInt(el.style.top) };
+                }
+            };
+
+            // Mouse
+            el.addEventListener('mousedown', e => {
+                if (e.button !== 0) return;
+                e.stopPropagation();
+                onStart(e.clientX, e.clientY);
+            });
+            window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
+            window.addEventListener('mouseup', e => {
+                if (dragging) {
+                    onEnd();
+                    if (!hasMoved) {
+                        // Was a click — still fire selection
+                        document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
+                        el.classList.add('xp-icon--selected');
+                    }
+                }
+            });
+
+            // Touch
+            el.addEventListener('touchstart', e => {
+                onStart(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+            window.addEventListener('touchmove', e => {
+                if (dragging) { onMove(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }
+            }, { passive: false });
+            window.addEventListener('touchend', onEnd);
+        }
+
+        function buildIconEl(ic, index) {
+            const pos = initIconPosition(ic, index);
+            const el = h('div', {
+                class: 'xp-desk-icon',
+                style: {
+                    position: 'absolute',
+                    left: pos.x + 'px',
+                    top:  pos.y + 'px',
+                },
+                ondblclick: (e) => {
+                    if (hasDragged(el)) return; // don't open if just dragging
+                    openWin(ic.id);
+                },
+                ontouchstart: function (e) {
+                    const now = Date.now();
+                    const last = this.dataset.lastTap || 0;
+                    if (now - last < 300) { openWin(ic.id); e.preventDefault(); }
+                    this.dataset.lastTap = now;
+                },
+                onclick: e => {
+                    document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
+                    el.classList.add('xp-icon--selected');
+                },
+            });
+
+            const deskIcon = (ic.icon && ic.icon.includes('.'))
+                ? h('img', { src: ic.icon, style: { width: '32px', height: '32px' } })
+                : ic.icon;
+
+            el.appendChild(h('div', { class: 'xp-di-img' }, deskIcon));
+            el.appendChild(h('div', { class: 'xp-di-label' }, ic.label));
+
+            if (ic.id === 'readme') el.classList.add('xp-icon--readme');
+
+            makeIconDraggable(el, ic);
+            return el;
+        }
+
+        // Helper to detect if element just finished a drag
+        function hasDragged(el) {
+            return el._wasDragged === true;
+        }
+
+        ICONS.forEach((ic, i) => area.appendChild(buildIconEl(ic, i)));
+
+
 
         desk.appendChild(area);
 

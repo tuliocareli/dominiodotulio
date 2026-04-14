@@ -243,16 +243,8 @@
 }
 
 /* ── DESKTOP ICONS ────────────────────────────────── */
-.xp-icons-grid {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 12px;
-    align-content: flex-start;
-    max-height: calc(100% - var(--xp-taskbar-h));
-    pointer-events: none;
-    /* let children handle clicks */
+#xpDesktopArea {
+    position: relative; /* already set above, but icons need this */
 }
 
 .xp-desk-icon {
@@ -267,7 +259,15 @@
     border: 1px solid transparent;
     pointer-events: all;
     user-select: none;
+    box-sizing: border-box;
 }
+
+.xp-desk-icon.xp-icon--dragging {
+    opacity: 0.75;
+    cursor: grabbing;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
 
 .xp-desk-icon:hover {
     background: rgba(255, 255, 255, 0.15);
@@ -314,6 +314,23 @@
     transform: scale(0.94);
     transition: opacity 0.12s ease, transform 0.12s ease;
 }
+
+/* ── RESIZE HANDLES ──────────────────────────────── */
+.xp-resize {
+    position: absolute;
+    z-index: 10;
+}
+/* Edges */
+.xp-resize-n  { top: -3px;    left: 6px;    right: 6px;  height: 6px; cursor: n-resize; }
+.xp-resize-s  { bottom: -3px; left: 6px;    right: 6px;  height: 6px; cursor: s-resize; }
+.xp-resize-w  { left: -3px;   top: 6px;     bottom: 6px; width: 6px;  cursor: w-resize; }
+.xp-resize-e  { right: -3px;  top: 6px;     bottom: 6px; width: 6px;  cursor: e-resize; }
+/* Corners */
+.xp-resize-nw { top: -3px;    left: -3px;   width: 12px;  height: 12px; cursor: nw-resize; }
+.xp-resize-ne { top: -3px;    right: -3px;  width: 12px;  height: 12px; cursor: ne-resize; }
+.xp-resize-sw { bottom: -3px; left: -3px;   width: 12px;  height: 12px; cursor: sw-resize; }
+.xp-resize-se { bottom: -3px; right: -3px;  width: 12px;  height: 12px; cursor: se-resize; }
+
 
 .xp-win.xp-win--open {
     opacity: 1;
