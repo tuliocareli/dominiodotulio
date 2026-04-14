@@ -1,0 +1,326 @@
+================================================================================
+  TC UNDERGROUND — USER FLOW & DOCUMENTATION
+  Domain Expansion Interface v1.0
+  tuliocareli.com/underground
+================================================================================
+
+  "Este é o meu laboratório digital.
+   Um ambiente seguro para experimentos de interface,
+   integrações complexas de API e brincadeiras visuais
+   que seriam arriscadas demais para o portfólio principal."
+
+                                                         — Túlio Careli
+
+
+================================================================================
+  1. SITEMAP
+================================================================================
+
+  [PÁGINA PRINCIPAL — index.html]
+  │
+  ├── INTRO: Domain Expansion (tela cheia animada, auto-fecha em 3.5s)
+  │
+  ├── HEADER
+  │   ├── Logo TC Underground
+  │   ├── Terminal typewriter (loop com frases do sistema)
+  │   ├── Botão >> VOLTAR AO PORTFÓLIO → tuliocareli.com
+  │   └── Botão INICIAR → abre o TC Underground OS
+  │
+  ├── SIDEBAR ESQUERDA
+  │   ├── TulioAmp (player de música simulado)
+  │   │   ├── Equalizer interativo (faders arrastáveis)
+  │   │   └── Playlist com 11 faixas
+  │   ├── Banner YouTube (link → @Fonzarelli23)
+  │   └── Spotify // Now Playing (widget mock animado)
+  │
+  ├── CONTEÚDO CENTRAL
+  │   ├── Message Log (texto descritivo do lab)
+  │   ├── Painel: O QUE ESTOU ASSISTINDO (grid de imagens)
+  │   ├── Painel: O QUE ESTOU LENDO (grid de capas de livros)
+  │   └── Painel: O QUE ESTOU OUVINDO (grid de artistas)
+  │
+  ├── SIDEBAR DIREITA
+  │   ├── THPS Score Widget (placar animado estilo Tony Hawk)
+  │   ├── Links Sociais:
+  │   │   ├── Steam → steamcommunity.com/id/tuliocareli
+  │   │   ├── Letterboxd → letterboxd.com/tuliocareli
+  │   │   └── Enjoei → enjoei.com.br/@tulio23
+  │   ├── GIF Pokemon // Now Roaming
+  │   └── GIF Gato // Companion
+  │
+  ├── FOOTER
+  │   ├── Logo + links (Steam, Letterboxd, YouTube)
+  │   ├── Status do sistema (online/Spotify)
+  │   ├── Relógio em tempo real (HH:MM:SS)
+  │   └── Botão INICIAR (alternativo) → abre o TC Underground OS
+  │
+  └── CLIPPY HELPER (📎 — aparece após 10s sem o OS aberto)
+
+
+================================================================================
+  2. USER FLOW — TC UNDERGROUND OS (Desktop Simulado)
+================================================================================
+
+  ENTRADA NO OS:
+  ─────────────
+  Usuário clica em [INICIAR] (header ou footer)
+       │
+       ▼
+  SFX: startup.mp3 toca
+       │
+       ▼
+  Desktop XP-style é montado (lazy mount — só renderiza 1 vez)
+       │
+       ▼
+  Grade de ícones exibida + Taskbar + Relógio do sistema
+       │
+       ▼
+  Clippy OS (📎) aparece com dica contextual
+
+
+  ÍCONES DO DESKTOP (clique duplo para abrir janela):
+  ────────────────────────────────────────────────────
+  🖥️  Meu Computador
+       ├── Disco Local (C:)    → não faz nada
+       ├── CD-ROM (D:)         → abre janela de músicas (lista de faixas)
+       ├── Impressora HP       → não faz nada
+       └── Monitor LG          → não faz nada
+
+  🌐  TC Explorer (Internet Explorer mockup com abas)
+       ├── Tony Hawk Underground     → Wayback Machine (site original 2003)
+       ├── YouTube (2007)            → Mockup interativo do YT antigo
+       │    └── Vídeos do canal @Fonzarelli23 via YouTube Iframe API
+       ├── Orkut                     → Mockup interativo do Orkut
+       │    ├── Tela de Login
+       │    ├── Perfil do Túlio (scraps persistidos em localStorage)
+       │    └── App: BuddyPoke (Flash via Ruffle)
+       ├── Jogos Online              → Mockup do jogosonline.com.br
+       │    └── Jogos Flash jogáveis (Ruffle):
+       │         ├── TG Motocross 2
+       │         ├── BMX Stunts
+       │         └── Create a Ride
+       ├── NFS Underground 2         → Wayback Machine (site original 2004)
+       └── Cartoon Network           → Wayback Machine (site original 2004)
+
+  🎧  Tulioamp
+       └── Player WinAmp-style com playlist, EQ e visualizador (modo desktop)
+
+  🎨  Tulio Paint
+       └── Tela de pintura interativa (tipo MS Paint)
+
+  🌎  Tulio Earth
+       └── Globo interativo (estilo Google Earth antigo)
+
+  💿  Tulio Burning ROM
+       └── Simulação de gravação de CD com progresso
+
+  💬  Tulio Messenger
+       └── Chat com o Túlio AI (integração Gemini) — MSN-style
+
+  📝  TulioPad
+       └── Bloco de notas com texto editável
+
+  🎬  Tulio Media Player
+       └── Player de mídia (Windows Media Player style)
+
+  🖼️  Imagens
+       └── Visualizador de imagens (type: grid/galeria)
+
+  📟  Calculadora
+       └── Calculadora funcional
+
+  💣  Campo Minado
+       └── Minesweeper jogável
+
+  ☎️  TulioNet 56K
+       └── Simulação de conexão discada com sons e progresso
+
+  🍋  TulioShare PRO
+       └── LimeWire/eMule mockup
+
+  🚀  Internet_Acelerator.exe
+       └── "Vírus" falso — congela a janela (efeito ghost trail ao arrastar)
+
+  doom.exe
+       └── Doom clássico via iframe / embed
+
+  ⬛  terminal.exe
+       └── Terminal hacker animado
+
+  📄  README.txt
+       └── Abre texto de apresentação do sistema (Notepad-style)
+
+  📄  GTA_Cheats.txt
+       └── Lista de cheats do GTA (Notepad-style)
+
+  💽  Limpar_Cache_Rapido.exe
+       └── Tela azul da morte (BSOD) com reinicialização falsa
+
+  📁  Meus Projetos
+       └── Pasta com links para projetos do portfólio
+
+  🗑️  Lixeira
+       └── Lixeira vazia (efeito de esvaziamento ao clicar)
+
+  📂  mysterious_folder (SECRETO)
+       └── Aparece após N interações — conteúdo surpresa
+
+
+  COMPORTAMENTO DAS JANELAS:
+  ──────────────────────────
+  - Arrastáveis (mouse + touch)
+  - Minimizar / Restaurar via Taskbar
+  - Maximizar / Restaurar
+  - Fechar (X)
+  - Múltiplas janelas abertas simultaneamente
+  - Z-index dinâmico (janela clicada vai para frente)
+  - SFX de abertura, erro e fechamento
+
+
+  SAÍDA DO OS:
+  ─────────────
+  Usuário clica em [Iniciar] → [Desligar] na taskbar do OS
+       │
+       ▼
+  SFX: shutdown.mp3 toca
+       │
+       ▼
+  Tela de shutdown com animação
+       │
+       ▼
+  Desktop é desmontado — retorna à página principal
+
+
+================================================================================
+  3. TECNOLOGIAS UTILIZADAS
+================================================================================
+
+  FRONTEND
+  ────────
+  Linguagem:   HTML5 + CSS3 + JavaScript (Vanilla ES6+)
+  Arquivo CSS: style.css, desktop.css, apps.css, thps.css
+  Arquivos JS: desktop.js (OS completo), script.js (página principal)
+
+  Principais técnicas:
+  - Canvas API (animações de intro: starfield + matrix + header rain)
+  - Drag & Drop manual (janelas do OS, sem libs externas)
+  - requestAnimationFrame (animadores de canvas e visualizador)
+  - localStorage (scraps do Orkut persistidos no browser)
+  - Z-index dinâmico (gerenciamento de foco de janelas)
+  - Micro-interações e SFX com Web Audio API (arquivos .mp3 em /sons)
+  - CSS Custom Properties (sistema de design, tema neon/retrô)
+  - CSS Animations (glitch loop, domain rings, THPS score, etc.)
+
+
+  BACKEND / DEPLOY
+  ────────────────
+  Plataforma:  Vercel (Serverless Functions)
+  Runtime:     Node.js 24.x
+  Entry:       api/chat.js (Vercel Serverless Function)
+
+  CORS configurado para:
+  - https://tuliocareli.com
+  - http://localhost:3000
+  - http://127.0.0.1:5500
+  - *.dominiodotulio.vercel.app (regex preview deploys)
+
+
+  ANALYTICS
+  ─────────
+  Ferramenta:  Vercel Web Analytics
+  Método:      Snippet vanilla JS (/_vercel/insights/script.js)
+  Dados:       Pageviews, referral, Web Vitals — sem cookies.
+
+
+================================================================================
+  4. APIs E INTEGRAÇÕES
+================================================================================
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  GOOGLE GEMINI API                                                       │
+  │  Propósito:   Alimenta o "Túlio AI" no app Tulio Messenger (MSN-style)  │
+  │  Pacote:      @google/generative-ai ^0.21.0                             │
+  │  Modelo:      gemini-flash-latest                                        │
+  │  Endpoint:    POST /api/chat                                             │
+  │  Auth:        GEMINI_API_KEY (env var na Vercel, nunca exposta)          │
+  │  System Prompt: personagem "Túlio", designer de BH, digitando como      │
+  │                 se fosse MSN 2005, com travas contra jailbreak           │
+  │  Limitações:  Respostas curtas (máx 3 frases), assuntos restritos       │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  YOUTUBE IFRAME API                                                       │
+  │  Propósito:   Reprodução de vídeos do canal @Fonzarelli23 dentro do      │
+  │               TC Explorer (aba "YouTube 2007")                           │
+  │  Carregamento: Lazy — script injetado no DOM só quando a aba é aberta    │
+  │  SDK:         https://www.youtube.com/iframe_api                         │
+  │  Auth:        Pública (sem API key — uso apenas de iframe embed)         │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  WAYBACK MACHINE / INTERNET ARCHIVE                                       │
+  │  Propósito:   Carregar versões históricas de sites dentro do TC Explorer  │
+  │  Sites:       Tony Hawk Underground (2003), NFS Underground 2 (2004),    │
+  │               Cartoon Network BR (2004)                                  │
+  │  Método:      iframe apontando para URLs do web.archive.org              │
+  │  Auth:        Pública (sem autenticação)                                 │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  RUFFLE (Flash Player Emulator)                                           │
+  │  Propósito:   Emular e rodar arquivos .SWF (Flash) no browser moderno   │
+  │  Apps usados: BuddyPoke (Orkut), TG Motocross 2, BMX Stunts,            │
+  │               Create a Ride, Doom (versão flash)                        │
+  │  Carregamento: https://unpkg.com/@ruffle-rs/ruffle                      │
+  │  Auth:        CDN pública, sem autenticação                              │
+  │  Limitação:   Texturas ActionScript 3 sem servidor original → alguns     │
+  │               SWFs carregam parcialmente ("modo fantasma")               │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  SPOTIFY WIDGET (MOCK)                                                    │
+  │  Propósito:   Exibir "Now Playing" na sidebar                            │
+  │  Método:      Rotação automática de faixas hardcoded (sem API real)      │
+  │  Nota:        Widget de aparência mas sem integração OAuth com Spotify.  │
+  │               Futuras versões poderiam usar Spotify Web API + token.     │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  LOCALSTORAGE                                                             │
+  │  Propósito:   Persistir "scraps" (recados) do Orkut simulado            │
+  │  Chave:       "orkut_scraps"                                             │
+  │  Formato:     JSON Array → [{ text: string, date: string }]             │
+  │  Escopo:      Browser do usuário — limpar cache apaga os scraps          │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+  5. ESTRUTURA DE ARQUIVOS (RESUMO)
+================================================================================
+
+  /
+  ├── index.html               — Entrada principal, layout 3 colunas
+  ├── style.css                — Design system base, variáveis CSS, layout
+  ├── desktop.css              — Estilos do OS (janelas, taskbar, ícones)
+  ├── apps.css                 — Estilos internos dos apps (TC Explorer, etc.)
+  ├── thps.css                 — Score widget estilo Tony Hawk
+  ├── script.js                — Animações e widgets da página principal
+  ├── desktop.js               — Engine completa do TC Underground OS
+  ├── package.json             — Node 24.x + @google/generative-ai
+  ├── api/
+  │   └── chat.js              — Serverless Function: chat com Túlio AI
+  ├── sons/                    — SFX do OS (.mp3)
+  ├── imagens/                 — Assets visuais gerais
+  ├── videosjogos/             — Vídeos dos jogos (.mp4)
+  ├── jogoflash/               — Arquivos SWF (Flash)
+  ├── jogosicon/               — Ícones dos jogos
+  ├── o que estou lendo/       — Capas dos livros
+  ├── o que estou ouvindo/     — Capas dos artistas
+  └── imagens do que estou vendo no momento/  — Pôsteres de séries/animes
+
+
+================================================================================
+  FIM DO DOCUMENTO
+  TC UNDERGROUND // Domain Expansion Interface v1.0
+  © 2005 TULIOCARELI.COM — TODOS OS DIREITOS RESERVADOS
+================================================================================
