@@ -4494,13 +4494,33 @@ NUTTERTOOLS - Armas Pesadas
 
         function initIconPosition(ic, index) {
             if (iconPositions[ic.id]) return iconPositions[ic.id];
-            const col = Math.floor(index * ICON_ROW_H / (window.innerHeight - 40 - ICON_MARGIN * 2));
-            const row = index - col * Math.floor((window.innerHeight - 40 - ICON_MARGIN * 2) / ICON_ROW_H);
+
+            // readme and userflow: fixed top-right corner
+            if (ic.id === 'readme' || ic.id === 'userflow') {
+                const slot = ic.id === 'readme' ? 0 : 1;
+                const x = window.innerWidth - ICON_COL_W - ICON_MARGIN;
+                const y = ICON_MARGIN + slot * ICON_ROW_H;
+                iconPositions[ic.id] = { x, y };
+                return iconPositions[ic.id];
+            }
+
+            // All other icons: column-first from top-left
+            // Exclude readme/userflow from the sequential index
+            const regularIds = new Set(['readme', 'userflow']);
+            const regularIcons = ICONS.filter(i => !regularIds.has(i.id));
+            const rIdx = regularIcons.findIndex(i => i.id === ic.id);
+            const safeIdx = rIdx >= 0 ? rIdx : index;
+
+            const availH = window.innerHeight - 40 - ICON_MARGIN * 2; // minus taskbar + margins
+            const iconsPerCol = Math.max(1, Math.floor(availH / ICON_ROW_H));
+            const col = Math.floor(safeIdx / iconsPerCol);
+            const row = safeIdx % iconsPerCol;
             const x = ICON_MARGIN + col * ICON_COL_W;
             const y = ICON_MARGIN + row * ICON_ROW_H;
             iconPositions[ic.id] = { x, y };
             return iconPositions[ic.id];
         }
+
 
         function makeIconDraggable(el, ic) {
             let dragging = false;
