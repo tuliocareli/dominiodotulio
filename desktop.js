@@ -3269,7 +3269,6 @@ Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).`;
 ================================================================================
   FIM DO DOCUMENTO
   TC UNDERGROUND // Domain Expansion Interface v1.0
-  © 2005 TULIOCARELI.COM — TODOS OS DIREITOS RESERVADOS
 ================================================================================`;
 
             const content = h('div', {
