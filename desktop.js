@@ -3272,18 +3272,24 @@ Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).`;
   © 2005 TULIOCARELI.COM — TODOS OS DIREITOS RESERVADOS
 ================================================================================`;
 
-            const textarea = h('textarea', {
-                readonly: true,
-                spellcheck: 'false',
+            const content = h('div', {
                 style: {
-                    flex: '1', width: '100%', resize: 'none', border: 'none', padding: '12px',
-                    fontFamily: '"Courier New", Courier, monospace', fontSize: '12px', lineHeight: '1.3',
-                    outline: 'none', color: '#000', background: '#fff', overflowY: 'auto'
+                    padding: '12px',
+                    fontFamily: '"Courier New", Courier, monospace',
+                    fontSize: '12px',
+                    lineHeight: '1.4',
+                    color: '#000',
+                    background: '#fff',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    userSelect: 'text',
                 }
-            }, text);
+            });
+            content.textContent = text;
 
+            wrap.style.height = 'auto';
             wrap.appendChild(menu);
-            wrap.appendChild(textarea);
+            wrap.appendChild(content);
             return wrap;
         },
 
@@ -4119,6 +4125,7 @@ NUTTERTOOLS - Armas Pesadas
             winamp: { w: '280px', h: '580px' },
             wordpad: { w: '440px', h: '400px' },
             readme: { w: '440px', h: '340px' },
+            userflow: { w: '700px', h: '520px' },
             terminal: { w: '500px', h: '320px' },
             gta_cheats: { w: '440px', h: '400px' },
             tulionet: { w: '380px', h: '360px' },
@@ -4138,12 +4145,12 @@ NUTTERTOOLS - Armas Pesadas
 
         const deskArea = document.getElementById('xpDesktopArea');
 
-        // Center README on first open
-        if (id === 'readme' && deskArea) {
+        // Center README and userflow on first open
+        if ((id === 'readme' || id === 'userflow') && deskArea) {
             const wVal = parseInt(winW);
             const hVal = winH ? parseInt(winH) : 400;
-            startLeft = (deskArea.clientWidth - wVal) / 2;
-            startTop = (deskArea.clientHeight - hVal) / 2;
+            startLeft = Math.max(10, (deskArea.clientWidth - wVal) / 2);
+            startTop = Math.max(10, (deskArea.clientHeight - hVal) / 2);
         } else if (deskArea && deskArea.clientWidth < 600) {
             // Mobile layout clamp limit
             startLeft = Math.max(10, (deskArea.clientWidth - parseInt(winW)) / 2 + (offset % 10)); // centralized ish + small offset
