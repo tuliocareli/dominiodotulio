@@ -3336,12 +3336,13 @@ Esse sistema foi construído para ser o lar das minhas idéias estranhas, experi
 
 Algumas coisas funcionam e outras se quebram, e é intencional.
 
+Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).
+
+--------------------------------------------------------------------------------
 NOVIDADES DESTA VERSÃO:
 - Tulio Earth: Agora com Globo 3D (Cesium) e Street View Real (Mapillary).
 - doom.exe: Emulação x86 real rodando Doom 1 (Shareware).
-- Tulio Messenger: IA Túlio atualizada para Gemini Flash.
-
-Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).`;
+- Tulio Messenger: IA Túlio atualizada para Gemini Flash.`;
 
             const textarea = h('textarea', {
                 readonly: true,
