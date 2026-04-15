@@ -1332,35 +1332,145 @@
         earth: () => {
             const wrap = h('div', { class: 'xp-earth' });
             const sidebar = h('div', { class: 'xp-earth-sidebar' },
-                h('div', { class: 'xp-earth-title' }, '\ud83c\udf0e TULIO EARTH v1.0'),
+                h('div', { class: 'xp-earth-title' }, '\ud83c\udf0e TULIO EARTH v2.0'),
                 h('div', { class: 'xp-earth-search-label' }, 'Buscar local:'),
-                h('input', { type: 'text', class: 'xp-earth-search', placeholder: 'ex: S\u00e3o Paulo, BR...' }),
-                h('button', { class: 'xp-earth-btn' }, '\ud83d\udd0d Ir'),
+                h('input', { type: 'text', class: 'xp-earth-search', id: 'xp-earth-search', placeholder: 'ex: S\u00e3o Paulo, BR...' }),
+                h('button', { class: 'xp-earth-btn', id: 'xp-earth-search-btn' }, '\ud83d\udd0d Ir'),
                 h('hr', {}),
-                h('div', { class: 'xp-earth-coords', html: '\ud83d\udccd Lat: -23.5505\u00b0<br>\ud83d\udccd Lng: -46.6333\u00b0<br>\ud83d\udcc8 Alt: 800 km' }),
+                h('div', { class: 'xp-earth-coords', id: 'xp-earth-coords', html: '\ud83d\udccd Lat: --<br>\ud83d\udccd Lng: --<br>\ud83d\udcc8 Alt: --' }),
                 h('div', { class: 'xp-earth-zoom' },
-                    h('button', { class: 'xp-earth-btn' }, '+ Zoom'),
-                    h('button', { class: 'xp-earth-btn' }, '\u2212 Zoom'),
+                    h('button', { class: 'xp-earth-btn', id: 'xp-earth-zoom-in' }, '+ Zoom'),
+                    h('button', { class: 'xp-earth-btn', id: 'xp-earth-zoom-out' }, '\u2212 Zoom'),
                 ),
                 h('div', { class: 'xp-earth-layers' },
                     h('div', {}, '\ud83d\udda8 Camadas:'),
-                    ...['Sat\u00e9lite', 'Fronteiras', 'Relevo', 'Nuvens'].map(l =>
-                        h('label', { class: 'xp-earth-chk' },
-                            h('input', { type: 'checkbox', checked: true }),
-                            ' ' + l
-                        )
+                    h('label', { class: 'xp-earth-chk' },
+                        h('input', { type: 'checkbox', id: 'xp-earth-chk-relevo', checked: true }),
+                        ' Relevo 3D'
+                    ),
+                    h('label', { class: 'xp-earth-chk' },
+                        h('input', { type: 'checkbox', id: 'xp-earth-chk-atmosfera', checked: true }),
+                        ' Atmosfera Dinâmica'
                     )
                 ),
             );
-            const globe = h('div', { class: 'xp-earth-globe-wrap' },
-                h('div', { class: 'xp-earth-globe' },
-                    h('div', { class: 'xp-earth-globe-inner' }),
-                    h('div', { class: 'xp-earth-grid' }),
-                    h('div', { class: 'xp-earth-clouds' }),
-                )
-            );
+            const globeWrapperDiv = h('div', { class: 'xp-earth-globe-wrap', id: 'cesiumContainer' });
             wrap.appendChild(sidebar);
-            wrap.appendChild(globe);
+            wrap.appendChild(globeWrapperDiv);
+
+            let viewer = null;
+
+            wrap.onClose = () => {
+                if (viewer) {
+                    viewer.destroy();
+                    viewer = null;
+                }
+            };
+
+            // Initialize Cesium after a short delay so the container has physical dimensions
+            setTimeout(async () => {
+                try {
+                    const res = await fetch('/api/cesium');
+                    if (!res.ok) throw new Error('Falha ao buscar token');
+                    const data = await res.json();
+                    if (!data.token) throw new Error('Token ausente');
+
+                    Cesium.Ion.defaultAccessToken = data.token;
+
+                    viewer = new Cesium.Viewer(globeWrapperDiv, {
+                        terrain: Cesium.Terrain.fromWorldTerrain(),
+                        animation: false,
+                        timeline: false,
+                        baseLayerPicker: false,
+                        geocoder: false,
+                        homeButton: false,
+                        infoBox: false,
+                        sceneModePicker: false,
+                        navigationHelpButton: false,
+                        fullscreenButton: false,
+                        globe: new Cesium.Globe(Cesium.Ellipsoid.WGS84)
+                    });
+
+                    // Remove credit container to keep UI clean (optional, but good for custom OS)
+                    if (viewer.scene.frameState.creditDisplay) {
+                        const creditContainer = viewer.bottomContainer;
+                        if (creditContainer) creditContainer.style.display = 'none';
+                    }
+
+                    viewer.scene.globe.enableLighting = true; // Dynamic atmosphere
+
+                    // Coordinate Updates
+                    viewer.camera.moveEnd.addEventListener(() => {
+                        const cameraPosition = viewer.camera.positionCartographic;
+                        const lat = Cesium.Math.toDegrees(cameraPosition.latitude).toFixed(4);
+                        const lon = Cesium.Math.toDegrees(cameraPosition.longitude).toFixed(4);
+                        const alt = (cameraPosition.height / 1000).toFixed(1);
+                        const coordsDiv = wrap.querySelector('#xp-earth-coords');
+                        if (coordsDiv) {
+                            coordsDiv.innerHTML = `📍 Lat: ${lat}°<br>📍 Lng: ${lon}°<br>📈 Alt: ${alt} km`;
+                        }
+                    });
+
+                    // Search Functionality
+                    const searchBtn = wrap.querySelector('#xp-earth-search-btn');
+                    const searchInput = wrap.querySelector('#xp-earth-search');
+                    Object.assign(searchBtn, {
+                        onclick: async () => {
+                            const query = searchInput.value;
+                            if (!query) return;
+                            searchBtn.disabled = true;
+                            searchBtn.textContent = '...';
+                            try {
+                                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+                                const results = await response.json();
+                                if (results && results.length > 0) {
+                                    const loc = results[0];
+                                    viewer.camera.flyTo({
+                                        destination: Cesium.Cartesian3.fromDegrees(parseFloat(loc.lon), parseFloat(loc.lat), 15000)
+                                    });
+                                } else {
+                                    alert('Local não encontrado!');
+                                }
+                            } catch (e) {
+                                console.error('Geocode error:', e);
+                                alert('Erro na busca.');
+                            }
+                            searchBtn.disabled = false;
+                            searchBtn.textContent = '🔍 Ir';
+                        }
+                    });
+
+                    searchInput.onkeypress = (e) => {
+                        if (e.key === 'Enter') searchBtn.click();
+                    };
+
+                    // Zoom Controls
+                    wrap.querySelector('#xp-earth-zoom-in').onclick = () => {
+                        viewer.camera.zoomIn(viewer.camera.positionCartographic.height * 0.5);
+                    };
+                    wrap.querySelector('#xp-earth-zoom-out').onclick = () => {
+                        viewer.camera.zoomOut(viewer.camera.positionCartographic.height * 0.5);
+                    };
+
+                    // Layer Toggles
+                    wrap.querySelector('#xp-earth-chk-relevo').onchange = (e) => {
+                        if (e.target.checked) {
+                            viewer.scene.setTerrain(Cesium.Terrain.fromWorldTerrain());
+                        } else {
+                            viewer.scene.setTerrain(new Cesium.Terrain(new Cesium.EllipsoidTerrainProvider()));
+                        }
+                    };
+                    wrap.querySelector('#xp-earth-chk-atmosfera').onchange = (e) => {
+                        viewer.scene.globe.enableLighting = e.target.checked;
+                        viewer.scene.globe.showGroundAtmosphere = e.target.checked;
+                    };
+
+                } catch (err) {
+                    console.error('Cesium Load Error:', err);
+                    globeWrapperDiv.innerHTML = `<div style="padding: 20px; color: red;">Erro ao inicializar globo: ${err.message}</div>`;
+                }
+            }, 300);
+
             return wrap;
         },
 
