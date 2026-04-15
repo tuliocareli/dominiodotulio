@@ -1412,11 +1412,8 @@
                         globe: new Cesium.Globe(Cesium.Ellipsoid.WGS84)
                     });
 
-                    // Remove credit container to keep UI clean (optional, but good for custom OS)
-                    if (viewer.scene.frameState.creditDisplay) {
-                        const creditContainer = viewer.bottomContainer;
-                        if (creditContainer) creditContainer.style.display = 'none';
-                    }
+                    // Keep credit container to respect Cesium terms of use
+
 
                     viewer.scene.globe.enableLighting = true; // Dynamic atmosphere
                     
