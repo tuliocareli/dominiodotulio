@@ -3336,6 +3336,11 @@ Esse sistema foi construído para ser o lar das minhas idéias estranhas, experi
 
 Algumas coisas funcionam e outras se quebram, e é intencional.
 
+NOVIDADES DESTA VERSÃO:
+- Tulio Earth: Agora com Globo 3D (Cesium) e Street View Real (Mapillary).
+- doom.exe: Emulação x86 real rodando Doom 1 (Shareware).
+- Tulio Messenger: IA Túlio atualizada para Gemini Flash.
+
 Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).`;
 
             const textarea = h('textarea', {
@@ -3404,7 +3409,10 @@ Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).`;
   │
   ├── SIDEBAR DIREITA
   │   ├── THPS Score Widget (placar animado estilo Tony Hawk)
-  │   ├── Links Sociais: Steam / Letterboxd / Enjoei
+  │   ├── Links Sociais:
+  │   │   ├── Steam → steamcommunity.com/id/tuliocareli
+  │   │   ├── Letterboxd → letterboxd.com/tuliocareli
+  │   │   └── Enjoei → enjoei.com.br/@tulio23
   │   ├── GIF Pokemon // Now Roaming
   │   └── GIF Gato // Companion
   │
@@ -3440,31 +3448,123 @@ Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).`;
 
   ÍCONES DO DESKTOP (clique duplo para abrir janela):
   ────────────────────────────────────────────────────
-  🖥️  Meu Computador → Disco Local / CD-ROM / Impressora / Monitor
-  🌐  TC Explorer → abas: THUG (2003), YouTube 2007, Orkut, Jogos Online,
-                          NFS UG2 (2004), Cartoon Network (2004)
-  🎧  Tulioamp → player WinAmp-style (modo desktop)
-  🎨  Tulio Paint → canvas de pintura interativo
-  🌎  Tulio Earth → globo interativo
-  💿  Tulio Burning ROM → simulação de gravação de CD
-  💬  Tulio Messenger → chat com Túlio AI (Gemini) — MSN-style
-  📝  TulioPad → bloco de notas editável
-  🎬  Tulio Media Player → Windows Media Player style
-  🖼️  Imagens → galeria/visualizador
-  📟  Calculadora → funcional
-  💣  Campo Minado → Minesweeper jogável
-  ☎️  TulioNet 56K → simulação de conexão discada com som DTMF
-  🍋  TulioShare PRO → LimeWire/eMule mockup
-  🚀  Internet_Acelerator.exe → "vírus" falso, ghost trail ao arrastar
-  doom.exe → Doom clássico
-  ⬛  terminal.exe → terminal hacker animado
-  📄  README.txt → apresentação do sistema
-  📄  User Flow and Documentation.txt → este arquivo
-  📄  GTA_Cheats.txt → lista de cheats
-  💽  Limpar_Cache_Rapido.exe → BSOD falso
-  📁  Meus Projetos → links do portfólio
+  ÍCONES DO DESKTOP (clique duplo para abrir janela):
+  ────────────────────────────────────────────────────
+  🖥️  Meu Computador
+       ├── Disco Local (C:)    → não faz nada
+       ├── CD-ROM (D:)         → abre janela de músicas (lista de faixas)
+       ├── Impressora HP       → não faz nada
+       └── Monitor LG          → não faz nada
+
+  🌐  TC Explorer (Internet Explorer mockup com abas)
+       ├── Tony Hawk Underground     → Wayback Machine (site original 2003)
+       ├── YouTube (2007)            → Mockup interativo do YT antigo
+       │    └── Vídeos do canal @Fonzarelli23 via YouTube Iframe API
+       ├── Orkut                     → Mockup interativo do Orkut
+       │    ├── Tela de Login
+       │    ├── Perfil do Túlio (scraps persistidos em localStorage)
+       │    └── App: BuddyPoke (Flash via Ruffle)
+       ├── Jogos Online              → Mockup do jogosonline.com.br
+       │    └── Jogos Flash jogáveis (Ruffle):
+       │         ├── TG Motocross 2
+       │         ├── BMX Stunts
+       │         └── Create a Ride
+       ├── NFS Underground 2         → Wayback Machine (site original 2004)
+       └── Cartoon Network           → Wayback Machine (site original 2004)
+
+  🎧  Tulioamp
+       └── Player WinAmp-style com playlist, EQ e visualizador (modo desktop)
+
+  🎨  Tulio Paint
+       └── Tela de pintura interativa (tipo MS Paint)
+
+  🌎  Tulio Earth
+       ├── Globo 3D Interativo (CesiumJS)
+       ├── Sistema de relevo e atmosfera dinâmica
+       └── Street View Integrado (MapillaryJS)
+           └── Busca automática baseada no centro da visão do globo
+
+  💿  Tulio Burning ROM
+       └── Simulação de gravação de CD com progresso
+
+  💬  Tulio Messenger
+       └── Chat com o Túlio AI (integração Gemini) — MSN-style
+
+  📝  TulioPad
+       └── Bloco de notas com texto editável
+
+  🎬  Tulio Media Player
+       └── Player de mídia (Windows Media Player style)
+
+  🖼️  Imagens
+       └── Visualizador de imagens (type: grid/galeria)
+
+  📟  Calculadora
+       └── Calculadora funcional
+
+  💣  Campo Minado
+       └── Minesweeper jogável
+
+  ☎️  TulioNet 56K
+       └── Simulação de conexão discada com sons e progresso
+
+  🍋  TulioShare PRO
+       └── LimeWire/eMule mockup
+
+  🚀  Internet_Acelerator.exe
+       └── "Vírus" falso — congela a janela (efeito ghost trail ao arrastar)
+
+  doom.exe
+       └── Doom clássico operando via emulação x86 (js-dos)
+           └── Suporte a teclado e mouse (lock pointers)
+
+  ⬛  terminal.exe
+       └── Terminal hacker animado
+
+  📄  README.txt
+       └── Abre texto de apresentação do sistema (Notepad-style)
+
+  📄  User Flow and Documentation.txt
+       └── Este arquivo (User Flow & Tutorial)
+
+  📄  GTA_Cheats.txt
+       └── Lista de cheats do GTA (Notepad-style)
+
+  💽  Limpar_Cache_Rapido.exe
+       └── Tela azul da morte (BSOD) com reinicialização falsa
+
+  📁  Meus Projetos
+       └── Pasta com links para projetos do portfólio
+
   🗑️  Lixeira
-  📂  mysterious_folder (SECRETO — aparece após N interações)
+       └── Lixeira vazia (efeito de esvaziamento ao clicar)
+
+  📂  mysterious_folder (SECRETO)
+       └── Aparece após N interações — conteúdo surpresa
+
+
+  DETALHAMENTO DE FLUXOS COMPLEXOS:
+  ─────────────────────────────────
+
+  🌎 FLUXO TULIO EARTH (3D & Street View):
+  1. Usuário abre Tulio Earth.
+  2. CesiumJS inicializa o globo 3D usando o token Ion servido pela API.
+  3. Navegação: Usuário pode voar pelo mundo, ativar relevo 3D ou atmosfera.
+  4. Street View: Ao clicar em [Street View Aqui!]:
+     a. O sistema dispara um raio (Raycasting) do centro da tela para o globo.
+     b. Captura a coordenada exata de Latitude/Longitude onde o usuário está "olhando".
+     c. Consulta a API Mapillary V4 em busca de imagens de rua num raio de 50m.
+     d. Se encontrada, o MapillaryJS renderiza um overlay 360° dentro da própria janela.
+     e. Usuário pode navegar pela rua ou clicar em "Sair" para voltar ao globo.
+
+  🚀 FLUXO DOOM.EXE (Emulação em Browser):
+  1. Usuário clica duas vezes no doom.exe.
+  2. O sistema carrega dinamicamente a biblioteca js-dos.js (Kernel do DOSBox).
+  3. Monta o bundle "doom.jsdos" no sistema de arquivos virtual do WASM.
+  4. Inicializa o áudio via Web Audio API e captura os inputs de teclado/mouse.
+  5. Controles: Setas para mover, CTRL para atirar, Barra de Espaço para interagir.
+  6. Ao fechar a janela, o callback onClose força o encerramento da engine para
+     liberar CPU e memória RAM.
 
   SAÍDA DO OS:
   ─────────────
