@@ -1532,8 +1532,9 @@
                                 if (mlyViewer) {
                                     mlyViewer.remove();
                                 }
-                                mlyViewer = new Mapillary.Viewer({
-                                    apiClient: token,
+                                // MapillaryJS v4: global is 'mapillary' (lowercase), param is 'accessToken'
+                                mlyViewer = new mapillary.Viewer({
+                                    accessToken: token,
                                     container: mapillaryContainer,
                                     imageId: imageId,
                                 });
