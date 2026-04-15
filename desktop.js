@@ -1353,6 +1353,7 @@
                         ' Atmosfera Dinâmica'
                     )
                 ),
+                h('button', { class: 'xp-earth-btn', id: 'xp-earth-sv', style: { width: '100%', marginTop: '10px', background: 'linear-gradient(180deg, #ff9900, #cc7700)', borderColor: '#aa5500', fontWeight: 'bold' } }, '🚏 Street View Aqui!'),
             );
             const globeWrapperDiv = h('div', { class: 'xp-earth-globe-wrap', id: 'cesiumContainer' });
             wrap.appendChild(sidebar);
@@ -1464,6 +1465,13 @@
                         viewer.scene.globe.enableLighting = e.target.checked;
                         viewer.scene.globe.showGroundAtmosphere = e.target.checked;
                     };
+                    wrap.querySelector('#xp-earth-sv').onclick = () => {
+                        const cameraPosition = viewer.camera.positionCartographic;
+                        const lat = Cesium.Math.toDegrees(cameraPosition.latitude);
+                        const lon = Cesium.Math.toDegrees(cameraPosition.longitude);
+                        window.streetViewCoords = { lat, lon };
+                        openWin('streetview');
+                    };
 
                 } catch (err) {
                     console.error('Cesium Load Error:', err);
@@ -1474,6 +1482,62 @@
             return wrap;
         },
 
+        // ── STREET VIEW (MAPILLARY) ──────────────────────
+        streetview: () => {
+            const wrap = h('div', { class: 'xp-streetview', style: { width: '100%', height: '100%', display: 'flex', flexDirection: 'column' } });
+            
+            const header = h('div', { class: 'xp-sv-header', style: { padding: '5px', background: '#ece9d8', borderBottom: '1px solid #ACA899', display: 'flex', gap: '5px', alignItems: 'center', fontFamily: 'Tahoma', fontSize: '11px' } },
+                h('div', { id: 'xp-sv-status' }, '⏳ Carregando Street View...')
+            );
+            
+            const mapillaryContainer = h('div', { id: 'mapillaryContainer', style: { flex: 1, background: '#000' } });
+            wrap.appendChild(header);
+            wrap.appendChild(mapillaryContainer);
+            
+            let mly = null;
+            wrap.onClose = () => {
+                if (mly) {
+                    mly.remove();
+                    mly = null;
+                }
+            };
+
+            setTimeout(async () => {
+                try {
+                    const res = await fetch('/api/mapillary');
+                    const data = await res.json();
+                    if (!data.token) throw new Error('Token ausente');
+                    
+                    const token = data.token;
+                    const coords = window.streetViewCoords || { lon: -46.6333, lat: -23.5505 };
+                    
+                    header.querySelector('#xp-sv-status').innerText = `📡 Buscando imagens em Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lon.toFixed(4)}...`;
+                    
+                    const graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&near=${coords.lon},${coords.lat}&access_token=${token}&limit=1`);
+                    const graphData = await graphRes.json();
+                    
+                    if (graphData.data && graphData.data.length > 0) {
+                        const imageId = graphData.data[0].id;
+                        header.querySelector('#xp-sv-status').innerText = `✅ Imagem de rua carregada! Arraste para explorar.`;
+                        
+                        mly = new Mapillary.Viewer({
+                            apiClient: token,
+                            container: mapillaryContainer,
+                            imageId: imageId,
+                        });
+                        
+                        window.addEventListener('resize', () => { if (mly) mly.resize(); });
+                    } else {
+                        header.querySelector('#xp-sv-status').innerText = '❌ Erro: Nenhuma imagem de rua encontrada próxima a este lugar.';
+                    }
+                } catch(e) {
+                    header.querySelector('#xp-sv-status').innerText = '❌ Falha ao carregar o Mapillary Street View.';
+                    console.error(e);
+                }
+            }, 300);
+
+            return wrap;
+        },
 
         // ── TULIO BURNING ROM ─────────────
         burningrom: () => {
@@ -4303,6 +4367,7 @@ NUTTERTOOLS - Armas Pesadas
             ie: { w: '820px', h: '560px' },
             paint: { w: '500px', h: '420px' },
             earth: { w: '600px', h: '380px' },
+            streetview: { w: '640px', h: '400px' },
             calculator: { w: '260px', h: '340px' },
             minesweeper: { w: '220px' },
             burningrom: { w: '480px', h: '420px' },
