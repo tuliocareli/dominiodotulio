@@ -1521,7 +1521,15 @@
                             if (!data.token) throw new Error('Token ausente');
                             const token = data.token;
                             
-                            const graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&near=${coords.lon},${coords.lat}&access_token=${token}&limit=1`);
+                            // Mapillary V4 Graph API requires a bounding box, not near/point.
+                            // ~0.002 degrees is approx 222 meters radius
+                            const margin = 0.002;
+                            const min_lon = coords.lon - margin;
+                            const max_lon = coords.lon + margin;
+                            const min_lat = coords.lat - margin;
+                            const max_lat = coords.lat + margin;
+                            
+                            const graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&bbox=${min_lon},${min_lat},${max_lon},${max_lat}&access_token=${token}&limit=1`);
                             const graphData = await graphRes.json();
                             
                             if (graphData.data && graphData.data.length > 0) {
