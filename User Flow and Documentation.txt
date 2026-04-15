@@ -109,7 +109,10 @@
        └── Tela de pintura interativa (tipo MS Paint)
 
   🌎  Tulio Earth
-       └── Globo interativo (estilo Google Earth antigo)
+       ├── Globo 3D Interativo (CesiumJS)
+       ├── Sistema de relevo e atmosfera dinâmica
+       └── Street View Integrado (MapillaryJS)
+           └── Busca automática baseada no centro da visão do globo
 
   💿  Tulio Burning ROM
        └── Simulação de gravação de CD com progresso
@@ -142,7 +145,8 @@
        └── "Vírus" falso — congela a janela (efeito ghost trail ao arrastar)
 
   doom.exe
-       └── Doom clássico via iframe / embed
+       └── Doom clássico operando via emulação x86 (js-dos)
+           └── Suporte a teclado e mouse (lock pointers)
 
   ⬛  terminal.exe
        └── Terminal hacker animado
@@ -210,6 +214,7 @@
   - Micro-interações e SFX com Web Audio API (arquivos .mp3 em /sons)
   - CSS Custom Properties (sistema de design, tema neon/retrô)
   - CSS Animations (glitch loop, domain rings, THPS score, etc.)
+  - Raycasting de centro de câmera (CesiumJS → MapillaryJS)
 
 
   BACKEND / DEPLOY
@@ -291,6 +296,31 @@
   │  Chave:       "orkut_scraps"                                             │
   │  Formato:     JSON Array → [{ text: string, date: string }]             │
   │  Escopo:      Browser do usuário — limpar cache apaga os scraps          │
+  └─────────────────────────────────────────────────────────────────────────┘
+  
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  CESIUM ION API (CESIUMJS)                                              │
+  │  Propósito:   Motor do Tulio Earth (Mapa 3D, Terreno, Imagens)          │
+  │  Token:       Servido via /api/cesium (env var CESIUM_ION_TOKEN)        │
+  │  Recursos:    Bing Maps Aerial, Cesium World Terrain, Sun Lighting       │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  MAPILLARY V4 GRAPH API                                                 │
+  │  Propósito:   Street View de código aberto integrado ao Earth           │
+  │  Token:       Servido via /api/mapillary (env var MAPILLARY_CLIENT_TOKEN) │
+  │  Lógica:      Busca por proximidade (lat/lng/radius=50) baseada no      │
+  │               ponto central de colisão da câmera do Cesium.             │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  JS-DOS (Lib: Emulator Core)                                            │
+  │  Propósito:   Engine para rodar doom.exe (Doom 1 Shareware)             │
+  │  Método:      Execução de bundle .jsdos via WebAssembly em canvas       │
+  │  Kernel:      js-dos.js / js-dos.wasm local em /libs/js-dos             │
+  │  Controles:   Setas=Mover, CTRL=Tirar, Space=Abrir Portas               │
+  │  Memória:     Callback onClose() mata a instância ci.exit() para        │
+  │               evitar loops de áudio e CPU após fechar a janela.         │
   └─────────────────────────────────────────────────────────────────────────┘
 
 
