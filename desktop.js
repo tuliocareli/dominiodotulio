@@ -1355,16 +1355,36 @@
                 ),
                 h('button', { class: 'xp-earth-btn', id: 'xp-earth-sv', style: { width: '100%', marginTop: '10px', background: 'linear-gradient(180deg, #ff9900, #cc7700)', borderColor: '#aa5500', fontWeight: 'bold' } }, '🚏 Street View Aqui!'),
             );
-            const globeWrapperDiv = h('div', { class: 'xp-earth-globe-wrap', id: 'cesiumContainer' });
+            
+            const rightWrap = h('div', { class: 'xp-earth-globe-wrap', style: { position: 'relative', overflow: 'hidden' } });
+            const cesiumContainer = h('div', { style: { width: '100%', height: '100%' } });
+            
+            const mapillaryWrap = h('div', { style: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'none', flexDirection: 'column', zIndex: 10, background: '#000' } });
+            const svHeader = h('div', { class: 'xp-sv-header', style: { padding: '5px', background: '#ece9d8', borderBottom: '1px solid #ACA899', display: 'flex', gap: '5px', alignItems: 'center', fontFamily: 'Tahoma', fontSize: '11px', justifyContent: 'space-between' } },
+                h('div', { id: 'xp-sv-status' }, '⏳ Carregando Street View...'),
+                h('button', { class: 'xp-btn', style: { padding: '2px 8px' }, onclick: () => { mapillaryWrap.style.display = 'none'; if(mlyViewer) { mlyViewer.remove(); mlyViewer=null; } } }, '✖ Sair do Street View')
+            );
+            const mapillaryContainer = h('div', { style: { flex: 1, background: '#000' } });
+            mapillaryWrap.appendChild(svHeader);
+            mapillaryWrap.appendChild(mapillaryContainer);
+            
+            rightWrap.appendChild(cesiumContainer);
+            rightWrap.appendChild(mapillaryWrap);
+
             wrap.appendChild(sidebar);
-            wrap.appendChild(globeWrapperDiv);
+            wrap.appendChild(rightWrap);
 
             let viewer = null;
+            let mlyViewer = null;
 
             wrap.onClose = () => {
                 if (viewer) {
                     viewer.destroy();
                     viewer = null;
+                }
+                if (mlyViewer) {
+                    mlyViewer.remove();
+                    mlyViewer = null;
                 }
             };
 
@@ -1378,7 +1398,7 @@
 
                     Cesium.Ion.defaultAccessToken = data.token;
 
-                    viewer = new Cesium.Viewer(globeWrapperDiv, {
+                    viewer = new Cesium.Viewer(cesiumContainer, {
                         terrain: Cesium.Terrain.fromWorldTerrain(),
                         animation: false,
                         timeline: false,
@@ -1399,13 +1419,37 @@
                     }
 
                     viewer.scene.globe.enableLighting = true; // Dynamic atmosphere
+                    
+                    // Coordinate Updates Function
+                    window.getLookAtCoords = function() {
+                        const canvas = viewer.canvas;
+                        if (!canvas) return null;
+                        const windowPosition = new Cesium.Cartesian2(canvas.clientWidth / 2, canvas.clientHeight / 2);
+                        const pickRay = viewer.camera.getPickRay(windowPosition);
+                        const globePosition = viewer.scene.globe.pick(pickRay, viewer.scene);
+                        if (globePosition) {
+                            const cartographic = Cesium.Cartographic.fromCartesian(globePosition);
+                            return {
+                                lat: Cesium.Math.toDegrees(cartographic.latitude),
+                                lon: Cesium.Math.toDegrees(cartographic.longitude),
+                                alt: cartographic.height
+                            };
+                        }
+                        const cameraPosition = viewer.camera.positionCartographic;
+                        return {
+                            lat: Cesium.Math.toDegrees(cameraPosition.latitude),
+                            lon: Cesium.Math.toDegrees(cameraPosition.longitude),
+                            alt: cameraPosition.height
+                        };
+                    };
 
                     // Coordinate Updates
                     viewer.camera.moveEnd.addEventListener(() => {
-                        const cameraPosition = viewer.camera.positionCartographic;
-                        const lat = Cesium.Math.toDegrees(cameraPosition.latitude).toFixed(4);
-                        const lon = Cesium.Math.toDegrees(cameraPosition.longitude).toFixed(4);
-                        const alt = (cameraPosition.height / 1000).toFixed(1);
+                        const coords = window.getLookAtCoords();
+                        if (!coords) return;
+                        const lat = coords.lat.toFixed(4);
+                        const lon = coords.lon.toFixed(4);
+                        const alt = (Math.max(0, coords.alt) / 1000).toFixed(1);
                         const coordsDiv = wrap.querySelector('#xp-earth-coords');
                         if (coordsDiv) {
                             coordsDiv.innerHTML = `📍 Lat: ${lat}°<br>📍 Lng: ${lon}°<br>📈 Alt: ${alt} km`;
@@ -1465,74 +1509,47 @@
                         viewer.scene.globe.enableLighting = e.target.checked;
                         viewer.scene.globe.showGroundAtmosphere = e.target.checked;
                     };
-                    wrap.querySelector('#xp-earth-sv').onclick = () => {
-                        const cameraPosition = viewer.camera.positionCartographic;
-                        const lat = Cesium.Math.toDegrees(cameraPosition.latitude);
-                        const lon = Cesium.Math.toDegrees(cameraPosition.longitude);
-                        window.streetViewCoords = { lat, lon };
-                        openWin('streetview');
+                    wrap.querySelector('#xp-earth-sv').onclick = async () => {
+                        const coords = window.getLookAtCoords();
+                        
+                        mapillaryWrap.style.display = 'flex';
+                        svHeader.querySelector('#xp-sv-status').innerText = `📡 Buscando imagens em Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lon.toFixed(4)}...`;
+                        
+                        try {
+                            const res = await fetch('/api/mapillary');
+                            const data = await res.json();
+                            if (!data.token) throw new Error('Token ausente');
+                            const token = data.token;
+                            
+                            const graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&near=${coords.lon},${coords.lat}&access_token=${token}&limit=1`);
+                            const graphData = await graphRes.json();
+                            
+                            if (graphData.data && graphData.data.length > 0) {
+                                const imageId = graphData.data[0].id;
+                                svHeader.querySelector('#xp-sv-status').innerText = `✅ Imagem de rua carregada! Arraste para explorar.`;
+                                
+                                if (mlyViewer) {
+                                    mlyViewer.remove();
+                                }
+                                mlyViewer = new Mapillary.Viewer({
+                                    apiClient: token,
+                                    container: mapillaryContainer,
+                                    imageId: imageId,
+                                });
+                                // trigger resize if needed
+                                setTimeout(() => mlyViewer.resize(), 100);
+                            } else {
+                                svHeader.querySelector('#xp-sv-status').innerText = '❌ Erro: Nenhuma imagem de rua encontrada próxima a este lugar.';
+                            }
+                        } catch(e) {
+                            svHeader.querySelector('#xp-sv-status').innerText = '❌ Falha ao carregar o Mapillary Street View.';
+                            console.error(e);
+                        }
                     };
 
                 } catch (err) {
                     console.error('Cesium Load Error:', err);
-                    globeWrapperDiv.innerHTML = `<div style="padding: 20px; color: red;">Erro ao inicializar globo: ${err.message}</div>`;
-                }
-            }, 300);
-
-            return wrap;
-        },
-
-        // ── STREET VIEW (MAPILLARY) ──────────────────────
-        streetview: () => {
-            const wrap = h('div', { class: 'xp-streetview', style: { width: '100%', height: '100%', display: 'flex', flexDirection: 'column' } });
-            
-            const header = h('div', { class: 'xp-sv-header', style: { padding: '5px', background: '#ece9d8', borderBottom: '1px solid #ACA899', display: 'flex', gap: '5px', alignItems: 'center', fontFamily: 'Tahoma', fontSize: '11px' } },
-                h('div', { id: 'xp-sv-status' }, '⏳ Carregando Street View...')
-            );
-            
-            const mapillaryContainer = h('div', { id: 'mapillaryContainer', style: { flex: 1, background: '#000' } });
-            wrap.appendChild(header);
-            wrap.appendChild(mapillaryContainer);
-            
-            let mly = null;
-            wrap.onClose = () => {
-                if (mly) {
-                    mly.remove();
-                    mly = null;
-                }
-            };
-
-            setTimeout(async () => {
-                try {
-                    const res = await fetch('/api/mapillary');
-                    const data = await res.json();
-                    if (!data.token) throw new Error('Token ausente');
-                    
-                    const token = data.token;
-                    const coords = window.streetViewCoords || { lon: -46.6333, lat: -23.5505 };
-                    
-                    header.querySelector('#xp-sv-status').innerText = `📡 Buscando imagens em Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lon.toFixed(4)}...`;
-                    
-                    const graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&near=${coords.lon},${coords.lat}&access_token=${token}&limit=1`);
-                    const graphData = await graphRes.json();
-                    
-                    if (graphData.data && graphData.data.length > 0) {
-                        const imageId = graphData.data[0].id;
-                        header.querySelector('#xp-sv-status').innerText = `✅ Imagem de rua carregada! Arraste para explorar.`;
-                        
-                        mly = new Mapillary.Viewer({
-                            apiClient: token,
-                            container: mapillaryContainer,
-                            imageId: imageId,
-                        });
-                        
-                        window.addEventListener('resize', () => { if (mly) mly.resize(); });
-                    } else {
-                        header.querySelector('#xp-sv-status').innerText = '❌ Erro: Nenhuma imagem de rua encontrada próxima a este lugar.';
-                    }
-                } catch(e) {
-                    header.querySelector('#xp-sv-status').innerText = '❌ Falha ao carregar o Mapillary Street View.';
-                    console.error(e);
+                    rightWrap.innerHTML = `<div style="padding: 20px; color: red;">Erro ao inicializar globo: ${err.message}</div>`;
                 }
             }, 300);
 
@@ -4367,7 +4384,6 @@ NUTTERTOOLS - Armas Pesadas
             ie: { w: '820px', h: '560px' },
             paint: { w: '500px', h: '420px' },
             earth: { w: '600px', h: '380px' },
-            streetview: { w: '640px', h: '400px' },
             calculator: { w: '260px', h: '340px' },
             minesweeper: { w: '220px' },
             burningrom: { w: '480px', h: '420px' },
