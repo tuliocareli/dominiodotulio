@@ -1523,8 +1523,15 @@
                             if (!data.token) throw new Error('Token ausente');
                             const token = data.token;
                             
-                            // Mapillary V4 Graph API: lat/lng/radius (max 50m), not bbox nor close_to
-                            const graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&lat=${coords.lat}&lng=${coords.lon}&radius=50&limit=1&access_token=${token}`);
+                            // Mapillary V4 Graph API requires bbox
+                            const radiusDegrees = 50 / 111320;
+                            const min_lon = coords.lon - (radiusDegrees / Math.cos(coords.lat * Math.PI / 180));
+                            const max_lon = coords.lon + (radiusDegrees / Math.cos(coords.lat * Math.PI / 180));
+                            const min_lat = coords.lat - radiusDegrees;
+                            const max_lat = coords.lat + radiusDegrees;
+                            const bbox = `${min_lon},${min_lat},${max_lon},${max_lat}`;
+
+                            const graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&bbox=${bbox}&limit=1&access_token=${token}`);
                             const graphData = await graphRes.json();
                             
                             if (graphData.data && graphData.data.length > 0) {
