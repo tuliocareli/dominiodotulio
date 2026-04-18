@@ -1472,6 +1472,16 @@
                                 const results = await response.json();
                                 if (results && results.length > 0) {
                                     const loc = results[0];
+                                    
+                                    // Fechar Street View se estiver aberto para ver o globo voando
+                                    if (mapillaryWrap.style.display !== 'none') {
+                                        mapillaryWrap.style.display = 'none';
+                                        if (mlyViewer) {
+                                            mlyViewer.remove();
+                                            mlyViewer = null;
+                                        }
+                                    }
+
                                     viewer.camera.flyTo({
                                         destination: Cesium.Cartesian3.fromDegrees(parseFloat(loc.lon), parseFloat(loc.lat), 15000)
                                     });
