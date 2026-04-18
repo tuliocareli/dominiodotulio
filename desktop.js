@@ -1524,15 +1524,26 @@
                             const token = data.token;
                             
                             // Mapillary V4 Graph API requires bbox
-                            const radiusDegrees = 50 / 111320;
-                            const min_lon = coords.lon - (radiusDegrees / Math.cos(coords.lat * Math.PI / 180));
-                            const max_lon = coords.lon + (radiusDegrees / Math.cos(coords.lat * Math.PI / 180));
+                            // Aumentando raio para 200 metros (~0.0018 graus)
+                            const radiusDegrees = 200 / 111320;
+                            const cosLat = Math.cos(coords.lat * Math.PI / 180);
+                            const min_lon = coords.lon - (radiusDegrees / cosLat);
+                            const max_lon = coords.lon + (radiusDegrees / cosLat);
                             const min_lat = coords.lat - radiusDegrees;
                             const max_lat = coords.lat + radiusDegrees;
-                            const bbox = `${min_lon},${min_lat},${max_lon},${max_lat}`;
+                            
+                            // Format box with 6 decimal places to avoid API parsing errors
+                            const bbox = `${min_lon.toFixed(6)},${min_lat.toFixed(6)},${max_lon.toFixed(6)},${max_lat.toFixed(6)}`;
 
-                            const graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&bbox=${bbox}&limit=1&access_token=${token}`);
-                            const graphData = await graphRes.json();
+                            // Tentar buscar imagens panorâmicas (is_pano=true) primeiro
+                            let graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&bbox=${bbox}&limit=1&is_pano=true&access_token=${token}`);
+                            let graphData = await graphRes.json();
+                            
+                            // Se não achar panorâmica, tenta qualquer imagem
+                            if (!graphData.data || graphData.data.length === 0) {
+                                graphRes = await fetch(`https://graph.mapillary.com/images?fields=id&bbox=${bbox}&limit=1&access_token=${token}`);
+                                graphData = await graphRes.json();
+                            }
                             
                             if (graphData.data && graphData.data.length > 0) {
                                 const imageId = graphData.data[0].id;
