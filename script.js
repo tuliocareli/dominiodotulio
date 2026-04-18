@@ -5,143 +5,17 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ════════════════════════════════════════
-    // 1. DOMAIN EXPANSION INTRO
+    // 1. FAKE BIOS AND BOOT
     // ════════════════════════════════════════
-    const intro = document.getElementById("domainIntro");
-    const skipBtn = document.getElementById("domainSkip");
-    const barInner = document.getElementById("domainBarInner");
-    const statusEl = document.getElementById("domainStatus");
-    const titleEl = document.getElementById("domainTitle");
-
-    const introCanvas = document.getElementById("introCanvas");
-    const introCtx = introCanvas ? introCanvas.getContext("2d") : null;
-
-    const statusMessages = [
-        "LOADING SYSTEM...",
-        "CHECKING MODULES... OK",
-        "ACCESSING DATABASE...",
-        "DECRYPTING FILES...",
-        "CARELI.EXE LOADED.",
-        "DOMAIN EXPANSION: READY."
-    ];
-
-    // ── CANVAS INTRO: Starfield + Matrix columns (estilo 2000s) ──
-    if (introCanvas && introCtx) {
-        introCanvas.width = window.innerWidth;
-        introCanvas.height = window.innerHeight;
-        window.addEventListener('resize', () => {
-            introCanvas.width = window.innerWidth;
-            introCanvas.height = window.innerHeight;
+    const fakeBios = document.getElementById("fakeBios");
+    if (fakeBios) {
+        fakeBios.addEventListener("click", () => {
+            fakeBios.remove();
+            if (window.tcDesktop && window.tcDesktop.open) {
+                window.tcDesktop.open();
+            }
         });
-
-        const W = () => introCanvas.width;
-        const H = () => introCanvas.height;
-
-        /* ── 1. STARFIELD (perspectiva, estilo screensaver do Win98) ── */
-        const STAR_COUNT = 200;
-        const stars = Array.from({ length: STAR_COUNT }, () => ({
-            x: (Math.random() - 0.5) * 2000,
-            y: (Math.random() - 0.5) * 2000,
-            z: Math.random() * 1000,
-        }));
-
-        /* ── 2. MATRIX COLUMNS (colunas de char verde caindo) ── */
-        const COL_W = 14;
-        const matrixChars = "01アカサタCАРЕЛИ<>{}[]!?01010111";
-        let matrixCols = [];
-        const initMatrixCols = () => {
-            const count = Math.ceil(W() / COL_W);
-            matrixCols = Array.from({ length: count }, () => ({
-                y: -Math.random() * H(),
-                speed: Math.random() * 1.5 + 0.5,
-                char: matrixChars[Math.floor(Math.random() * matrixChars.length)],
-            }));
-        };
-        initMatrixCols();
-        window.addEventListener('resize', initMatrixCols);
-
-        let introRafId;
-        const drawIntroCanvas = () => {
-            const w = W(), h = H();
-            const cx = w / 2, cy = h / 2;
-
-            // fundo preto semi-transparente (deixa rastro nas estrelas)
-            introCtx.fillStyle = "rgba(0,0,0,0.18)";
-            introCtx.fillRect(0, 0, w, h);
-
-            // — Matrix columns —
-            introCtx.font = `${COL_W - 2}px monospace`;
-            matrixCols.forEach((col, i) => {
-                // brilho máximo na cabeça, fade nos anteriores já feito pelo fillRect
-                introCtx.fillStyle = `rgba(0,255,65,0.55)`;
-                introCtx.fillText(col.char, i * COL_W, col.y);
-                col.y += col.speed;
-                if (col.y > h + COL_W) {
-                    col.y = -COL_W;
-                    col.char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                }
-                // troca char aleatoriamente para dar efeito glitch
-                if (Math.random() < 0.04) {
-                    col.char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                }
-            });
-
-            // — Starfield —
-            stars.forEach(star => {
-                star.z -= 3.5; // velocidade de "zoom"
-                if (star.z <= 0) star.z = 1000;
-
-                const sx = (star.x / star.z) * 300 + cx;
-                const sy = (star.y / star.z) * 300 + cy;
-                const size = Math.max(0.3, (1 - star.z / 1000) * 3);
-                const alpha = (1 - star.z / 1000) * 0.7;
-
-                introCtx.fillStyle = `rgba(180,255,200,${alpha})`;
-                introCtx.fillRect(sx, sy, size, size);
-            });
-
-            introRafId = requestAnimationFrame(drawIntroCanvas);
-        };
-        drawIntroCanvas();
-        window._introRaf = () => cancelAnimationFrame(introRafId);
     }
-
-    // Barra de progresso e status — avanço em "degraus" (blocky, não suave)
-    let barProgress = 0;
-    let statusIdx = 0;
-    const TOTAL_DURATION = 3500;
-    const STEP = 2; // avança em blocos para parecer mais "digital"
-    const barInterval = setInterval(() => {
-        barProgress = Math.min(barProgress + STEP, 100);
-        if (barInner) barInner.style.width = barProgress + "%";
-
-        const msgAt = Math.floor((barProgress / 100) * statusMessages.length);
-        if (statusEl && msgAt !== statusIdx && msgAt < statusMessages.length) {
-            statusIdx = msgAt;
-            statusEl.textContent = statusMessages[statusIdx];
-        }
-    }, TOTAL_DURATION / (100 / STEP));
-
-    const closeIntro = () => {
-        clearInterval(barInterval);
-        if (window._introRaf) window._introRaf();
-        if (!intro) return;
-        if (intro.classList.contains("is-leaving")) return;
-        intro.classList.add("is-leaving");
-        setTimeout(() => intro.remove(), 400);
-    };
-
-    const autoClose = setTimeout(closeIntro, TOTAL_DURATION);
-
-    skipBtn?.addEventListener("click", (e) => {
-        e.preventDefault(); // garante que não segue links
-        clearTimeout(autoClose);
-        closeIntro();
-    });
-
-    window.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") { clearTimeout(autoClose); closeIntro(); }
-    });
 
 
     // ════════════════════════════════════════

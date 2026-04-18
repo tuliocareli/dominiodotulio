@@ -477,6 +477,7 @@
 
         ie: () => {
             const TABS = [
+                { name: 'Laboratório Careli', url: 'http://laboratorio.careli.com.br', type: 'mockup', id: 'site2000' },
                 { name: 'Tony Hawk Underground', url: 'http://www.tonyhawkundegroundgame.com', wayback: 'https://web.archive.org/web/20031206081727/http://www.activision.com/microsite/thug/thug.html' },
                 { name: 'YouTube (2007)', url: 'http://www.youtube.com', type: 'mockup', id: 'youtube' },
                 { name: 'Orkut', url: 'http://www.orkut.com.br', type: 'mockup', id: 'orkut' },
@@ -1139,6 +1140,10 @@
                     }
                     else if (tab.id === 'orkut') browserBody.appendChild(renderOrkut());
                     else if (tab.id === 'jogosonline') browserBody.appendChild(renderJogosOnline());
+                    else if (tab.id === 'site2000') {
+                        const iframe = h('iframe', { src: 'site2000.html', style: { width: '100%', height: '100%', border: 'none' } });
+                        browserBody.appendChild(iframe);
+                    }
                 } else if (tab.wayback) {
                     if (tab.name === 'Tony Hawk Underground') {
                         const ifrWrap = h('div', { style: { width: '100%', height: '100%', overflow: 'hidden', background: '#000', display: 'flex', justifyContent: 'center' } });
@@ -3347,7 +3352,7 @@ NOVIDADES DESTA VERSÃO:
                 style: {
                     flex: '1', width: '100%', resize: 'none', border: 'none', padding: '12px',
                     fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', lineHeight: '1.2',
-                    outline: 'none', color: '#000', background: '#fff', overflow: 'hidden'
+                    outline: 'none', color: '#000', background: '#fff', overflow: 'auto'
                 }
             }, text);
 
@@ -4490,7 +4495,7 @@ NUTTERTOOLS - Armas Pesadas
             messenger: { w: '480px', h: '380px' },
             winamp: { w: '280px', h: '580px' },
             wordpad: { w: '440px', h: '400px' },
-            readme: { w: '440px', h: '340px' },
+            readme: { w: '500px', h: '400px' },
             userflow: { w: '700px', h: '520px' },
             terminal: { w: '500px', h: '320px' },
             gta_cheats: { w: '440px', h: '400px' },
