@@ -4778,7 +4778,7 @@ NUTTERTOOLS - Armas Pesadas
 
         // Footer
         const footer = h('div', { class: 'xp-sm-footer' },
-            h('button', { class: 'xp-sm-btn', onclick: () => { window.location.href = 'https://tuliocareli.com'; } }, 
+            h('button', { class: 'xp-sm-btn', onclick: () => { toggleStart(); closeDesktop(); } }, 
                 h('img', { src: 'icones/Power.webp', class: 'xp-sm-footer-icon' }), 'Desligar Computador'
             )
         );
@@ -5209,6 +5209,7 @@ NUTTERTOOLS - Armas Pesadas
                 desk.remove();
                 mounted = false;
                 shuttingDown = false;
+                window.location.href = 'https://tuliocareli.com';
             }, 300);
 
         }, 2200); // 2.2s visualizando o "Tulio OS está desligando..."
