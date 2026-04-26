@@ -2489,18 +2489,18 @@
             const selectBox = h('select', { size: 6, style: { flex: 1, width: '100%', border: '1px inset #aca899', fontSize: '11px', fontFamily: 'Tahoma' } });
             
             const wallpapers = [
-                { name: 'Windows XP (Padrão)', file: 'classic-windows-xp-desktop-wallpapers-v0-gqevqkeqwbxb1.webp' },
-                { name: 'Deserto Vermelho', file: 'classic-windows-xp-desktop-wallpapers-v0-7ywf6leqwbxb1.webp' },
-                { name: 'Espaço Vortec', file: 'classic-windows-xp-desktop-wallpapers-v0-8im9jleqwbxb1.webp' },
-                { name: 'Outono', file: 'classic-windows-xp-desktop-wallpapers-v0-bjhpikeqwbxb1.webp' },
-                { name: 'Flor Roxa', file: 'classic-windows-xp-desktop-wallpapers-v0-da8z6keqwbxb1.webp' },
-                { name: 'Ascensão', file: 'classic-windows-xp-desktop-wallpapers-v0-daignqeqwbxb1.webp' },
-                { name: 'Tulipas', file: 'classic-windows-xp-desktop-wallpapers-v0-gko86leqwbxb1.webp' },
-                { name: 'Cristal', file: 'classic-windows-xp-desktop-wallpapers-v0-gop8zjeqwbxb1.webp' },
-                { name: 'Rosa', file: 'classic-windows-xp-desktop-wallpapers-v0-2nt7vqeqwbxb1.webp' },
-                { name: 'Stonehenge', file: 'classic-windows-xp-desktop-wallpapers-v0-kvf6uqeqwbxb1.webp' },
-                { name: 'Lua', file: 'classic-windows-xp-desktop-wallpapers-v0-qjn9bleqwbxb1.webp' },
-                { name: 'Vento', file: 'classic-windows-xp-desktop-wallpapers-v0-sjgdareqwbxb1.webp' }
+                { name: 'Bliss', file: 'Bliss.webp' },
+                { name: 'Ascent', file: 'Ascent.webp' },
+                { name: 'Autumn', file: 'Autumn.webp' },
+                { name: 'Azul', file: 'Azul.webp' },
+                { name: 'Friend', file: 'Friend.webp' },
+                { name: 'Moon flower', file: 'Moon flower (Unedited Version).webp' },
+                { name: 'Radiance', file: 'Radiance.webp' },
+                { name: 'Red moon desert', file: 'Red moon desert.webp' },
+                { name: 'Stonehenge', file: 'Stonehenge (Getty Images Rescan).webp' },
+                { name: 'Tulips', file: 'Tulips.webp' },
+                { name: 'Vortec space', file: 'Vortec space.webp' },
+                { name: 'Wind', file: 'Wind.webp' }
             ];
 
             let selectedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/' + wallpapers[0].file;
@@ -4773,7 +4773,7 @@ NUTTERTOOLS - Armas Pesadas
         desk.appendChild(boot);
 
         // WALLPAPER AREA
-        const savedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/classic-windows-xp-desktop-wallpapers-v0-gqevqkeqwbxb1.webp';
+        const savedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/Bliss.webp';
         const area = h('div', { 
             id: 'xpDesktopArea',
             style: { backgroundImage: `url("${savedBg}")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }
