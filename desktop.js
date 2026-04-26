@@ -69,8 +69,6 @@
     let shuttingDown = false;
     let clockTimer = null;
     let isOnline = false;
-    let actionCount = 0;
-    let secretsRevealed = false;
     const openWindows = {}; // id → window el
 
     // ── AUDIO EFFECTS ─────────────────────────────────
@@ -131,36 +129,6 @@
         if (!clippy || !bubble) return;
         bubble.classList.remove('speaking');
         setTimeout(() => { if (!bubble.classList.contains('speaking')) clippy.style.display = 'none'; }, 500);
-    };
-
-    const revealSecretFolder = () => {
-        if (secretsRevealed) return;
-        secretsRevealed = true;
-        const secretIc = { id: 'mysterious_folder', icon: 'icones/meus_projetos.webp', label: 'mysterious_folder' };
-        ICONS.push(secretIc);
-
-        const area = document.getElementById('xpDesktopArea');
-        if (area) {
-            // Place near bottom-right, slightly random
-            const x = Math.max(0, area.clientWidth - 120 - Math.floor(Math.random() * 80));
-            const y = Math.max(0, area.clientHeight - 120 - Math.floor(Math.random() * 60));
-
-            const iconEl = h('div', {
-                class: 'xp-desk-icon xp-icon--secret',
-                style: { position: 'absolute', left: x + 'px', top: y + 'px', opacity: '0', transition: 'opacity 1s ease' },
-                ondblclick: () => openWin('mysterious_folder'),
-                onclick: e => {
-                    document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
-                    iconEl.classList.add('xp-icon--selected');
-                },
-            },
-                h('div', { class: 'xp-di-img', html: `<img src="${secretIc.icon}" draggable="false" />` }),
-                h('div', { class: 'xp-di-label' }, 'mysterious_folder'),
-            );
-            area.appendChild(iconEl);
-            setTimeout(() => iconEl.style.opacity = '1', 100);
-            clippySpeak("Você encontrou algo que não deveria...");
-        }
     };
 
 
@@ -3459,7 +3427,6 @@ Uso exclusivo de paródia / estudo técnico.`;
       │
       ├── DESKTOP AREA (grade de ícones, drag & drop)
       │   ├── Aplicativos Nativos (20+ ícones)
-      │   ├── Ícone secreto (mysterious_folder — easter egg)
       │   └── README.txt (auto-abre após boot)
       │
       ├── TASKBAR (barra inferior)
@@ -3520,14 +3487,6 @@ Uso exclusivo de paródia / estudo técnico.`;
        │
        ▼
   Desktop removido, estado resetado
-
-
-  3.4 EASTER EGG
-  ─────────────────────────────────────────────────────
-
-  Após N interações:
-  📂 mysterious_folder aparece
-  Clippy: "Você encontrou algo que não deveria..."
 
 
 ================================================================================
@@ -3747,35 +3706,6 @@ Uso exclusivo de paródia / estudo técnico.`;
             wrap.onclick = () => input.focus();
             setTimeout(() => input.focus(), 200);
 
-            return wrap;
-        },
-
-        mysterious_folder: () => {
-            return h('div', { class: 'xp-folder-view', style: { padding: '20px', display: 'flex', flexWrap: 'wrap', gap: '20px' } },
-                h('div', {
-                    class: 'xp-desk-icon',
-                    ondblclick: () => openWin('secret_readme'),
-                    onclick: e => {
-                        document.querySelectorAll('.xp-desk-icon').forEach(i => i.classList.remove('xp-icon--selected'));
-                        e.currentTarget.classList.add('xp-icon--selected');
-                    },
-                },
-                    h('div', { class: 'xp-di-img' }, '📄'),
-                    h('div', { class: 'xp-di-label' }, 'README.txt')
-                )
-            );
-        },
-        secret_readme: () => {
-            const text = `Bem-vindo à camada oculta.
-
-Se você encontrou isto, você é curioso o suficiente.
-
-A maioria das pessoas nunca chega a esta pasta.
-
-A internet foi construída por pessoas como você.`;
-            const wrap = h('div', { style: { height: '100%', background: '#fff', padding: '15px', fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', lineHeight: '1.4', whiteSpace: 'pre-wrap' } });
-            wrap.innerText = text;
-            setTimeout(() => clippySpeak("Eu disse para não abrir isso..."), 1000);
             return wrap;
         },
 
@@ -4423,11 +4353,6 @@ NUTTERTOOLS - Armas Pesadas
             return;
         }
 
-        actionCount++;
-        if (actionCount === 5 && !secretsRevealed) {
-            revealSecretFolder();
-        }
-
         playSfx('click');
         
         // VERCEL ANALYTICS: Log when someone clicks an icon
@@ -4460,7 +4385,7 @@ NUTTERTOOLS - Armas Pesadas
 
         // Barra de endereço mockada (apenas para o browser ou pastas do sistema)
         // O browser 'ie' já tem sua própria barra interna, então removemos a genérica dele
-        const showAddr = ['mycomputer', 'games', 'trash', 'mysterious_folder', 'meus_projetos'].includes(id);
+        const showAddr = ['mycomputer', 'games', 'trash', 'meus_projetos'].includes(id);
         const addrbar = showAddr ? h('div', { class: 'xp-win-addrbar' },
             h('span', { class: 'xp-addr-label' }, 'Endereço:'),
             h('div', { class: 'xp-addr-val' }, `C:\\TULIO\\${title.toUpperCase().replace(' ', '_')}`),
@@ -4486,8 +4411,6 @@ NUTTERTOOLS - Armas Pesadas
             tuliowire: { w: '550px', h: '400px' },
             accelerator: { w: '350px', h: '300px' },
             keen: { w: '640px', h: '400px' },
-            mysterious_folder: { w: '400px', h: '300px' },
-            secret_readme: { w: '440px', h: '340px' },
             doom: { w: '640px', h: '400px' },
         };
         const sz = WIN_SIZES[id] || {};
