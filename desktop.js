@@ -2503,7 +2503,13 @@
                 { name: 'Wind', file: 'Wind.webp' }
             ];
 
-            let selectedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/' + wallpapers[0].file;
+            let selectedBg = localStorage.getItem('tulio_os_wallpaper');
+            if (selectedBg && selectedBg.includes('classic-windows-xp-desktop-wallpapers')) {
+                selectedBg = null;
+                localStorage.removeItem('tulio_os_wallpaper');
+            }
+            if (!selectedBg) selectedBg = 'wallpaper/' + wallpapers[0].file;
+            
             previewInner.style.backgroundImage = `url("${selectedBg}")`;
 
             wallpapers.forEach(wp => {
@@ -4774,7 +4780,12 @@ NUTTERTOOLS - Armas Pesadas
         desk.appendChild(boot);
 
         // WALLPAPER AREA
-        const savedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/Bliss.webp';
+        let savedBg = localStorage.getItem('tulio_os_wallpaper');
+        if (savedBg && savedBg.includes('classic-windows-xp-desktop-wallpapers')) {
+            savedBg = null;
+            localStorage.removeItem('tulio_os_wallpaper');
+        }
+        if (!savedBg) savedBg = 'wallpaper/Bliss.webp';
         const area = h('div', { 
             id: 'xpDesktopArea',
             style: { backgroundImage: `url("${savedBg}")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }
