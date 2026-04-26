@@ -1,379 +1,511 @@
 ================================================================================
-  TC UNDERGROUND — USER FLOW & DOCUMENTATION
-  Domain Expansion Interface v1.0
-  tuliocareli.com/underground
+  TULIO OS — PRODUCT DOCUMENTATION
+  Interactive Desktop Experience v2.0
+  tuliocareli.com
 ================================================================================
 
-  "Este é o meu laboratório digital.
-   Um ambiente seguro para experimentos de interface,
-   integrações complexas de API e brincadeiras visuais
-   que seriam arriscadas demais para o portfólio principal."
+  "Tulio OS é um projeto de portfólio interativo que simula
+   um sistema operacional Windows XP dentro do navegador.
+   O objetivo é demonstrar domínio técnico em front-end,
+   engenharia de APIs e design de experiência de produto —
+   ao mesmo tempo em que funciona como um retrato pessoal."
 
                                                          — Túlio Careli
 
 
 ================================================================================
-  1. SITEMAP
+  1. PRODUCT OVERVIEW
 ================================================================================
 
-  [PÁGINA PRINCIPAL — index.html]
-  │
-  ├── INTRO: Domain Expansion (tela cheia animada, auto-fecha em 3.5s)
-  │
-  ├── HEADER
-  │   ├── Logo TC Underground
-  │   ├── Terminal typewriter (loop com frases do sistema)
-  │   ├── Botão >> VOLTAR AO PORTFÓLIO → tuliocareli.com
-  │   └── Botão INICIAR → abre o TC Underground OS
-  │
-  ├── SIDEBAR ESQUERDA
-  │   ├── TulioAmp (player de música simulado)
-  │   │   ├── Equalizer interativo (faders arrastáveis)
-  │   │   └── Playlist com 11 faixas
-  │   ├── Banner YouTube (link → @Fonzarelli23)
-  │   └── Spotify // Now Playing (widget mock animado)
-  │
-  ├── CONTEÚDO CENTRAL
-  │   ├── Message Log (texto descritivo do lab)
-  │   ├── Painel: O QUE ESTOU ASSISTINDO (grid de imagens)
-  │   ├── Painel: O QUE ESTOU LENDO (grid de capas de livros)
-  │   └── Painel: O QUE ESTOU OUVINDO (grid de artistas)
-  │
-  ├── SIDEBAR DIREITA
-  │   ├── THPS Score Widget (placar animado estilo Tony Hawk)
-  │   ├── Links Sociais:
-  │   │   ├── Steam → steamcommunity.com/id/tuliocareli
-  │   │   ├── Letterboxd → letterboxd.com/tuliocareli
-  │   │   └── Enjoei → enjoei.com.br/@tulio23
-  │   ├── GIF Pokemon // Now Roaming
-  │   └── GIF Gato // Companion
-  │
-  ├── FOOTER
-  │   ├── Logo + links (Steam, Letterboxd, YouTube)
-  │   ├── Status do sistema (online/Spotify)
-  │   ├── Relógio em tempo real (HH:MM:SS)
-  │   └── Botão INICIAR (alternativo) → abre o TC Underground OS
-  │
-  └── CLIPPY HELPER (📎 — aparece após 10s sem o OS aberto)
+  TIPO:        Web-based Interactive Experience / Portfolio
+  PLATAFORMA:  Browser (Desktop & Mobile)
+  DOMÍNIO:     tuliocareli.com
+  STACK:       HTML5 + CSS3 + Vanilla JS (ES6+) | Vercel Serverless
+  PÚBLICO:     Recrutadores, PMs, Designers, Devs, curiosos
+
+  PROPOSTA DE VALOR:
+  Portfólio disfarçado de sistema operacional nostálgico (Windows XP),
+  onde cada "aplicativo" é uma demonstração técnica ou pessoal.
+  O visitante não navega páginas — ele usa um OS.
 
 
 ================================================================================
-  2. USER FLOW — TC UNDERGROUND OS (Desktop Simulado)
+  2. INFORMATION ARCHITECTURE
 ================================================================================
 
-  ENTRADA NO OS:
-  ─────────────
-  Usuário clica em [INICIAR] (header ou footer)
-       │
-       ▼
-  SFX: startup.mp3 toca
-       │
-       ▼
-  Desktop XP-style é montado (lazy mount — só renderiza 1 vez)
-       │
-       ▼
-  Grade de ícones exibida + Taskbar + Relógio do sistema
-       │
-       ▼
-  Clippy OS (📎) aparece com dica contextual
-
-
-  ÍCONES DO DESKTOP (clique duplo para abrir janela):
-  ────────────────────────────────────────────────────
-  🖥️  Meu Computador
-       ├── Disco Local (C:)    → não faz nada
-       ├── CD-ROM (D:)         → abre janela de músicas (lista de faixas)
-       ├── Impressora HP       → não faz nada
-       └── Monitor LG          → não faz nada
-
-  🌐  TC Explorer (Internet Explorer mockup com abas)
-       ├── Tony Hawk Underground     → Wayback Machine (site original 2003)
-       ├── YouTube (2007)            → Mockup interativo do YT antigo
-       │    └── Vídeos do canal @Fonzarelli23 via YouTube Iframe API
-       ├── Orkut                     → Mockup interativo do Orkut
-       │    ├── Tela de Login
-       │    ├── Perfil do Túlio (scraps persistidos em localStorage)
-       │    └── App: BuddyPoke (Flash via Ruffle)
-       ├── Jogos Online              → Mockup do jogosonline.com.br
-       │    └── Jogos Flash jogáveis (Ruffle):
-       │         ├── TG Motocross 2
-       │         ├── BMX Stunts
-       │         └── Create a Ride
-       ├── NFS Underground 2         → Wayback Machine (site original 2004)
-       └── Cartoon Network           → Wayback Machine (site original 2004)
-
-  🎧  Tulioamp
-       └── Player WinAmp-style com playlist, EQ e visualizador (modo desktop)
-
-  🎨  Tulio Paint
-       └── Tela de pintura interativa (tipo MS Paint)
-
-  🌎  Tulio Earth
-       ├── Globo 3D Interativo (CesiumJS)
-       ├── Sistema de relevo e atmosfera dinâmica
-       └── Street View Integrado (MapillaryJS)
-           └── Busca automática baseada no centro da visão do globo
-
-  💿  Tulio Burning ROM
-       └── Simulação de gravação de CD com progresso
-
-  💬  Tulio Messenger
-       └── Chat com o Túlio AI (integração Gemini) — MSN-style
-
-  📝  TulioPad
-       └── Bloco de notas com texto editável
-
-  🎬  Tulio Media Player
-       └── Player de mídia (Windows Media Player style)
-
-  🖼️  Imagens
-       └── Visualizador de imagens (type: grid/galeria)
-
-  📟  Calculadora
-       └── Calculadora funcional
-
-  💣  Campo Minado
-       └── Minesweeper jogável
-
-  ☎️  TulioNet 56K
-       └── Simulação de conexão discada com sons e progresso
-
-  🍋  TulioShare PRO
-       └── LimeWire/eMule mockup
-
-  🚀  Internet_Acelerator.exe
-       └── "Vírus" falso — congela a janela (efeito ghost trail ao arrastar)
-
-  doom.exe
-       └── Doom clássico operando via emulação x86 (js-dos)
-           └── Suporte a teclado e mouse (lock pointers)
-
-  ⬛  terminal.exe
-       └── Terminal hacker animado
-
-  📄  README.txt
-       └── Abre texto de apresentação do sistema (Notepad-style)
-
-  📄  GTA_Cheats.txt
-       └── Lista de cheats do GTA (Notepad-style)
-
-  💽  Limpar_Cache_Rapido.exe
-       └── Tela azul da morte (BSOD) com reinicialização falsa
-
-  📁  Meus Projetos
-       └── Pasta com links para projetos do portfólio
-
-  🗑️  Lixeira
-       └── Lixeira vazia (efeito de esvaziamento ao clicar)
-
-  📂  mysterious_folder (SECRETO)
-       └── Aparece após N interações — conteúdo surpresa
-
-
-  DETALHAMENTO DE FLUXOS COMPLEXOS:
-  ─────────────────────────────────
-
-  🌎 FLUXO TULIO EARTH (3D & Street View):
-  1. Usuário abre Tulio Earth.
-  2. CesiumJS inicializa o globo 3D usando o token Ion servido pela API.
-  3. Navegação: Usuário pode voar pelo mundo, ativar relevo 3D ou atmosfera.
-  4. Street View: Ao clicar em [Street View Aqui!]:
-     a. O sistema dispara um raio (Raycasting) do centro da tela para o globo.
-     b. Captura a coordenada exata de Latitude/Longitude onde o usuário está "olhando".
-     c. Consulta a API Mapillary V4 em busca de imagens de rua num raio de 50m.
-     d. Se encontrada, o MapillaryJS renderiza um overlay 360° dentro da própria janela.
-     e. Usuário pode navegar pela rua ou clicar em "Sair" para voltar ao globo.
-
-  🚀 FLUXO DOOM.EXE (Emulação em Browser):
-  1. Usuário clica duas vezes no doom.exe.
-  2. O sistema carrega dinamicamente a biblioteca js-dos.js (Kernel do DOSBox).
-  3. Monta o bundle "doom.jsdos" no sistema de arquivos virtual do WASM.
-  4. Inicializa o áudio via Web Audio API e captura os inputs de teclado/mouse.
-  5. Controles: Setas para mover, CTRL para atirar, Barra de Espaço para interagir.
-  6. Ao fechar a janela, o callback onClose força o encerramento da engine para
-     liberar CPU e memória RAM.
-
-
-  COMPORTAMENTO DAS JANELAS:
-  ──────────────────────────
-  - Arrastáveis (mouse + touch)
-  - Minimizar / Restaurar via Taskbar
-  - Maximizar / Restaurar
-  - Fechar (X)
-  - Múltiplas janelas abertas simultaneamente
-  - Z-index dinâmico (janela clicada vai para frente)
-  - SFX de abertura, erro e fechamento
-
-
-  SAÍDA DO OS:
-  ─────────────
-  Usuário clica em [Iniciar] → [Desligar] na taskbar do OS
-       │
-       ▼
-  SFX: shutdown.mp3 toca
-       │
-       ▼
-  Tela de shutdown com animação
-       │
-       ▼
-  Desktop é desmontado — retorna à página principal
+  [tuliocareli.com — index.html]
+  │
+  ├── FAKE BIOS (Tela de entrada — fullscreen)
+  │   └── "PRESS START TO EXPAND DOMAIN" (click → boot)
+  │
+  ├── BOOT SEQUENCE
+  │   ├── Boot Screen (logo Tulio OS + barra progresso, ~1.8s)
+  │   └── Welcome Screen ("Bem-vindo", ~1.5s)
+  │
+  └── TULIO OS DESKTOP (XP-style — tela principal)
+      │
+      ├── DESKTOP AREA (grade de ícones, drag & drop)
+      │   ├── Aplicativos Nativos (20+ ícones)
+      │   ├── Ícone secreto (mysterious_folder — easter egg)
+      │   └── README.txt (auto-abre após boot)
+      │
+      ├── TASKBAR (barra inferior)
+      │   ├── Botão INICIAR → Start Menu (lista completa de apps)
+      │   ├── Área de janelas abertas (minimizar/restaurar)
+      │   └── System Tray (Relógio XP + ✕ Close Desktop)
+      │
+      ├── START MENU
+      │   ├── Header: 👤 TULIO CARELI
+      │   ├── Lista: todos os apps do desktop
+      │   └── 🔒 Desligar OS
+      │
+      └── CLIPPY OS (📎 — dicas contextuais)
 
 
 ================================================================================
-  3. TECNOLOGIAS UTILIZADAS
+  3. USER FLOWS
+================================================================================
+
+  ─────────────────────────────────────────────────────
+  3.1 ONBOARDING — BIOS → OS
+  ─────────────────────────────────────────────────────
+
+  Usuário acessa tuliocareli.com
+       │
+       ▼
+  FAKE BIOS: Tela preta, texto verde monospace
+  "PRESS START TO EXPAND DOMAIN_"
+       │  (click em qualquer lugar)
+       ▼
+  BOOT SCREEN: Logo "Tulio® OS"
+  Barra de progresso animada (~1.8s)
+       │
+       ▼
+  WELCOME SCREEN: "Bem-vindo" (~1.5s)
+       │
+       ▼
+  SFX: startup.mp3
+       │
+       ▼
+  DESKTOP CARREGADO
+  • Grade de ícones visível
+  • Taskbar ativa
+  • README.txt abre automaticamente (300ms após boot)
+  • Clippy aparece com dica contextual
+
+
+  ─────────────────────────────────────────────────────
+  3.2 NAVEGAÇÃO — INTERAÇÃO COM APPS
+  ─────────────────────────────────────────────────────
+
+  Duplo clique em ícone (ou Start Menu)
+       │
+       ▼
+  Janela XP-style é criada
+  • Arrastável (mouse + touch)
+  • Minimizar / Maximizar / Fechar
+  • Z-index dinâmico (foco por clique)
+  • Resizable (8 direções)
+       │
+       ▼
+  Conteúdo do app renderizado dentro da janela
+  (Ver seção 4 — Catálogo de Apps)
+
+
+  ─────────────────────────────────────────────────────
+  3.3 SHUTDOWN
+  ─────────────────────────────────────────────────────
+
+  Start Menu → 🔒 Desligar OS (ou ✕ no System Tray)
+       │
+       ▼
+  SFX: shutdown.mp3
+       │
+       ▼
+  Tela de shutdown: "Tulio OS está desligando..." (2.2s)
+       │
+       ▼
+  Todas as janelas fechadas (callbacks de cleanup disparados)
+  Desktop removido do DOM
+  Estado resetado (mounted = false)
+
+
+  ─────────────────────────────────────────────────────
+  3.4 EASTER EGG — PASTA SECRETA
+  ─────────────────────────────────────────────────────
+
+  Após N interações com o OS:
+  📂 mysterious_folder aparece no canto inferior direito
+  Clippy: "Você encontrou algo que não deveria..."
+
+
+  ─────────────────────────────────────────────────────
+  3.5 BSOD — TELA AZUL (Via Limpar_Cache_Rapido.exe)
+  ─────────────────────────────────────────────────────
+
+  Duplo clique em Limpar_Cache_Rapido.exe
+       │
+       ▼
+  SFX: critical_stop.mp3
+       │
+       ▼
+  Tela azul da morte (BSOD) com despejo de memória falso
+       │
+       ▼
+  Progresso: 1% → 100% (~2s)
+       │
+       ▼
+  Hard reset: Desktop removido e reconstruído via buildDesktop()
+
+
+================================================================================
+  4. APP CATALOG — DESKTOP APPS
+================================================================================
+
+  ┌───────────────────────────────────────────────────────────────────┐
+  │ ID             │ ÍCONE │ LABEL                │ TIPO            │
+  ├───────────────────────────────────────────────────────────────────┤
+  │ mycomputer     │ 🖥️   │ Meu Computador       │ File Explorer   │
+  │ ie             │ 🌐   │ TC Explorer           │ Browser Mockup  │
+  │ winamp         │ 🎧   │ Tulioamp              │ Media Player    │
+  │ paint          │ 🎨   │ Tulio Paint           │ Canvas App      │
+  │ earth          │ 🌎   │ Tulio Earth           │ 3D Globe        │
+  │ burningrom     │ 💿   │ Tulio Burning ROM     │ Simulation      │
+  │ messenger      │ 💬   │ Tulio Messenger       │ AI Chat (MSN)   │
+  │ wordpad        │ 📝   │ TulioPad              │ Text Editor     │
+  │ mediaplayer    │ 🎬   │ Tulio Media Player    │ Media Player    │
+  │ imageviewer    │ 🖼️   │ Imagens               │ Image Gallery   │
+  │ calculator     │ 📟   │ Calculadora           │ Utility         │
+  │ minesweeper    │ 💣   │ Campo Minado          │ Game            │
+  │ tulionet       │ ☎️   │ TulioNet 56K          │ Simulation      │
+  │ tuliowire      │ 🍋   │ TulioShare PRO        │ Sim (LimeWire)  │
+  │ accelerator    │ 🚀   │ Internet_Acelerator   │ Fake Virus      │
+  │ doom           │ .ico │ doom.exe              │ Game (WASM)     │
+  │ terminal       │ ⬛   │ terminal.exe          │ Terminal Mockup │
+  │ readme         │ 📄   │ README.txt            │ Notepad         │
+  │ userflow       │ 📄   │ User Flow and Doc.txt │ Notepad         │
+  │ gta_cheats     │ 📄   │ GTA_Cheats.txt        │ Notepad         │
+  │ bsod           │ 💽   │ Limpar_Cache_Rapido   │ BSOD Trigger    │
+  │ meus_projetos  │ 📁   │ Meus Projetos         │ Folder          │
+  │ trash          │ 🗑️   │ Lixeira               │ Recycle Bin     │
+  └───────────────────────────────────────────────────────────────────┘
+
+
+  ─────────────────────────────────────────────────────
+  4.1 MEU COMPUTADOR
+  ─────────────────────────────────────────────────────
+  Simulação de file explorer com 4 itens:
+  • Disco Local (C:) → sem ação
+  • CD-ROM (D:) → abre lista de músicas (abre janela 'music')
+  • Impressora HP → sem ação
+  • Monitor LG → sem ação
+
+
+  ─────────────────────────────────────────────────────
+  4.2 TC EXPLORER (Browser com Abas)
+  ─────────────────────────────────────────────────────
+  Internet Explorer mockup com toolbar, barra de endereço e abas.
+
+  Abas disponíveis:
+  ┌─────────────────────────────────────────────────────────────────┐
+  │ ABA                    │ URL DISPLAY               │ LOADING   │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ Laboratório Careli     │ laboratorio.careli.com.br  │ Mockup    │
+  │ Tony Hawk Underground  │ tonyhawkundergroundgame... │ Wayback   │
+  │ YouTube (2007)         │ www.youtube.com            │ Mockup    │
+  │ Orkut                  │ www.orkut.com.br           │ Mockup    │
+  │ Jogos Online           │ jogosonline.com.br         │ Mockup    │
+  │ NFS Underground 2      │ needforspeedunderground2.. │ Wayback   │
+  │ Cartoon Network        │ cartoonnetwork.com.br      │ Wayback   │
+  └─────────────────────────────────────────────────────────────────┘
+
+  Detalhamento dos Mockups interativos:
+
+  ★ LABORATÓRIO CARELI (Site 2000)
+    Conteúdo do portfólio original migrado para dentro do OS.
+    Carregado via site2000.html como conteúdo interno do TC Explorer.
+
+  ★ YOUTUBE (2007)
+    Mockup interativo do YouTube antigo.
+    Player funcional via YouTube Iframe API (vídeos do @Fonzarelli23).
+    Lazy-load: SDK injetado somente quando aba é acessada.
+
+  ★ ORKUT
+    Mockup completo com:
+    • Tela de Login → Perfil → Scraps
+    • Recados persistidos em localStorage ("orkut_scraps")
+    • App BuddyPoke via Ruffle (Flash emulation)
+    • Layout 3 colunas: perfil, social, amigos/comunidades
+
+  ★ JOGOS ONLINE
+    Mockup do jogosonline.com.br com 3 Flash games jogáveis (Ruffle):
+    • TG Motocross 2
+    • BMX Stunts
+    • Create a Ride
+
+
+  ─────────────────────────────────────────────────────
+  4.3 TULIO EARTH (3D & Street View)
+  ─────────────────────────────────────────────────────
+  Flow completo:
+  1. Abertura: CesiumJS inicializa globo 3D com token Ion (via /api/cesium)
+  2. Navegação: voo livre pelo mundo, toggle relevo 3D, atmosfera
+  3. Street View:
+     a. Click em [Street View Aqui!]
+     b. Raycasting do centro da câmera → colisão com globo
+     c. Coordenadas Lat/Lng extraídas
+     d. Consulta API Mapillary V4 (raio 50m via /api/mapillary)
+     e. MapillaryJS renderiza overlay 360° sobre o globo
+     f. "Sair" volta ao modo globo
+
+
+  ─────────────────────────────────────────────────────
+  4.4 DOOM.EXE (Emulação x86 no Browser)
+  ─────────────────────────────────────────────────────
+  1. Duplo clique em doom.exe
+  2. Carrega js-dos.js (DOSBox via WASM) de /libs/js-dos
+  3. Monta bundle doom.jsdos no filesystem virtual
+  4. Audio via Web Audio API + captura teclado/mouse
+  5. Controles: Setas=Mover, CTRL=Atirar, Space=Portas
+  6. onClose: ci.exit() para liberar CPU/memória
+
+
+  ─────────────────────────────────────────────────────
+  4.5 TULIO MESSENGER (AI Chat — MSN Style)
+  ─────────────────────────────────────────────────────
+  Chat com "Túlio AI" via Google Gemini API.
+  Interface MSN Messenger (2005).
+  System prompt: personagem "Túlio", designer de BH.
+  Respostas curtas, assuntos restritos, proteção contra jailbreak.
+
+
+  ─────────────────────────────────────────────────────
+  4.6 JOGOS NA PASTA "MEU COMPUTADOR → CD-ROM"
+  ─────────────────────────────────────────────────────
+  Jogos listados no CD-ROM que abrem janelas de vídeo:
+  • Doom → abre emulador js-dos
+  • Tony Hawk Underground → vídeo gameplay .mp4
+  • Tibia → vídeo gameplay .mp4
+  • M.U.G.E.N. → vídeo gameplay .mp4
+  • GTA San Andreas → vídeo gameplay .mp4
+  • Grand Chase → vídeo gameplay .mp4
+  • Demais → alert "CD-ROM não encontrado"
+
+  ─────────────────────────────────────────────────────
+  4.7 EFEITOS ESPECIAIS
+  ─────────────────────────────────────────────────────
+  • Internet_Acelerator.exe → "Vírus" que congela janela
+    (ghost trail ao arrastar, fechamento via taskbar "Forçar Fechamento")
+  • TulioNet 56K → Simulação de conexão discada com sons
+  • TulioShare PRO → Mockup LimeWire/eMule
+  • Tulio Burning ROM → Simulação de gravação de CD
+
+
+================================================================================
+  5. WINDOW MANAGEMENT SYSTEM
+================================================================================
+
+  Comportamento padrão de todas as janelas:
+  • Arrastáveis (mouse + touch via drag handlers manuais)
+  • Minimizar → via Taskbar (toggle xp-win--minimized)
+  • Maximizar → preenche xpDesktopArea (restore via toggle)
+  • Fechar (X) → remove do DOM, executa onClose callback
+  • Múltiplas janelas abertas simultaneamente
+  • Z-index dinâmico (variável zTop incrementada a cada foco)
+  • Resize em 8 direções (n/ne/e/se/s/sw/w/nw)
+  • Aspect ratio lock para: earth, doom, keen, paint
+  • SFX: click no abrir, error em falhas
+
+
+================================================================================
+  6. TECH STACK
 ================================================================================
 
   FRONTEND
   ────────
-  Linguagem:   HTML5 + CSS3 + JavaScript (Vanilla ES6+)
-  Arquivo CSS: style.css, desktop.css, apps.css, thps.css
-  Arquivos JS: desktop.js (OS completo), script.js (página principal)
+  Runtime:     Vanilla HTML5 + CSS3 + JavaScript (ES6+)
+  Arquivos:
+  • index.html    — Entry point, Fake BIOS
+  • desktop.js    — Engine do Tulio OS (5162 linhas, IIFE)
+  • script.js     — Widgets da landing page (inativo no flow atual)
+  • style.css     — Design system base, CSS Variables, tema neon
+  • desktop.css   — Estilos do OS (janelas, taskbar, ícones)
+  • apps.css      — Estilos internos de apps (TC Explorer, Orkut, etc.)
+  • thps.css      — Score widget THPS (inativo no flow atual)
 
-  Principais técnicas:
-  - Canvas API (animações de intro: starfield + matrix + header rain)
-  - Drag & Drop manual (janelas do OS, sem libs externas)
-  - requestAnimationFrame (animadores de canvas e visualizador)
-  - localStorage (scraps do Orkut persistidos no browser)
-  - Z-index dinâmico (gerenciamento de foco de janelas)
-  - Micro-interações e SFX com Web Audio API (arquivos .mp3 em /sons)
-  - CSS Custom Properties (sistema de design, tema neon/retrô)
-  - CSS Animations (glitch loop, domain rings, THPS score, etc.)
-  - Raycasting de centro de câmera (CesiumJS → MapillaryJS)
+  Técnicas-chave:
+  • Canvas API (visualizadores, animações boot)
+  • Drag & Drop manual (sem libs externas)
+  • requestAnimationFrame (animações contínuas)
+  • localStorage (scraps Orkut, posição de ícones)
+  • CSS Custom Properties (design tokens, tema retrô)
+  • Web Audio API (SFX do OS)
+  • WebAssembly (js-dos para emulação x86)
+  • Raycasting de câmera (CesiumJS → MapillaryJS)
 
 
   BACKEND / DEPLOY
   ────────────────
   Plataforma:  Vercel (Serverless Functions)
   Runtime:     Node.js 24.x
-  Entry:       api/chat.js (Vercel Serverless Function)
+  Endpoints:
+  • POST /api/chat     — Chat Gemini AI (Tulio Messenger)
+  • GET  /api/cesium    — Proxy p/ Cesium Ion token
+  • GET  /api/mapillary — Proxy p/ Mapillary token
 
-  CORS configurado para:
-  - https://tuliocareli.com
-  - http://localhost:3000
-  - http://127.0.0.1:5500
-  - *.dominiodotulio.vercel.app (regex preview deploys)
+  CORS:
+  • https://tuliocareli.com
+  • http://localhost:3000
+  • http://127.0.0.1:5500
+  • *.dominiodotulio.vercel.app (regex preview deploys)
 
 
   ANALYTICS
   ─────────
-  Ferramenta:  Vercel Web Analytics
-  Método:      Snippet vanilla JS (/_vercel/insights/script.js)
-  Dados:       Pageviews, referral, Web Vitals — sem cookies.
+  Vercel Web Analytics (vanilla JS snippet)
+  Pageviews, referral, Web Vitals — sem cookies.
 
 
 ================================================================================
-  4. APIs E INTEGRAÇÕES
+  7. API & INTEGRATIONS
 ================================================================================
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │  GOOGLE GEMINI API                                                       │
-  │  Propósito:   Alimenta o "Túlio AI" no app Tulio Messenger (MSN-style)  │
-  │  Pacote:      @google/generative-ai ^0.21.0                             │
-  │  Modelo:      gemini-flash-latest                                        │
-  │  Endpoint:    POST /api/chat                                             │
-  │  Auth:        GEMINI_API_KEY (env var na Vercel, nunca exposta)          │
-  │  System Prompt: personagem "Túlio", designer de BH, digitando como      │
-  │                 se fosse MSN 2005, com travas contra jailbreak           │
-  │  Limitações:  Respostas curtas (máx 3 frases), assuntos restritos       │
+  │  GOOGLE GEMINI API                                                     │
+  │  App:        Tulio Messenger (MSN-style chat)                          │
+  │  Package:    @google/generative-ai ^0.21.0                             │
+  │  Model:      gemini-flash-latest                                       │
+  │  Endpoint:   POST /api/chat                                            │
+  │  Auth:       GEMINI_API_KEY (env var Vercel, nunca exposta ao client)  │
+  │  Limitações: respostas curtas (máx 3 frases), jailbreak-safe           │
   └─────────────────────────────────────────────────────────────────────────┘
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │  YOUTUBE IFRAME API                                                       │
-  │  Propósito:   Reprodução de vídeos do canal @Fonzarelli23 dentro do      │
-  │               TC Explorer (aba "YouTube 2007")                           │
-  │  Carregamento: Lazy — script injetado no DOM só quando a aba é aberta    │
-  │  SDK:         https://www.youtube.com/iframe_api                         │
-  │  Auth:        Pública (sem API key — uso apenas de iframe embed)         │
+  │  CESIUM ION API (CesiumJS)                                             │
+  │  App:        Tulio Earth (Mapa 3D)                                     │
+  │  Token:      Servido via /api/cesium (env var CESIUM_ION_TOKEN)        │
+  │  Recursos:   Bing Maps Aerial, Cesium World Terrain, Sun Lighting      │
+  │  CDN:        https://cesium.com/downloads/cesiumjs/releases/1.111      │
   └─────────────────────────────────────────────────────────────────────────┘
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │  WAYBACK MACHINE / INTERNET ARCHIVE                                       │
-  │  Propósito:   Carregar versões históricas de sites dentro do TC Explorer  │
-  │  Sites:       Tony Hawk Underground (2003), NFS Underground 2 (2004),    │
-  │               Cartoon Network BR (2004)                                  │
-  │  Método:      iframe apontando para URLs do web.archive.org              │
-  │  Auth:        Pública (sem autenticação)                                 │
+  │  MAPILLARY V4 GRAPH API                                                │
+  │  App:        Tulio Earth (Street View)                                 │
+  │  Token:      Servido via /api/mapillary (env var MAPILLARY_CLIENT_TOKEN)│
+  │  Lógica:     Busca por proximidade (lat/lng/radius=50m)                │
+  │  CDN:        https://unpkg.com/mapillary-js@4.1.2                      │
   └─────────────────────────────────────────────────────────────────────────┘
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │  RUFFLE (Flash Player Emulator)                                           │
-  │  Propósito:   Emular e rodar arquivos .SWF (Flash) no browser moderno   │
-  │  Apps usados: BuddyPoke (Orkut), TG Motocross 2, BMX Stunts,            │
-  │               Create a Ride, Doom (versão flash)                        │
-  │  Carregamento: https://unpkg.com/@ruffle-rs/ruffle                      │
-  │  Auth:        CDN pública, sem autenticação                              │
-  │  Limitação:   Texturas ActionScript 3 sem servidor original → alguns     │
-  │               SWFs carregam parcialmente ("modo fantasma")               │
+  │  YOUTUBE IFRAME API                                                    │
+  │  App:        TC Explorer → aba "YouTube (2007)"                        │
+  │  Loading:    Lazy — SDK injetado quando aba acessada                   │
+  │  SDK:        https://www.youtube.com/iframe_api                        │
+  │  Auth:       Pública (sem API key, apenas iframe embed)                │
   └─────────────────────────────────────────────────────────────────────────┘
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │  SPOTIFY WIDGET (MOCK)                                                    │
-  │  Propósito:   Exibir "Now Playing" na sidebar                            │
-  │  Método:      Rotação automática de faixas hardcoded (sem API real)      │
-  │  Nota:        Widget de aparência mas sem integração OAuth com Spotify.  │
-  │               Futuras versões poderiam usar Spotify Web API + token.     │
+  │  WAYBACK MACHINE / INTERNET ARCHIVE                                    │
+  │  App:        TC Explorer (3 abas: THUG, NFS, Cartoon Network)          │
+  │  Método:     iframe apontando para URLs do web.archive.org             │
+  │  Sites:      Tony Hawk Underground (2003), NFS Underground 2 (2004),   │
+  │              Cartoon Network BR (2004)                                 │
+  │  Auth:       Pública                                                   │
   └─────────────────────────────────────────────────────────────────────────┘
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │  LOCALSTORAGE                                                             │
-  │  Propósito:   Persistir "scraps" (recados) do Orkut simulado            │
-  │  Chave:       "orkut_scraps"                                             │
-  │  Formato:     JSON Array → [{ text: string, date: string }]             │
-  │  Escopo:      Browser do usuário — limpar cache apaga os scraps          │
-  └─────────────────────────────────────────────────────────────────────────┘
-  
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │  CESIUM ION API (CESIUMJS)                                              │
-  │  Propósito:   Motor do Tulio Earth (Mapa 3D, Terreno, Imagens)          │
-  │  Token:       Servido via /api/cesium (env var CESIUM_ION_TOKEN)        │
-  │  Recursos:    Bing Maps Aerial, Cesium World Terrain, Sun Lighting       │
+  │  RUFFLE (Flash Player Emulator)                                        │
+  │  Apps:       BuddyPoke (Orkut), TG Motocross 2, BMX Stunts,           │
+  │              Create a Ride                                             │
+  │  CDN:        https://unpkg.com/@ruffle-rs/ruffle                       │
+  │  Limitação:  AS3 sem servidor original → alguns SWFs parciais          │
   └─────────────────────────────────────────────────────────────────────────┘
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │  MAPILLARY V4 GRAPH API                                                 │
-  │  Propósito:   Street View de código aberto integrado ao Earth           │
-  │  Token:       Servido via /api/mapillary (env var MAPILLARY_CLIENT_TOKEN) │
-  │  Lógica:      Busca por proximidade (lat/lng/radius=50) baseada no      │
-  │               ponto central de colisão da câmera do Cesium.             │
+  │  JS-DOS (DOSBox via WebAssembly)                                       │
+  │  App:        doom.exe (Doom 1 Shareware)                               │
+  │  Bundles:    /libs/js-dos (js-dos.js + js-dos.wasm + doom.jsdos)       │
+  │  Controles:  Setas=Mover, CTRL=Atirar, Space=Portas                   │
+  │  Cleanup:    ci.exit() no onClose para liberar CPU/RAM                 │
   └─────────────────────────────────────────────────────────────────────────┘
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │  JS-DOS (Lib: Emulator Core)                                            │
-  │  Propósito:   Engine para rodar doom.exe (Doom 1 Shareware)             │
-  │  Método:      Execução de bundle .jsdos via WebAssembly em canvas       │
-  │  Kernel:      js-dos.js / js-dos.wasm local em /libs/js-dos             │
-  │  Controles:   Setas=Mover, CTRL=Tirar, Space=Abrir Portas               │
-  │  Memória:     Callback onClose() mata a instância ci.exit() para        │
-  │               evitar loops de áudio e CPU após fechar a janela.         │
+  │  LOCALSTORAGE                                                          │
+  │  Dado:       "orkut_scraps" → JSON Array [{ text, date }]              │
+  │  Escopo:     Browser do usuário — limpar cache apaga os dados          │
   └─────────────────────────────────────────────────────────────────────────┘
 
 
 ================================================================================
-  5. ESTRUTURA DE ARQUIVOS (RESUMO)
+  8. FILE STRUCTURE
 ================================================================================
 
   /
-  ├── index.html               — Entrada principal, layout 3 colunas
-  ├── style.css                — Design system base, variáveis CSS, layout
+  ├── index.html               — Entry point (Fake BIOS + OS boot)
+  ├── style.css                — Design system, CSS variables, tema neon
   ├── desktop.css              — Estilos do OS (janelas, taskbar, ícones)
-  ├── apps.css                 — Estilos internos dos apps (TC Explorer, etc.)
-  ├── thps.css                 — Score widget estilo Tony Hawk
-  ├── script.js                — Animações e widgets da página principal
-  ├── desktop.js               — Engine completa do TC Underground OS
+  ├── apps.css                 — Estilos internos dos apps
+  ├── thps.css                 — Score widget THPS
+  ├── script.js                — Widgets da landing page (legacy)
+  ├── desktop.js               — Engine completa do Tulio OS (~5K linhas)
+  ├── site2000.html            — Conteúdo do portfólio original
   ├── package.json             — Node 24.x + @google/generative-ai
   ├── api/
-  │   └── chat.js              — Serverless Function: chat com Túlio AI
+  │   ├── chat.js              — Serverless: chat Gemini AI
+  │   ├── cesium.js            — Serverless: proxy token Cesium Ion
+  │   └── mapillary.js         — Serverless: proxy token Mapillary
   ├── sons/                    — SFX do OS (.mp3)
   ├── imagens/                 — Assets visuais gerais
-  ├── videosjogos/             — Vídeos dos jogos (.mp4)
-  ├── jogoflash/               — Arquivos SWF (Flash)
+  ├── videosjogos/             — Vídeos de gameplay (.mp4)
+  ├── jogoflash/               — Arquivos .SWF (Flash)
   ├── jogosicon/               — Ícones dos jogos
-  ├── o que estou lendo/       — Capas dos livros
-  ├── o que estou ouvindo/     — Capas dos artistas
-  └── imagens do que estou vendo no momento/  — Pôsteres de séries/animes
+  ├── libs/                    — Dependências locais (js-dos)
+  ├── jogos/                   — Assets de jogos adicionais
+  ├── o que estou lendo/       — Capas de livros
+  ├── o que estou ouvindo/     — Capas de artistas
+  └── imagens do que estou.../  — Pôsteres de séries/animes
+
+
+================================================================================
+  9. DESIGN DECISIONS & TRADE-OFFS
+================================================================================
+
+  1. VANILLA JS (sem frameworks)
+     ✅ Zero build step, deploy direto na Vercel
+     ✅ Performance máxima (sem virtual DOM overhead)
+     ⚠️ Arquivo desktop.js com ~5K linhas — monolítico
+
+  2. IIFE PATTERN (desktop.js)
+     ✅ Encapsulamento total, zero poluição de namespace
+     ✅ window.tcDesktop como API pública controlada
+     ⚠️ Debugging mais difícil sem source maps
+
+  3. LAZY MOUNTING
+     ✅ OS só renderiza quando usuário interage
+     ✅ YouTube SDK carregado sob demanda
+
+  4. TOKENS VIA SERVERLESS PROXY
+     ✅ Chaves nunca expostas ao client
+     ✅ CORS restrito a domínios autorizados
+
+  5. FLASH VIA RUFFLE
+     ✅ Experiência nostálgica preservada
+     ⚠️ AS3 sem servidor original = renderização parcial
+
+
+================================================================================
+  10. ACCESSIBILITY & PERFORMANCE NOTES
+================================================================================
+
+  • Todos os ícones possuem labels de texto (não só emoji)
+  • Janelas navegáveis via touch em mobile
+  • SFX respeitam autoplay policy (catch silencioso)
+  • CesiumJS e MapillaryJS carregados eager (pesado, ~5MB)
+    → Trade-off: necessário para Earth funcionar sem lag
+  • Doom cleanup via ci.exit() previne memory leaks
 
 
 ================================================================================
   FIM DO DOCUMENTO
-  TC UNDERGROUND // Domain Expansion Interface v1.0
+  TULIO OS v2.0 — Interactive Desktop Experience
 ================================================================================
