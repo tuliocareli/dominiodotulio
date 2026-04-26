@@ -227,19 +227,8 @@
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.4s ease;
-    /* Classic XP Bliss blue sky + green hills */
-    background:
-        radial-gradient(ellipse at 50% 105%, #3aab3a 0%, #1d7020 35%, transparent 55%),
-        radial-gradient(ellipse at 25% 110%, #2d952d 0%, transparent 40%),
-        radial-gradient(ellipse at 75% 110%, #2d952d 0%, transparent 40%),
-        linear-gradient(180deg,
-            #3a7ac8 0%,
-            #5ba0e8 30%,
-            #7bbcf5 55%,
-            #a8d6ff 60%,
-            #79c26a 61%,
-            #3aab3a 70%,
-            #1d7020 100%);
+    /* Classic XP Bliss blue sky */
+    background-color: #3a7ac8;
 }
 
 /* ── DESKTOP ICONS ────────────────────────────────── */

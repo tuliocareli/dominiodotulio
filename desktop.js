@@ -58,6 +58,7 @@
         { id: 'readme', icon: 'icones/readme.webp', label: 'README.txt' },
         { id: 'userflow', icon: 'icones/userflow.webp', label: 'User Flow and Documentation.txt' },
         { id: 'gta_cheats', icon: 'icones/gta_cheats.webp', label: 'GTA_Cheats.txt' },
+        { id: 'display_properties', icon: '🖼️', label: 'Propriedades de Vídeo' },
         { id: 'bsod', icon: 'icones/limpar_cache_rapido.webp', label: 'Limpar_Cache_Rapido.exe' },
         { id: 'meus_projetos', icon: 'icones/meus_projetos.webp', label: 'Meus Projetos' },
         { id: 'trash', icon: 'icones/lixeira.webp', label: 'Lixeira' },
@@ -2464,6 +2465,86 @@
             return wrap;
         },
 
+        display_properties: () => {
+            const wrap = h('div', { style: { height: '100%', padding: '10px', background: '#ece9d8', display: 'flex', flexDirection: 'column', gap: '10px' } });
+
+            // Tabs mock
+            const tabs = h('div', { style: { display: 'flex', borderBottom: '1px solid #aca899' } });
+            const desktopTab = h('div', { style: { padding: '3px 8px', background: '#fff', border: '1px solid #aca899', borderBottom: 'none', borderTopLeftRadius: '3px', borderTopRightRadius: '3px', fontSize: '11px', fontFamily: 'Tahoma', marginTop: '2px' } }, 'Desktop');
+            tabs.appendChild(desktopTab);
+
+            // Preview monitor
+            const previewWrap = h('div', { style: { display: 'flex', justifyContent: 'center', margin: '10px 0' } });
+            const monitor = h('div', { style: { width: '150px', height: '110px', background: '#ece9d8', border: '16px solid #e1e1d1', borderBottomWidth: '24px', borderRadius: '4px', outline: '1px solid #888', display: 'flex', justifyContent: 'center', alignItems: 'center' } });
+            const previewInner = h('div', { style: { width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', border: '1px inset #fff' } });
+            monitor.appendChild(previewInner);
+            previewWrap.appendChild(monitor);
+            
+            // Background selection
+            const bgContainer = h('div', { style: { flex: 1, display: 'flex', gap: '10px' } });
+            
+            const listWrap = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column' } });
+            listWrap.appendChild(h('label', { style: { fontSize: '11px', fontFamily: 'Tahoma', marginBottom: '2px' } }, 'Plano de Fundo:'));
+            
+            const selectBox = h('select', { size: 6, style: { flex: 1, width: '100%', border: '1px inset #aca899', fontSize: '11px', fontFamily: 'Tahoma' } });
+            
+            const wallpapers = [
+                { name: 'Windows XP (Padrão)', file: 'classic-windows-xp-desktop-wallpapers-v0-2nt7vqeqwbxb1.webp' },
+                { name: 'Deserto Vermelho', file: 'classic-windows-xp-desktop-wallpapers-v0-7ywf6leqwbxb1.webp' },
+                { name: 'Espaço Vortec', file: 'classic-windows-xp-desktop-wallpapers-v0-8im9jleqwbxb1.webp' },
+                { name: 'Outono', file: 'classic-windows-xp-desktop-wallpapers-v0-bjhpikeqwbxb1.webp' },
+                { name: 'Flor Roxa', file: 'classic-windows-xp-desktop-wallpapers-v0-da8z6keqwbxb1.webp' },
+                { name: 'Ascensão', file: 'classic-windows-xp-desktop-wallpapers-v0-daignqeqwbxb1.webp' },
+                { name: 'Tulipas', file: 'classic-windows-xp-desktop-wallpapers-v0-gko86leqwbxb1.webp' },
+                { name: 'Cristal', file: 'classic-windows-xp-desktop-wallpapers-v0-gop8zjeqwbxb1.webp' },
+                { name: 'Lar', file: 'classic-windows-xp-desktop-wallpapers-v0-gqevqkeqwbxb1.webp' },
+                { name: 'Stonehenge', file: 'classic-windows-xp-desktop-wallpapers-v0-kvf6uqeqwbxb1.webp' },
+                { name: 'Lua', file: 'classic-windows-xp-desktop-wallpapers-v0-qjn9bleqwbxb1.webp' },
+                { name: 'Vento', file: 'classic-windows-xp-desktop-wallpapers-v0-sjgdareqwbxb1.webp' }
+            ];
+
+            let selectedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/' + wallpapers[0].file;
+            previewInner.style.backgroundImage = `url("${selectedBg}")`;
+
+            wallpapers.forEach(wp => {
+                const opt = h('option', { value: 'wallpaper/' + wp.file }, wp.name);
+                if (selectedBg === opt.value) opt.selected = true;
+                selectBox.appendChild(opt);
+            });
+
+            selectBox.onchange = () => {
+                previewInner.style.backgroundImage = `url("${selectBox.value}")`;
+            };
+
+            listWrap.appendChild(selectBox);
+
+            const sideWrap = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '5px' } });
+            const applyBtn = h('button', { style: { width: '80px', padding: '2px', fontSize: '11px', fontFamily: 'Tahoma' }, onclick: () => {
+                const area = document.getElementById('xpDesktopArea');
+                if (area) {
+                    area.style.backgroundImage = `url("${selectBox.value}")`;
+                }
+                localStorage.setItem('tulio_os_wallpaper', selectBox.value);
+            } }, 'Aplicar');
+            
+            const okBtn = h('button', { style: { width: '80px', padding: '2px', fontSize: '11px', fontFamily: 'Tahoma' }, onclick: () => {
+                applyBtn.click();
+                closeWin('display_properties');
+            } }, 'OK');
+
+            sideWrap.appendChild(okBtn);
+            sideWrap.appendChild(applyBtn);
+
+            bgContainer.appendChild(listWrap);
+            bgContainer.appendChild(sideWrap);
+
+            wrap.appendChild(tabs);
+            wrap.appendChild(previewWrap);
+            wrap.appendChild(bgContainer);
+            
+            return wrap;
+        },
+
         paint: () => {
             const wrap = h('div', { class: 'xp-paint' });
             const toolbar = h('div', { class: 'xp-paint-toolbar' });
@@ -4412,6 +4493,7 @@ NUTTERTOOLS - Armas Pesadas
             accelerator: { w: '350px', h: '300px' },
             keen: { w: '640px', h: '400px' },
             doom: { w: '640px', h: '400px' },
+            display_properties: { w: '380px', h: '420px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
@@ -4660,6 +4742,9 @@ NUTTERTOOLS - Armas Pesadas
                 if (!target.closest('#xpCalendar') && target.id !== 'xpClock') {
                     document.getElementById('xpCalendar')?.classList.remove('xp-cal--open');
                 }
+                if (target.id === 'xpDesktopArea') {
+                    openWin('display_properties');
+                }
             }
         });
 
@@ -4688,7 +4773,11 @@ NUTTERTOOLS - Armas Pesadas
         desk.appendChild(boot);
 
         // WALLPAPER AREA
-        const area = h('div', { id: 'xpDesktopArea' });
+        const savedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/classic-windows-xp-desktop-wallpapers-v0-2nt7vqeqwbxb1.webp';
+        const area = h('div', { 
+            id: 'xpDesktopArea',
+            style: { backgroundImage: `url("${savedBg}")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }
+        });
 
         // ── ICON POSITIONS ──────────────────────────────
         // Initial layout: column-first, 84px grid, 12px margin
