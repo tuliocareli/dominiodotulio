@@ -2489,7 +2489,7 @@
             const selectBox = h('select', { size: 6, style: { flex: 1, width: '100%', border: '1px inset #aca899', fontSize: '11px', fontFamily: 'Tahoma' } });
             
             const wallpapers = [
-                { name: 'Windows XP (Padrão)', file: 'classic-windows-xp-desktop-wallpapers-v0-2nt7vqeqwbxb1.webp' },
+                { name: 'Windows XP (Padrão)', file: 'classic-windows-xp-desktop-wallpapers-v0-gqevqkeqwbxb1.webp' },
                 { name: 'Deserto Vermelho', file: 'classic-windows-xp-desktop-wallpapers-v0-7ywf6leqwbxb1.webp' },
                 { name: 'Espaço Vortec', file: 'classic-windows-xp-desktop-wallpapers-v0-8im9jleqwbxb1.webp' },
                 { name: 'Outono', file: 'classic-windows-xp-desktop-wallpapers-v0-bjhpikeqwbxb1.webp' },
@@ -2497,7 +2497,7 @@
                 { name: 'Ascensão', file: 'classic-windows-xp-desktop-wallpapers-v0-daignqeqwbxb1.webp' },
                 { name: 'Tulipas', file: 'classic-windows-xp-desktop-wallpapers-v0-gko86leqwbxb1.webp' },
                 { name: 'Cristal', file: 'classic-windows-xp-desktop-wallpapers-v0-gop8zjeqwbxb1.webp' },
-                { name: 'Lar', file: 'classic-windows-xp-desktop-wallpapers-v0-gqevqkeqwbxb1.webp' },
+                { name: 'Rosa', file: 'classic-windows-xp-desktop-wallpapers-v0-2nt7vqeqwbxb1.webp' },
                 { name: 'Stonehenge', file: 'classic-windows-xp-desktop-wallpapers-v0-kvf6uqeqwbxb1.webp' },
                 { name: 'Lua', file: 'classic-windows-xp-desktop-wallpapers-v0-qjn9bleqwbxb1.webp' },
                 { name: 'Vento', file: 'classic-windows-xp-desktop-wallpapers-v0-sjgdareqwbxb1.webp' }
@@ -4773,7 +4773,7 @@ NUTTERTOOLS - Armas Pesadas
         desk.appendChild(boot);
 
         // WALLPAPER AREA
-        const savedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/classic-windows-xp-desktop-wallpapers-v0-2nt7vqeqwbxb1.webp';
+        const savedBg = localStorage.getItem('tulio_os_wallpaper') || 'wallpaper/classic-windows-xp-desktop-wallpapers-v0-gqevqkeqwbxb1.webp';
         const area = h('div', { 
             id: 'xpDesktopArea',
             style: { backgroundImage: `url("${savedBg}")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }
