@@ -4533,9 +4533,9 @@ NUTTERTOOLS - Armas Pesadas
         const titlebar = h('div', { class: 'xp-win-titlebar' },
             h('div', { class: 'xp-win-title' }, titleIcon, ' ', title),
             h('div', { class: 'xp-win-btns' },
-                h('button', { class: 'xp-btn xp-btn--min', onclick: () => minimizeWin(id) }, '─'),
-                h('button', { class: 'xp-btn xp-btn--max', onclick: () => maximizeWin(id) }, '□'),
-                h('button', { class: 'xp-btn xp-btn--close', onclick: () => closeWin(id) }, '✕'),
+                h('button', { class: 'xp-btn xp-btn--min', onclick: () => minimizeWin(id) }, h('img', { src: 'icones/Minimize.webp' })),
+                h('button', { class: 'xp-btn xp-btn--max', onclick: () => maximizeWin(id) }, h('img', { src: 'icones/Maximize.webp' })),
+                h('button', { class: 'xp-btn xp-btn--close', onclick: () => closeWin(id) }, h('img', { src: 'icones/Exit.webp' })),
             )
         );
 
@@ -4778,11 +4778,8 @@ NUTTERTOOLS - Armas Pesadas
 
         // Footer
         const footer = h('div', { class: 'xp-sm-footer' },
-            h('button', { class: 'xp-sm-btn', onclick: () => { toggleStart(); } }, 
-                h('img', { src: 'icones/desligar_os.webp', class: 'xp-sm-footer-icon', style: { filter: 'hue-rotate(150deg)' } }), 'Log Off'
-            ),
-            h('button', { class: 'xp-sm-btn', onclick: closeDesktop }, 
-                h('img', { src: 'icones/desligar_os.webp', class: 'xp-sm-footer-icon' }), 'Turn Off Computer'
+            h('button', { class: 'xp-sm-btn', onclick: () => { window.location.href = 'https://tuliocareli.com'; } }, 
+                h('img', { src: 'icones/Power.webp', class: 'xp-sm-footer-icon' }), 'Desligar Computador'
             )
         );
         menu.appendChild(footer);
