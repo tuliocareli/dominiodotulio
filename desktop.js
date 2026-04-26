@@ -136,7 +136,7 @@
     const revealSecretFolder = () => {
         if (secretsRevealed) return;
         secretsRevealed = true;
-        const secretIc = { id: 'mysterious_folder', icon: '📂', label: 'mysterious_folder' };
+        const secretIc = { id: 'mysterious_folder', icon: 'icones/meus_projetos.webp', label: 'mysterious_folder' };
         ICONS.push(secretIc);
 
         const area = document.getElementById('xpDesktopArea');
@@ -154,7 +154,7 @@
                     iconEl.classList.add('xp-icon--selected');
                 },
             },
-                h('div', { class: 'xp-di-img' }, '📂'),
+                h('div', { class: 'xp-di-img', html: `<img src="${secretIc.icon}" draggable="false" />` }),
                 h('div', { class: 'xp-di-label' }, 'mysterious_folder'),
             );
             area.appendChild(iconEl);
@@ -2383,7 +2383,8 @@
 
                 // Build grid DOM
                 gridEl.innerHTML = '';
-                gridEl.style.gridTemplateColumns = `repeat(${cols}, 16px)`;
+                gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                gridEl.style.width = `min(100%, ${cols * 16}px)`;
 
                 board.forEach((cell, i) => {
                     const r = Math.floor(i / cols), c = i % cols;

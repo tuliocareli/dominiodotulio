@@ -1541,12 +1541,17 @@
     user-select: none;
     height: 100%;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
 }
 
 .xp-ms-content {
     display: inline-flex;
     flex-direction: column;
     width: fit-content;
+    max-width: 100%;
     box-sizing: border-box;
     border-left: 2px solid #fff;
     border-top: 2px solid #fff;
@@ -1694,14 +1699,17 @@
 }
 
 .xp-ms-cell {
-    width: 16px;
-    height: 16px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    min-width: 8px;
+    max-width: 16px;
+    height: auto;
     background: #c0c0c0;
     border: 2px solid #fff;
     border-right-color: #808080;
     border-bottom-color: #808080;
     cursor: pointer;
-    font-size: 11px;
+    font-size: clamp(8px, 2vw, 11px);
     font-family: 'Tahoma', sans-serif;
     display: flex;
     align-items: center;
