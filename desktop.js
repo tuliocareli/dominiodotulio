@@ -44,7 +44,7 @@
         { id: 'paint', icon: 'icones/tulio_paint.webp', label: 'Tulio Paint' },
         { id: 'earth', icon: 'icones/tulio_earth.webp', label: 'Tulio Earth' },
         { id: 'burningrom', icon: 'icones/tulio_burning_rom.webp', label: 'Tulio Burning ROM' },
-        { id: 'messenger', icon: '💬', label: 'Tulio Messenger' },
+        { id: 'messenger', icon: 'icones/msn_messenger.webp', label: 'Tulio Messenger' },
         { id: 'wordpad', icon: 'icones/tuliopad.webp', label: 'TulioPad' },
         { id: 'mediaplayer', icon: 'icones/tulio_media_player.webp', label: 'Tulio Media Player' },
         { id: 'imageviewer', icon: 'icones/imagens.webp', label: 'Imagens' },
