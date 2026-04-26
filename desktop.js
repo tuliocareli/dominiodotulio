@@ -3430,6 +3430,7 @@ NOVIDADES DESTA VERSÃO:
 CRÉDITOS & ATRIBUIÇÕES:
 
 Ícones do Windows XP — Microsoft Corporation, recriados por marchmountain.
+Imagens do Windows XP (wallpapers, perfil, msn) — WindowsAesthetics.
 Ícone do LimeWire — Lime Wire LLC.
 Ícone do Nero Burning ROM — Nero AG.
 Ícone do Winamp — Nullsoft / Radionomy Group.
