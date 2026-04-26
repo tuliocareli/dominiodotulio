@@ -58,7 +58,7 @@
         { id: 'readme', icon: 'icones/readme.webp', label: 'README.txt' },
         { id: 'userflow', icon: 'icones/userflow.webp', label: 'User Flow and Documentation.txt' },
         { id: 'gta_cheats', icon: 'icones/gta_cheats.webp', label: 'GTA_Cheats.txt' },
-        { id: 'display_properties', icon: '🖼️', label: 'Propriedades de Vídeo' },
+        { id: 'display_properties', icon: 'icones/Propriedades de Vídeo.webp', label: 'Propriedades de Vídeo' },
         { id: 'bsod', icon: 'icones/limpar_cache_rapido.webp', label: 'Limpar_Cache_Rapido.exe' },
         { id: 'meus_projetos', icon: 'icones/meus_projetos.webp', label: 'Meus Projetos' },
         { id: 'trash', icon: 'icones/lixeira.webp', label: 'Lixeira' },
@@ -2551,6 +2551,73 @@
             return wrap;
         },
 
+        profile_picture_modal: () => {
+            const wrap = h('div', { style: { height: '100%', background: '#ece9d8', display: 'flex', flexDirection: 'column' } });
+            
+            const header = h('div', { style: { padding: '10px 15px', background: '#fff', borderBottom: '1px solid #aca899' } });
+            header.appendChild(h('h2', { style: { margin: 0, fontSize: '18px', fontWeight: 'normal', color: '#003399', fontFamily: 'Arial' } }, 'Pick a new picture for your account'));
+            header.appendChild(h('p', { style: { margin: '5px 0 0', fontSize: '11px', fontFamily: 'Tahoma' } }, 'The picture you choose will appear on the Start menu.'));
+
+            const body = h('div', { style: { flex: 1, padding: '15px', display: 'flex', gap: '15px' } });
+
+            // Sidebar (Current Picture)
+            const sidebar = h('div', { style: { width: '120px', display: 'flex', flexDirection: 'column', gap: '10px' } });
+            const currPicBox = h('div', { style: { border: '1px solid #888', background: '#fff', padding: '5px', display: 'flex', justifyContent: 'center' } });
+            
+            const currentSavedPic = localStorage.getItem('tulio_os_profile_pic') || 'icones/profiles/car.webp';
+            const currImg = h('img', { src: currentSavedPic, style: { width: '48px', height: '48px', objectFit: 'cover' } });
+            currPicBox.appendChild(currImg);
+            
+            sidebar.appendChild(currPicBox);
+
+            // Selection grid
+            const gridWrap = h('div', { style: { flex: 1, border: '1px solid #7f9db9', background: '#fff', overflowY: 'auto', padding: '5px' } });
+            const grid = h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '5px' } });
+
+            const pics = ['airplane.webp', 'astronaut.webp', 'ball.webp', 'beach.webp', 'butterfly.webp', 'car.webp', 'cat.webp', 'dog.webp', 'drip.webp', 'duck.webp', 'guest.webp', 'guitar.webp', 'kick.webp'];
+            
+            let selectedFile = currentSavedPic;
+            const items = [];
+
+            pics.forEach(pic => {
+                const picUrl = 'icones/profiles/' + pic;
+                const item = h('div', { 
+                    style: { width: '54px', height: '54px', border: '1px solid transparent', padding: '2px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' },
+                    onclick: () => {
+                        items.forEach(i => i.style.border = '1px solid transparent');
+                        item.style.border = '1px solid #316ac5';
+                        selectedFile = picUrl;
+                    }
+                });
+                if (picUrl === currentSavedPic) item.style.border = '1px solid #316ac5';
+                const img = h('img', { src: picUrl, style: { width: '48px', height: '48px', objectFit: 'cover' } });
+                item.appendChild(img);
+                grid.appendChild(item);
+                items.push(item);
+            });
+
+            gridWrap.appendChild(grid);
+            body.appendChild(sidebar);
+            body.appendChild(gridWrap);
+
+            const footer = h('div', { style: { padding: '10px', display: 'flex', justifyContent: 'flex-end', gap: '10px', borderTop: '1px solid #aca899' } });
+            const changeBtn = h('button', { style: { padding: '2px 10px', fontFamily: 'Tahoma', fontSize: '11px' }, onclick: () => {
+                localStorage.setItem('tulio_os_profile_pic', selectedFile);
+                buildStartMenu(); // Update the start menu DOM
+                closeWin('profile_picture_modal');
+            }}, 'Change Picture');
+            const cancelBtn = h('button', { style: { padding: '2px 10px', fontFamily: 'Tahoma', fontSize: '11px' }, onclick: () => closeWin('profile_picture_modal') }, 'Cancel');
+            
+            footer.appendChild(changeBtn);
+            footer.appendChild(cancelBtn);
+
+            wrap.appendChild(header);
+            wrap.appendChild(body);
+            wrap.appendChild(footer);
+
+            return wrap;
+        },
+
         paint: () => {
             const wrap = h('div', { class: 'xp-paint' });
             const toolbar = h('div', { class: 'xp-paint-toolbar' });
@@ -4501,6 +4568,7 @@ NUTTERTOOLS - Armas Pesadas
             keen: { w: '640px', h: '400px' },
             doom: { w: '640px', h: '400px' },
             display_properties: { w: '380px', h: '420px' },
+            profile_picture_modal: { w: '440px', h: '380px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
@@ -4635,30 +4703,88 @@ NUTTERTOOLS - Armas Pesadas
     function buildStartMenu() {
         const menu = document.getElementById('xpStartMenu');
         if (!menu) return;
-        const items = [
-            ...ICONS.map(ic => ({
-                icon: ic.icon,
-                label: ic.label,
-                action: () => { toggleStart(); openWin(ic.id); }
-            })),
-            { icon: 'icones/desligar_os.webp', label: 'Desligar OS', action: closeDesktop },
-        ];
 
         menu.innerHTML = '';
-        menu.appendChild(h('div', { class: 'xp-sm-header' },
-            h('span', { class: 'xp-sm-user' }, '👤 TULIO CARELI'),
-        ));
-        const list = h('div', { class: 'xp-sm-list' }, ...items.map(it => {
-            const smIcon = (typeof it.icon === 'string' && it.icon.includes('.'))
-                ? h('img', { src: it.icon, style: { width: '24px', height: '24px' } })
-                : h('span', { class: 'xp-sm-icon' }, it.icon);
 
-            return h('button', { class: 'xp-sm-item', onclick: it.action },
+        // Header (Profile and Name)
+        const savedPic = localStorage.getItem('tulio_os_profile_pic') || 'icones/profiles/car.webp';
+        
+        const header = h('div', { class: 'xp-sm-header' },
+            h('div', { 
+                class: 'xp-sm-pic', 
+                style: { backgroundImage: `url("${savedPic}")` },
+                onclick: () => { toggleStart(); openWin('profile_picture_modal'); }
+            }),
+            h('span', { class: 'xp-sm-user' }, 'Tulio Careli')
+        );
+        menu.appendChild(header);
+
+        const body = h('div', { class: 'xp-sm-body' });
+
+        // Left Column (White)
+        const leftCol = h('div', { class: 'xp-sm-left' });
+        
+        const leftIcons = ['ie', 'wordpad', 'paint', 'messenger', 'mediaplayer', 'winamp', 'doom'];
+        leftIcons.forEach(id => {
+            const ic = ICONS.find(i => i.id === id);
+            if (!ic) return;
+            const smIcon = (typeof ic.icon === 'string' && ic.icon.includes('.'))
+                ? h('img', { src: ic.icon, class: 'xp-sm-icon-img' })
+                : h('span', { class: 'xp-sm-icon' }, ic.icon);
+
+            leftCol.appendChild(h('button', { class: 'xp-sm-item', onclick: () => { toggleStart(); openWin(ic.id); } },
                 smIcon,
-                h('span', {}, it.label),
-            );
-        }));
-        menu.appendChild(list);
+                h('span', {}, ic.label)
+            ));
+        });
+        
+        const allPrograms = h('div', { class: 'xp-sm-allprogs' }, 
+            h('span', { class: 'xp-sm-arrow' }, '▶'),
+            h('span', {}, 'Todos os Programas')
+        );
+        leftCol.appendChild(allPrograms);
+
+        // Right Column (Blue)
+        const rightCol = h('div', { class: 'xp-sm-right' });
+        
+        const rightIcons = [
+            { id: 'meus_projetos', icon: 'icones/meus_projetos.webp', label: 'Meus Projetos', bold: true },
+            { id: 'imageviewer', icon: 'icones/imagens.webp', label: 'Minhas Imagens', bold: true },
+            { id: 'mycomputer', icon: 'icones/meu_computador.webp', label: 'Meu Computador', bold: true },
+            { type: 'separator' },
+            { id: 'display_properties', icon: 'icones/Propriedades de Vídeo.webp', label: 'Painel de Controle' },
+            { id: 'terminal', icon: 'icones/terminal.webp', label: 'Executar...' },
+            { type: 'separator' },
+            { id: 'readme', icon: 'icones/readme.webp', label: 'Ajuda e Suporte' },
+            { id: 'trash', icon: 'icones/lixeira.webp', label: 'Lixeira' }
+        ];
+
+        rightIcons.forEach(ic => {
+            if (ic.type === 'separator') {
+                rightCol.appendChild(h('div', { class: 'xp-sm-separator' }));
+                return;
+            }
+            const smIcon = h('img', { src: ic.icon, class: 'xp-sm-icon-img-small' });
+            rightCol.appendChild(h('button', { class: 'xp-sm-item-right', onclick: () => { toggleStart(); openWin(ic.id); } },
+                smIcon,
+                h('span', { style: ic.bold ? { fontWeight: 'bold' } : {} }, ic.label)
+            ));
+        });
+
+        body.appendChild(leftCol);
+        body.appendChild(rightCol);
+        menu.appendChild(body);
+
+        // Footer
+        const footer = h('div', { class: 'xp-sm-footer' },
+            h('button', { class: 'xp-sm-btn', onclick: () => { toggleStart(); } }, 
+                h('img', { src: 'icones/desligar_os.webp', class: 'xp-sm-footer-icon', style: { filter: 'hue-rotate(150deg)' } }), 'Log Off'
+            ),
+            h('button', { class: 'xp-sm-btn', onclick: closeDesktop }, 
+                h('img', { src: 'icones/desligar_os.webp', class: 'xp-sm-footer-icon' }), 'Turn Off Computer'
+            )
+        );
+        menu.appendChild(footer);
     }
 
     function toggleStart() {
@@ -4748,9 +4874,6 @@ NUTTERTOOLS - Armas Pesadas
                 }
                 if (!target.closest('#xpCalendar') && target.id !== 'xpClock') {
                     document.getElementById('xpCalendar')?.classList.remove('xp-cal--open');
-                }
-                if (target.id === 'xpDesktopArea') {
-                    openWin('display_properties');
                 }
             }
         });
