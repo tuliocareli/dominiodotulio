@@ -303,10 +303,10 @@
     // ── WINDOW CONTENT BUILDERS ──────────────────────
     const CONTENT = {
         mycomputer: () => h('div', { class: 'xp-file-view' }, ...[
-            { id: 'c', icon: 'icones/disco_local.webp', name: 'Disco Local (C:)', detail: '80 GB' },
-            { id: 'd', icon: 'icones/cd_rom.webp', name: 'CD-ROM (D:)', detail: 'Lista de Músicas' },
-            { id: 'p', icon: 'icones/impressora_hp.webp', name: 'Impressora HP', detail: 'Online' },
-            { id: 'm', icon: 'icones/monitor_lg.webp', name: 'Monitor LG', detail: '1024×768' },
+            { id: 'c', icon: 'icones/disco_local.webp', name: 'Disco Local (C:)' },
+            { id: 'd', icon: 'icones/cd_rom.webp', name: 'CD-ROM (D:)' },
+            { id: 'p', icon: 'icones/impressora_hp.webp', name: 'Impressora HP' },
+            { id: 'm', icon: 'icones/monitor_lg.webp', name: 'Monitor LG' },
         ].map(f => h('div', {
             class: 'xp-file-item',
             ondblclick: () => {
@@ -322,11 +322,8 @@
                 this.dataset.lastTap = now;
             }
         },
-            (f.icon && f.icon.includes('.'))
-                ? h('img', { class: 'xp-fi-icon', src: f.icon, style: { width: '32px', height: '32px' } })
-                : h('span', { class: 'xp-fi-icon' }, f.icon),
+            h('div', { class: 'xp-fi-icon' }, h('img', { src: f.icon })),
             h('span', { class: 'xp-fi-name' }, f.name),
-            h('span', { class: 'xp-fi-detail' }, f.detail),
         ))),
 
         games: () => h('div', { class: 'xp-file-view' }, ...DATA.games.map(g =>
@@ -4453,33 +4450,52 @@ NUTTERTOOLS - Armas Pesadas
 
         meus_projetos: () => {
             const projetos = [
-                { icon: '🌐', name: 'Redesign Web GuiaVet', url: 'https://tuliocareli.com/portfolio/redesign-web-guiavet/' },
-                { icon: '🏥', name: 'Redesign Site IPGC', url: 'https://tuliocareli.com/portfolio/redesign-site-ipgc/' },
-                { icon: '🤝', name: 'Fábrica de Parcerias IPGC', url: 'https://tuliocareli.com/portfolio/fabrica-de-parcerias-ipgc/' },
-                { icon: '🏎️', name: 'Pitstop Velox', url: 'https://tuliocareli.com/portfolio/pitstop-velox/' },
-                { icon: '🎁', name: 'Kit Colaborador IPGC', url: 'https://tuliocareli.com/portfolio/kit-colaborador-ipgc/' },
+                { name: 'Redesign Web GuiaVet', url: 'https://tuliocareli.com/portfolio/redesign-web-guiavet/' },
+                { name: 'Redesign Site IPGC', url: 'https://tuliocareli.com/portfolio/redesign-site-ipgc/' },
+                { name: 'Fábrica de Parcerias IPGC', url: 'https://tuliocareli.com/portfolio/fabrica-de-parcerias-ipgc/' },
+                { name: 'Pitstop Velox', url: 'https://tuliocareli.com/portfolio/pitstop-velox/' },
+                { name: 'Kit Colaborador IPGC', url: 'https://tuliocareli.com/portfolio/kit-colaborador-ipgc/' },
             ];
+
+            const openProjectInIframe = (p) => {
+                const winId = 'proj_' + p.name.replace(/\s+/g, '_').toLowerCase();
+                
+                // Register dynamic CONTENT if not yet
+                if (!CONTENT[winId]) {
+                    CONTENT[winId] = () => {
+                        const wrap = h('div', { style: { width: '100%', height: '100%', display: 'flex', flexDirection: 'column' } });
+                        const iframe = h('iframe', { 
+                            src: p.url, 
+                            style: { width: '100%', flex: '1', border: 'none' },
+                            allow: 'fullscreen'
+                        });
+                        wrap.appendChild(iframe);
+                        return wrap;
+                    };
+                    // Register icon for titlebar
+                    ICONS.push({ id: winId, icon: 'icones/TC Explorer Shortcut.webp', label: p.name, hidden: true });
+                }
+                openWin(winId);
+            };
 
             return h('div', { class: 'xp-file-view' },
                 ...projetos.map(p =>
                     h('div', {
                         class: 'xp-file-item',
                         style: { cursor: 'pointer' },
-                        title: 'Duplo-clique para abrir: ' + p.url,
-                        ondblclick: () => window.open(p.url, '_blank', 'noopener,noreferrer'),
+                        ondblclick: () => openProjectInIframe(p),
                         ontouchstart: function (e) {
                             const now = Date.now();
                             const last = this.dataset.lastTap || 0;
                             if (now - last < 300) {
-                                window.open(p.url, '_blank', 'noopener,noreferrer');
+                                openProjectInIframe(p);
                                 e.preventDefault();
                             }
                             this.dataset.lastTap = now;
                         },
                     },
-                        h('span', { class: 'xp-fi-icon' }, p.icon),
+                        h('div', { class: 'xp-fi-icon' }, h('img', { src: 'icones/TC Explorer Shortcut.webp' })),
                         h('span', { class: 'xp-fi-name' }, p.name),
-                        h('span', { class: 'xp-fi-detail' }, '🔗 tuliocareli.com'),
                     )
                 )
             );
