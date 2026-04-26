@@ -38,29 +38,29 @@
 
     // ── ICON DEFINITIONS ─────────────────────────────
     const ICONS = [
-        { id: 'mycomputer', icon: '🖥️', label: 'Meu Computador' },
-        { id: 'ie', icon: '🌐', label: 'TC Explorer' },
-        { id: 'winamp', icon: '🎧', label: 'Tulioamp' },
-        { id: 'paint', icon: '🎨', label: 'Tulio Paint' },
-        { id: 'earth', icon: '🌎', label: 'Tulio Earth' },
-        { id: 'burningrom', icon: '💿', label: 'Tulio Burning ROM' },
+        { id: 'mycomputer', icon: 'icones/meu_computador.webp', label: 'Meu Computador' },
+        { id: 'ie', icon: 'icones/tc_explorer.webp', label: 'TC Explorer' },
+        { id: 'winamp', icon: 'icones/tulioamp.webp', label: 'Tulioamp' },
+        { id: 'paint', icon: 'icones/tulio_paint.webp', label: 'Tulio Paint' },
+        { id: 'earth', icon: 'icones/tulio_earth.webp', label: 'Tulio Earth' },
+        { id: 'burningrom', icon: 'icones/tulio_burning_rom.webp', label: 'Tulio Burning ROM' },
         { id: 'messenger', icon: '💬', label: 'Tulio Messenger' },
-        { id: 'wordpad', icon: '📝', label: 'TulioPad' },
-        { id: 'mediaplayer', icon: '🎬', label: 'Tulio Media Player' },
-        { id: 'imageviewer', icon: '🖼️', label: 'Imagens' },
-        { id: 'calculator', icon: '📟', label: 'Calculadora' },
-        { id: 'minesweeper', icon: '💣', label: 'Campo Minado' },
-        { id: 'tulionet', icon: '☎️', label: 'TulioNet 56K' },
-        { id: 'tuliowire', icon: '🍋', label: 'TulioShare PRO' },
-        { id: 'accelerator', icon: '🚀', label: 'Internet_Acelerator.exe' },
+        { id: 'wordpad', icon: 'icones/tuliopad.webp', label: 'TulioPad' },
+        { id: 'mediaplayer', icon: 'icones/tulio_media_player.webp', label: 'Tulio Media Player' },
+        { id: 'imageviewer', icon: 'icones/imagens.webp', label: 'Imagens' },
+        { id: 'calculator', icon: 'icones/calculadora.webp', label: 'Calculadora' },
+        { id: 'minesweeper', icon: 'icones/campo_minado.webp', label: 'Campo Minado' },
+        { id: 'tulionet', icon: 'icones/tulionet_56k.webp', label: 'TulioNet 56K' },
+        { id: 'tuliowire', icon: 'icones/tuliowire.webp', label: 'TulioShare PRO' },
+        { id: 'accelerator', icon: 'icones/internet_acelerator.webp', label: 'Internet_Acelerator.exe' },
         { id: 'doom', icon: 'jogosicon/doom_classic.ico', label: 'doom.exe' },
-        { id: 'terminal', icon: '⬛', label: 'terminal.exe' },
-        { id: 'readme', icon: '📄', label: 'README.txt' },
-        { id: 'userflow', icon: '📄', label: 'User Flow and Documentation.txt' },
-        { id: 'gta_cheats', icon: '📄', label: 'GTA_Cheats.txt' },
-        { id: 'bsod', icon: '💽', label: 'Limpar_Cache_Rapido.exe' },
-        { id: 'meus_projetos', icon: '📁', label: 'Meus Projetos' },
-        { id: 'trash', icon: '🗑️', label: 'Lixeira' },
+        { id: 'terminal', icon: 'icones/terminal.webp', label: 'terminal.exe' },
+        { id: 'readme', icon: 'icones/readme.webp', label: 'README.txt' },
+        { id: 'userflow', icon: 'icones/userflow.webp', label: 'User Flow and Documentation.txt' },
+        { id: 'gta_cheats', icon: 'icones/gta_cheats.webp', label: 'GTA_Cheats.txt' },
+        { id: 'bsod', icon: 'icones/limpar_cache_rapido.webp', label: 'Limpar_Cache_Rapido.exe' },
+        { id: 'meus_projetos', icon: 'icones/meus_projetos.webp', label: 'Meus Projetos' },
+        { id: 'trash', icon: 'icones/lixeira.webp', label: 'Lixeira' },
     ];
 
     // ── STATE ─────────────────────────────────────────
@@ -333,10 +333,10 @@
     // ── WINDOW CONTENT BUILDERS ──────────────────────
     const CONTENT = {
         mycomputer: () => h('div', { class: 'xp-file-view' }, ...[
-            { id: 'c', icon: '💾', name: 'Disco Local (C:)', detail: '80 GB' },
-            { id: 'd', icon: '📀', name: 'CD-ROM (D:)', detail: 'Lista de Músicas' },
-            { id: 'p', icon: '🖨️', name: 'Impressora HP', detail: 'Online' },
-            { id: 'm', icon: '🖥️', name: 'Monitor LG', detail: '1024×768' },
+            { id: 'c', icon: 'icones/disco_local.webp', name: 'Disco Local (C:)', detail: '80 GB' },
+            { id: 'd', icon: 'icones/cd_rom.webp', name: 'CD-ROM (D:)', detail: 'Lista de Músicas' },
+            { id: 'p', icon: 'icones/impressora_hp.webp', name: 'Impressora HP', detail: 'Online' },
+            { id: 'm', icon: 'icones/monitor_lg.webp', name: 'Monitor LG', detail: '1024×768' },
         ].map(f => h('div', {
             class: 'xp-file-item',
             ondblclick: () => {
@@ -352,7 +352,9 @@
                 this.dataset.lastTap = now;
             }
         },
-            h('span', { class: 'xp-fi-icon' }, f.icon),
+            (f.icon && f.icon.includes('.'))
+                ? h('img', { class: 'xp-fi-icon', src: f.icon, style: { width: '32px', height: '32px' } })
+                : h('span', { class: 'xp-fi-icon' }, f.icon),
             h('span', { class: 'xp-fi-name' }, f.name),
             h('span', { class: 'xp-fi-detail' }, f.detail),
         ))),
@@ -4615,7 +4617,7 @@ NUTTERTOOLS - Armas Pesadas
                 label: ic.label,
                 action: () => { toggleStart(); openWin(ic.id); }
             })),
-            { icon: '🔒', label: 'Desligar OS', action: closeDesktop },
+            { icon: 'icones/desligar_os.webp', label: 'Desligar OS', action: closeDesktop },
         ];
 
         menu.innerHTML = '';
@@ -4923,7 +4925,7 @@ NUTTERTOOLS - Armas Pesadas
         // TASKBAR
         const taskbar = h('div', { id: 'xpTaskbar' },
             h('button', { id: 'xpStartBtn', onclick: toggleStart },
-                h('span', { class: 'xp-start-orb' }),
+                h('img', { src: 'icones/iniciar.webp', style: { width: '18px', height: '18px', marginRight: '4px', verticalAlign: 'middle' } }),
                 'INICIAR'
             ),
             h('div', { id: 'xpTaskbarWindows' }),
