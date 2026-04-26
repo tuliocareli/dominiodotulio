@@ -4913,6 +4913,7 @@ NUTTERTOOLS - Armas Pesadas
             const pos = initIconPosition(ic, index);
             const el = h('div', {
                 class: 'xp-desk-icon',
+                'data-id': ic.id,
                 style: {
                     position: 'absolute',
                     left: pos.x + 'px',
@@ -4954,7 +4955,30 @@ NUTTERTOOLS - Armas Pesadas
 
         ICONS.forEach((ic, i) => area.appendChild(buildIconEl(ic, i)));
 
-
+        // Snap icons back into bounds if screen shrinks (e.g., mobile rotation)
+        window.addEventListener('resize', () => {
+            if (!mounted) return;
+            document.querySelectorAll('.xp-desk-icon').forEach(el => {
+                const maxX = window.innerWidth - ICON_COL_W;
+                const maxY = window.innerHeight - 40 - ICON_ROW_H;
+                let currentX = parseInt(el.style.left) || 0;
+                let currentY = parseInt(el.style.top) || 0;
+                
+                let snapped = false;
+                if (currentX > maxX) { currentX = Math.max(0, maxX); snapped = true; }
+                if (currentY > maxY) { currentY = Math.max(0, maxY); snapped = true; }
+                
+                if (snapped) {
+                    el.style.left = currentX + 'px';
+                    el.style.top = currentY + 'px';
+                    const id = el.dataset.id;
+                    if (id && iconPositions[id]) {
+                        iconPositions[id].x = currentX;
+                        iconPositions[id].y = currentY;
+                    }
+                }
+            });
+        });
 
         desk.appendChild(area);
 
