@@ -3374,7 +3374,18 @@ Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).
 NOVIDADES DESTA VERSÃO:
 - Tulio Earth: Agora com Globo 3D (Cesium) e Street View Real (Mapillary).
 - doom.exe: Emulação x86 real rodando Doom 1 (Shareware).
-- Tulio Messenger: IA Túlio atualizada para Gemini Flash.`;
+- Tulio Messenger: IA Túlio atualizada para Gemini Flash.
+
+--------------------------------------------------------------------------------
+CRÉDITOS & ATRIBUIÇÕES:
+
+Ícones do Windows XP — Microsoft Corporation, recriados por marchmountain.
+Ícone do LimeWire — Lime Wire LLC.
+Ícone do Nero Burning ROM — Nero AG.
+Ícone do Winamp — Nullsoft / Radionomy Group.
+
+No Copyright Infringement Intended.
+Uso exclusivo de paródia / estudo técnico.`;
 
             const textarea = h('textarea', {
                 readonly: true,
