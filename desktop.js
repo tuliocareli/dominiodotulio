@@ -62,6 +62,7 @@
         { id: 'bsod', icon: 'icones/limpar_cache_rapido.webp', label: 'Limpar_Cache_Rapido.exe' },
         { id: 'meus_projetos', icon: 'icones/meus_projetos.webp', label: 'Meus Projetos' },
         { id: 'trash', icon: 'icones/lixeira.webp', label: 'Lixeira' },
+        { id: 'profile_picture_modal', icon: 'icones/profiles/guest.webp', label: 'User Accounts', hidden: true }
     ];
 
     // ── STATE ─────────────────────────────────────────
@@ -4568,7 +4569,7 @@ NUTTERTOOLS - Armas Pesadas
             keen: { w: '640px', h: '400px' },
             doom: { w: '640px', h: '400px' },
             display_properties: { w: '380px', h: '420px' },
-            profile_picture_modal: { w: '440px', h: '380px' },
+            profile_picture_modal: { w: '500px', h: '460px' },
         };
         const sz = WIN_SIZES[id] || {};
         const winW = sz.w || '440px';
@@ -5076,7 +5077,7 @@ NUTTERTOOLS - Armas Pesadas
             return el._wasDragged === true;
         }
 
-        ICONS.forEach((ic, i) => area.appendChild(buildIconEl(ic, i)));
+        ICONS.filter(ic => !ic.hidden).forEach((ic, i) => area.appendChild(buildIconEl(ic, i)));
 
         // Snap icons back into bounds if screen shrinks (e.g., mobile rotation)
         window.addEventListener('resize', () => {
