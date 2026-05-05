@@ -4450,6 +4450,7 @@ NUTTERTOOLS - Armas Pesadas
 
         meus_projetos: () => {
             const projetos = [
+                { name: 'Tulio OS', url: 'https://tuliocareli.com/portfolio/tulio-os/' },
                 { name: 'Redesign Web GuiaVet', url: 'https://tuliocareli.com/portfolio/redesign-web-guiavet/' },
                 { name: 'Redesign Site IPGC', url: 'https://tuliocareli.com/portfolio/redesign-site-ipgc/' },
                 { name: 'Fábrica de Parcerias IPGC', url: 'https://tuliocareli.com/portfolio/fabrica-de-parcerias-ipgc/' },
@@ -4463,14 +4464,28 @@ NUTTERTOOLS - Armas Pesadas
                 // Register dynamic CONTENT if not yet
                 if (!CONTENT[winId]) {
                     CONTENT[winId] = () => {
-                        const wrap = h('div', { style: { width: '100%', height: '100%', display: 'flex', flexDirection: 'column' } });
+                        const browserWrap = h('div', { class: 'xp-browser', style: { width: '100%', height: '100%', display: 'flex', flexDirection: 'column' } });
+                        const toolbar = h('div', { class: 'xp-ie-toolbar', html: '<span>Arquivo</span><span>Editar</span><span>Exibir</span><span>Favoritos</span><span>Ferramentas</span><span>Ajuda</span>' });
+                        const addrBar = h('div', { class: 'xp-browser-bar' }, h('span', { class: 'xp-browser-label' }, '🌐'));
+                        const addrUrl = h('div', { class: 'xp-browser-url', html: p.url, style: { paddingLeft: '5px', display: 'flex', alignItems: 'center' } });
+                        addrBar.appendChild(addrUrl);
+                        const browserBody = h('div', { class: 'xp-browser-body xp-browser-scroll', style: { position: 'relative', display: 'flex', flexDirection: 'column', flex: '1', minHeight: '0' } });
+                        
                         const iframe = h('iframe', { 
                             src: p.url, 
                             style: { width: '100%', flex: '1', border: 'none' },
                             allow: 'fullscreen'
                         });
-                        wrap.appendChild(iframe);
-                        return wrap;
+                        browserBody.appendChild(iframe);
+                        
+                        const status = h('div', { class: 'xp-ie-status', html: 'Concluído' });
+                        
+                        browserWrap.appendChild(toolbar);
+                        browserWrap.appendChild(addrBar);
+                        browserWrap.appendChild(browserBody);
+                        browserWrap.appendChild(status);
+                        
+                        return browserWrap;
                     };
                     // Register icon for titlebar
                     ICONS.push({ id: winId, icon: 'icones/TC Explorer Shortcut.webp', label: p.name, hidden: true });
@@ -4588,6 +4603,10 @@ NUTTERTOOLS - Armas Pesadas
             profile_picture_modal: { w: '500px', h: '460px' },
         };
         const sz = WIN_SIZES[id] || {};
+        if (id.startsWith('proj_')) {
+            sz.w = '820px';
+            sz.h = '560px';
+        }
         const winW = sz.w || '440px';
         const winH = sz.h || null;
 
