@@ -1339,6 +1339,19 @@
     padding-top: 10px;
 }
 
+@media (max-width: 600px) {
+    .xp-wmp-sidebar {
+        width: 75px;
+    }
+    .xp-wmp-tab {
+        padding: 6px 4px !important;
+        font-size: 9px !important;
+    }
+    .xp-wmp-tab-arrow {
+        display: none !important;
+    }
+}
+
 .xp-wmp-tab {
     padding: 8px 10px;
     font-size: 11px;
@@ -1349,6 +1362,13 @@
     cursor: default;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+    overflow: hidden;
+}
+
+.xp-wmp-tab span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .xp-wmp-tab:hover {
