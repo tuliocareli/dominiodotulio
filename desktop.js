@@ -1843,10 +1843,23 @@
             let ytReady = false;
 
             const toolbar = h('div', {
-                class: 'xp-ie-toolbar xp-wmp-toolbar', html:
-                    '<span>Arquivo</span><span>Exibir</span><span>Tocar</span><span>Ferramentas</span><span>Ajuda</span>'
+                class: 'xp-wmp-toolbar', html:
+                    '<span>File</span><span>View</span><span>Play</span><span>Tools</span><span>Help</span>'
             });
 
+            const mainBody = h('div', { class: 'xp-wmp-main' });
+
+            const sidebar = h('div', { class: 'xp-wmp-sidebar' });
+            const tabs = ['Now Playing', 'Media Guide', 'Copy from CD', 'Media Library', 'Radio Tuner', 'Copy to CD or Device'];
+            tabs.forEach((tab, i) => {
+                const tabEl = h('div', { class: 'xp-wmp-tab' + (i === 0 ? ' active' : '') });
+                tabEl.innerHTML = `<span>${tab}</span>` + (i === 0 ? '<span class="xp-wmp-tab-arrow">▶</span>' : '');
+                sidebar.appendChild(tabEl);
+            });
+
+            const rightSide = h('div', { class: 'xp-wmp-right' });
+            const rightHeader = h('div', { class: 'xp-wmp-right-header' }, 'Now Playing');
+            
             const videoWrapper = h('div', { class: 'xp-wmp-screen-wrap' });
             // Um escudo (overlay bloqueador) por cima do iframe para impedir pausar clicando no botão do YT
             const blocker = h('div', { class: 'xp-wmp-blocker' });
@@ -1854,26 +1867,38 @@
 
             videoWrapper.appendChild(playerContainer);
             videoWrapper.appendChild(blocker);
+            
+            rightSide.appendChild(rightHeader);
+            rightSide.appendChild(videoWrapper);
+
+            mainBody.appendChild(sidebar);
+            mainBody.appendChild(rightSide);
 
             const controlsWrap = h('div', { class: 'xp-wmp-controls' });
+            const progressBarWrap = h('div', { class: 'xp-wmp-seek-wrap' });
             const progressBar = h('input', { type: 'range', class: 'xp-wmp-seek', min: 0, max: 100, value: 0 });
+            progressBarWrap.appendChild(progressBar);
 
             const btnWrap = h('div', { class: 'xp-wmp-btns' });
+            const btnPlay = h('button', { class: 'xp-wmp-btn xp-wmp-play', title: 'Play/Pause' }, '▶');
+            const btnStop = h('button', { class: 'xp-wmp-btn', title: 'Stop' }, '⏹');
             const btnPrev = h('button', { class: 'xp-wmp-btn', title: 'Anterior' }, '⏮');
-            const btnPlay = h('button', { class: 'xp-wmp-btn xp-wmp-play', title: 'Reproduzir/Pausar' }, '▶');
             const btnNext = h('button', { class: 'xp-wmp-btn', title: 'Próximo' }, '⏭');
+            const volumeIcon = h('div', { class: 'xp-wmp-vol-icon' }, '🔊');
             const timeLabel = h('div', { class: 'xp-wmp-time' }, '00:00 / 00:00');
 
-            btnWrap.appendChild(btnPrev);
             btnWrap.appendChild(btnPlay);
+            btnWrap.appendChild(btnStop);
+            btnWrap.appendChild(btnPrev);
             btnWrap.appendChild(btnNext);
+            btnWrap.appendChild(volumeIcon);
             btnWrap.appendChild(timeLabel);
 
-            controlsWrap.appendChild(progressBar);
+            controlsWrap.appendChild(progressBarWrap);
             controlsWrap.appendChild(btnWrap);
 
             wrap.appendChild(toolbar);
-            wrap.appendChild(videoWrapper);
+            wrap.appendChild(mainBody);
             wrap.appendChild(controlsWrap);
 
             const formatTime = (secs) => {
