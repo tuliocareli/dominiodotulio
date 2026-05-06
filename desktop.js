@@ -3194,8 +3194,8 @@
                 const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', scrollBehavior: 'smooth', borderRight: '1px solid #c8d5e2' } });
 
                 // Contact DP Sidebar (right side, blue-grey bg)
-                const topSidebar = h('div', { style: { width: '96px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '8px', gap: '6px' } });
-                const contactImgWrap = h('div', { style: { width: '80px', height: '80px', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
+                const topSidebar = h('div', { style: { width: '30%', minWidth: '96px', maxWidth: '140px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '8px', paddingLeft: '8px', paddingRight: '8px', gap: '6px' } });
+                const contactImgWrap = h('div', { style: { width: '100%', aspectRatio: '1', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
                 contactImgWrap.innerHTML = `<img src="${contactDP || 'DefaultDPs/Rubber Ducky.png'}" style="width:100%; height:100%; object-fit:cover;">`;
                 topSidebar.appendChild(contactImgWrap);
                 // small dropdown arrow under DP
@@ -3308,8 +3308,8 @@
                 const inputBox = h('div', { style: { flex: 1, padding: '5px', display: 'flex', flexDirection: 'column', gap: '3px' } });
 
                 // My DP Sidebar
-                const botSidebar = h('div', { style: { width: '96px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', borderLeft: '1px solid #c8d5e2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
-                const myDPWrap = h('div', { style: { width: '64px', height: '64px', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
+                const botSidebar = h('div', { style: { width: '30%', minWidth: '96px', maxWidth: '140px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', borderLeft: '1px solid #c8d5e2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingLeft: '8px', paddingRight: '8px' } });
+                const myDPWrap = h('div', { style: { width: '100%', aspectRatio: '1', maxWidth: '80px', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
                 let myDP = localStorage.getItem('tulio_msn_my_dp') || 'DefaultDPs/Rubber Ducky.png';
                 myDPWrap.innerHTML = `<img src="${myDP}" style="width:100%; height:100%; object-fit:cover;">`;
                 botSidebar.appendChild(myDPWrap);
@@ -3523,8 +3523,7 @@
                 let myStatus = localStorage.getItem('tulio_msn_my_status') || '<Digite uma mensagem pessoal>';
 
                 // ── MSN Header: butterfly logo + title ──
-                const msnHeader = h('div', { style: { background: 'linear-gradient(180deg, #6e98cf, #4a7abf)', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '6px' } });
-                msnHeader.innerHTML = `<span style="font-size:14px">🦋</span><span style="color:#fff; font-weight:bold; font-size:12px; text-shadow:0 1px 2px rgba(0,0,0,0.3)">MSN Messenger</span>`;
+                // Removida pois a janela já possui title bar nativa do OS.
 
                 // ── Menu bar ──
                 const menuBar = h('div', { style: { background: 'linear-gradient(180deg, #eef2f7, #dce3ed)', borderBottom: '1px solid #a4b4c8', padding: '2px 6px', display: 'flex', gap: '12px', fontSize: '11px', color: '#1c3a5e' } });
@@ -3641,7 +3640,6 @@
                 const botBar = h('div', { style: { background: 'linear-gradient(180deg, #d6e4f1, #b8c8da)', borderTop: '1px solid #a0b4cc', padding: '6px 10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px' } });
                 botBar.innerHTML = `<span style="font-size:12px">🦋</span><span style="font-size:10px; color:#1c3a5e; font-weight:bold;">msn</span><span style="font-size:10px; color:#ff6611; font-weight:bold">Messenger</span>`;
 
-                viewContainer.appendChild(msnHeader);
                 viewContainer.appendChild(menuBar);
                 viewContainer.appendChild(userPanel);
                 viewContainer.appendChild(listWrap);
@@ -3675,7 +3673,9 @@ Inspiração máxima nos portfolios RyoOS (Ryo Lu) e daedalOS (Dustin Brett).
 NOVIDADES DESTA VERSÃO:
 - Tulio Earth: Agora com Globo 3D (Cesium) e Street View Real (Mapillary).
 - doom.exe: Emulação x86 real rodando Doom 1 (Shareware).
-- Tulio Messenger: IA Túlio atualizada para Gemini Flash.
+- Tulio Messenger: MSN Reformulado, funcionalidade de foto de perfil e status.
+- Tulio Media Player: Layout refeito estilo Windows Media Player.
+- Tulio OS: Funcionalidade de troca de Wallpaper e Foto de Perfil.
 
 --------------------------------------------------------------------------------
 CRÉDITOS & ATRIBUIÇÕES:
