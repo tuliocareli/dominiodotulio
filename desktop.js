@@ -3034,6 +3034,7 @@
                 } else {
                     trackNameLabel.style.color = '';
                     trackNameLabel.textContent = MUSIC_DATA[currentIdx].title;
+                    localStorage.setItem('tulio_msn_my_status', "🎵 " + MUSIC_DATA[currentIdx].title);
                 }
                 updatePlaylistUI();
                 viz.childNodes.forEach(b => b.style.height = '10%');
@@ -3156,10 +3157,10 @@
                 } catch (err) { }
             };
 
-            const renderChat = (contactName, subtitle, isLets) => {
+            const renderChat = (contactName, subtitle, isLets, contactDP) => {
                 viewContainer.innerHTML = '';
 
-                const header = h('div', { style: { padding: '8px', background: '#fff', borderBottom: '1px solid #ccc', display: 'flex', alignItems: 'center', gap: '8px' } });
+                const header = h('div', { style: { padding: '8px', background: 'linear-gradient(180deg, #fff, #e4ede6)', borderBottom: '1px solid #7f9db9', display: 'flex', alignItems: 'center', gap: '8px' } });
 
                 const backBtn = h('button', { style: { padding: '2px 5px', fontSize: '10px', cursor: 'pointer' }, onclick: renderContacts }, '◀ Voltar');
                 header.appendChild(backBtn);
@@ -3170,7 +3171,20 @@
                 header.appendChild(iconWrap);
                 header.appendChild(titleInfo);
 
-                const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', borderBottom: '1px solid #ccc', scrollBehavior: 'smooth' } });
+                // Chat area wrapper
+                const chatAreaWrap = h('div', { style: { display: 'flex', flex: 1, borderBottom: '1px solid #ccc', minHeight: 0 } });
+
+                // Main Chat area
+                const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', scrollBehavior: 'smooth' } });
+
+                // Contact DP Sidebar
+                const topSidebar = h('div', { style: { width: '100px', background: '#eff3f7', borderLeft: '1px solid #ccc', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '10px' } });
+                const contactImgWrap = h('div', { style: { width: '80px', height: '80px', border: '1px solid #aaa', borderRadius: '3px', background: '#fff', padding: '2px' } });
+                contactImgWrap.innerHTML = `<img src="${contactDP || 'icones/profiles/guest.webp'}" style="width:100%; height:100%; object-fit:cover;">`;
+                topSidebar.appendChild(contactImgWrap);
+                
+                chatAreaWrap.appendChild(chatBox);
+                chatAreaWrap.appendChild(topSidebar);
 
                 // Add shake style globally if not present
                 if (!document.getElementById('msn-shake-style')) {
@@ -3234,9 +3248,9 @@
                         history.forEach(msg => {
                             if (msg.type === 'system') {
                                 appendSystemMessage(msg.text, msg.color, false);
-                            } else if (msg.sender === 'Você') {
+                            } else if (msg.sender === 'Você' || msg.sender === 'Visitante') {
                                 const msgWrap = document.createElement('div');
-                                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${escHTML(msg.text)}</div>`;
+                                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Visitante diz:</strong></div><div style="padding-left: 10px">${escHTML(msg.text)}</div>`;
                                 chatBox.appendChild(msgWrap);
                             } else {
                                 const botWrap = document.createElement('div');
@@ -3268,7 +3282,21 @@
                     } catch (e) { }
                 };
 
-                const inputBox = h('div', { style: { height: '80px', padding: '5px', background: '#ece9d8', display: 'flex', flexDirection: 'column' } });
+                // Input area wrapper
+                const inputBoxWrap = h('div', { style: { display: 'flex', height: '100px', background: '#ece9d8', borderTop: '1px solid #ccc' } });
+
+                // Input area
+                const inputBox = h('div', { style: { flex: 1, padding: '5px', display: 'flex', flexDirection: 'column', gap: '5px' } });
+
+                // My DP Sidebar
+                const botSidebar = h('div', { style: { width: '100px', borderLeft: '1px solid #ccc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
+                const myDPWrap = h('div', { style: { width: '60px', height: '60px', border: '1px solid #aaa', borderRadius: '3px', background: '#fff', padding: '2px' } });
+                let myDP = localStorage.getItem('tulio_msn_my_dp') || 'DefaultDPs/Rubber Ducky.png';
+                myDPWrap.innerHTML = `<img src="${myDP}" style="width:100%; height:100%; object-fit:cover;">`;
+                botSidebar.appendChild(myDPWrap);
+
+                inputBoxWrap.appendChild(inputBox);
+                inputBoxWrap.appendChild(botSidebar);
 
                 const toolBar = h('div', { style: { display: 'flex', gap: '8px', marginBottom: '4px', fontSize: '13px' } });
 
@@ -3392,13 +3420,37 @@
 
                     // Render User Message
                     const msgWrap = document.createElement('div');
-                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Você diz:</strong></div><div style="padding-left: 10px">${escHTML(rawMsg)}</div>`;
+                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Visitante diz:</strong></div><div style="padding-left: 10px">${escHTML(rawMsg)}</div>`;
                     chatBox.appendChild(msgWrap);
-                    history.push({ sender: 'Você', text: rawMsg });
+                    history.push({ sender: 'Visitante', text: rawMsg });
                     saveHistory();
 
                     input.value = '';
                     chatBox.scrollTop = chatBox.scrollHeight;
+
+                    if (isLets) {
+                        isWaitingReply = true;
+                        btn.disabled = true;
+                        
+                        setTimeout(() => {
+                            appendBotMessage('Oioi');
+                            isWaitingReply = false;
+                            btn.disabled = false;
+                            input.focus();
+                            
+                            setTimeout(() => {
+                                appendSystemMessage('Lets enviou um chamar a atenção!', '#000000');
+                                playNudgeSound();
+                                let win = wrap.closest('.xp-window');
+                                if (win) {
+                                    win.classList.remove('shaking');
+                                    void win.offsetWidth;
+                                    win.classList.add('shaking');
+                                }
+                            }, 1000);
+                        }, 1000);
+                        return;
+                    }
 
                     // Update State
                     sessionMsgCount++;
@@ -3440,17 +3492,76 @@
                 renderHistory();
 
                 viewContainer.appendChild(header);
-                viewContainer.appendChild(chatBox);
-                viewContainer.appendChild(inputBox);
+                viewContainer.appendChild(chatAreaWrap);
+                viewContainer.appendChild(inputBoxWrap);
             };
 
             const renderContacts = () => {
                 viewContainer.innerHTML = '';
+                
+                let myDP = localStorage.getItem('tulio_msn_my_dp') || 'DefaultDPs/Rubber Ducky.png';
+                let myStatus = localStorage.getItem('tulio_msn_my_status') || '<Digite uma mensagem pessoal>';
 
-                // Contact List UI
-                const topBar = h('div', { style: { background: 'linear-gradient(180deg, #fff, #e4ede6)', borderBottom: '1px solid #7f9db9', padding: '10px', display: 'flex', gap: '10px', alignItems: 'center' } });
-                topBar.innerHTML = `<div style="width:40px; height:40px; border:1px solid #aaa; border-radius:3px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:20px">👤</div>
-                                    <div><strong style="color:#000; font-size:12px; font-weight:bold;">Você (Online) <span style="font-size:10px;color:#008000">▼</span></strong><br><span style="color:#666; font-size:10px">&lt;Digite uma mensagem pessoal&gt;</span></div>`;
+                const topBar = h('div', { style: { background: 'linear-gradient(180deg, #fff, #e4ede6)', borderBottom: '1px solid #7f9db9', padding: '10px', display: 'flex', gap: '10px', alignItems: 'center', position: 'relative' } });
+                
+                const dpWrap = h('div', { style: { width:'40px', height:'40px', border:'1px solid #aaa', borderRadius:'3px', background:'#fff', overflow:'hidden', cursor:'pointer', padding: '2px' } });
+                const dpImg = h('img', { src: myDP, style: { width:'100%', height:'100%', objectFit:'cover' } });
+                dpWrap.appendChild(dpImg);
+                
+                dpWrap.onclick = () => {
+                    if (viewContainer.querySelector('.dp-selector')) {
+                        viewContainer.querySelector('.dp-selector').remove();
+                        return;
+                    }
+                    const selectWrap = h('div', { className: 'dp-selector', style: { position:'absolute', top:'60px', left:'10px', background:'#fff', border:'1px solid #7f9db9', zIndex:100, display:'grid', gridTemplateColumns:'repeat(4, 40px)', gap:'5px', padding:'5px', boxShadow:'2px 2px 5px rgba(0,0,0,0.5)' } });
+                    const dps = ['Beach Chairs.png','Chess Pieces.png','Dirt Bike.png','Friendly Dog.png','Orange Daisy.png','Palm Trees.png','Rocket Launch.png','Rubber Ducky.png','Running Horses.png','Skateboarder.png','Soccer Ball.png'];
+                    dps.forEach(dp => {
+                        const img = h('img', { src: 'DefaultDPs/' + dp, style: { width:'40px', height:'40px', cursor:'pointer', border:'1px solid #ccc' } });
+                        img.onclick = () => {
+                            localStorage.setItem('tulio_msn_my_dp', 'DefaultDPs/' + dp);
+                            renderContacts();
+                        };
+                        selectWrap.appendChild(img);
+                    });
+                    const closeBtn = h('div', { style: { gridColumn:'span 4', textAlign:'center', cursor:'pointer', fontSize:'10px', background:'#eee', padding:'2px', marginTop:'5px', border: '1px solid #ccc' }, onclick: () => selectWrap.remove() }, 'Fechar');
+                    selectWrap.appendChild(closeBtn);
+                    viewContainer.appendChild(selectWrap);
+                };
+
+                const infoWrap = h('div', { style: { flex: 1 } });
+                infoWrap.innerHTML = `<strong style="color:#000; font-size:12px; font-weight:bold;">Visitante (Online) <span style="font-size:10px;color:#008000">▼</span></strong><br>`;
+                
+                const statusSpan = h('span', { style: { color:'#666', fontSize:'10px', cursor:'pointer', display: 'inline-block', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }, title: 'Clique para alterar' });
+                statusSpan.textContent = myStatus;
+                statusSpan.onclick = () => {
+                    const newStatus = prompt("Digite seu status:", myStatus === '<Digite uma mensagem pessoal>' ? '' : myStatus);
+                    if (newStatus !== null) {
+                        const finalStatus = newStatus.trim() || '<Digite uma mensagem pessoal>';
+                        localStorage.setItem('tulio_msn_my_status', finalStatus);
+                        statusSpan.textContent = finalStatus;
+                        // Trigger an event to let TulioAMP know, though the prompt asked to sync from TulioAMP... wait.
+                        // "E ele pode escrever um status ali ou escolher uma das musicas que estão no TulioAMP pra deixar lá no status. e essa mudança também fica salva na memo".
+                        // Wait, to keep it simple, they can type whatever they want, and if they change it, we save it.
+                        // If they play a song in TulioAMP, it updates the localStorage and updates the status.
+                    }
+                };
+                infoWrap.appendChild(statusSpan);
+
+                // Check interval for status changes from TulioAMP
+                const checkStatusInterval = setInterval(() => {
+                    if (!document.body.contains(statusSpan)) {
+                        clearInterval(checkStatusInterval);
+                        return;
+                    }
+                    const latestStatus = localStorage.getItem('tulio_msn_my_status') || '<Digite uma mensagem pessoal>';
+                    if (statusSpan.textContent !== latestStatus) {
+                        statusSpan.textContent = latestStatus;
+                        myStatus = latestStatus;
+                    }
+                }, 1000);
+
+                topBar.appendChild(dpWrap);
+                topBar.appendChild(infoWrap);
 
                 const listWrap = h('div', { style: { flex: 1, background: '#fff', overflowY: 'auto', padding: '10px 0' } });
 
@@ -3459,16 +3570,16 @@
                 grpOnline.innerHTML = `<div style="padding: 2px 10px; font-weight:bold; color:#1c4b9e; border-bottom: 1px solid #eee; margin-bottom:5px; font-size:11px">Amigos e Família (2/5)</div>`;
 
                 const btnTulio = h('div', { style: { padding: '5px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
-                btnTulio.innerHTML = `<div style="width:10px; height:10px; background:#0c0; border-radius:50%; box-shadow:inset -2px -2px 4px rgba(0,0,0,0.3)"></div> <div><strong style="color:#000">Túlio</strong> <span style="color:#888">- "Bora CS?"</span></div>`;
+                btnTulio.innerHTML = `<img src="icones xp resized/MSN OUT.webp" style="width:14px"> <div><strong style="color:#000">Túlio</strong> <span style="color:#888">- "Bora CS?"</span></div>`;
                 btnTulio.onmouseover = () => btnTulio.style.background = '#eef3fc';
                 btnTulio.onmouseout = () => btnTulio.style.background = 'transparent';
-                btnTulio.onclick = () => renderChat('Túlio', '"Bora CS?"', false);
+                btnTulio.onclick = () => renderChat('Túlio', '"Bora CS?"', false, 'DefaultDPs/Skateboarder.png');
 
                 const btnLets = h('div', { style: { padding: '5px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
-                btnLets.innerHTML = `<div style="width:10px; height:10px; background:#0c0; border-radius:50%; box-shadow:inset -2px -2px 4px rgba(0,0,0,0.3)"></div> <div><strong style="color:#000">Lets</strong> <span style="color:#888">- "Naquelas longas noites em claro..."</span></div>`;
+                btnLets.innerHTML = `<img src="icones xp resized/MSN OUT.webp" style="width:14px"> <div><strong style="color:#000">Lets</strong> <span style="color:#888">- "Naquelas longas noites em claro..."</span></div>`;
                 btnLets.onmouseover = () => btnLets.style.background = '#eef3fc';
                 btnLets.onmouseout = () => btnLets.style.background = 'transparent';
-                btnLets.onclick = () => renderChat('Lets', '"Naquelas longas noites em claro..."', true);
+                btnLets.onclick = () => renderChat('Lets', '"Naquelas longas noites em claro..."', true, 'DefaultDPs/Orange Daisy.png');
 
                 grpOnline.appendChild(btnTulio);
                 grpOnline.appendChild(btnLets);
@@ -3479,7 +3590,7 @@
 
                 ['Calazdroid', 'JubaJubs86', 'ZedTHPS'].forEach(name => {
                     const offC = h('div', { style: { padding: '5px 15px', display: 'flex', alignItems: 'center', gap: '8px', color: '#888', fontSize: '11px' } });
-                    offC.innerHTML = `<div style="width:10px; height:10px; background:#ccc; border-radius:50%"></div> <span>${name}</span>`;
+                    offC.innerHTML = `<img src="icones xp resized/MSN OUT.webp" style="width:14px; opacity:0.5; filter:grayscale(100%)"> <span>${name}</span>`;
                     grpOffline.appendChild(offC);
                 });
 
@@ -3528,6 +3639,7 @@ CRÉDITOS & ATRIBUIÇÕES:
 
 Ícones do Windows XP — Microsoft Corporation, recriados por marchmountain.
 Imagens do Windows XP (wallpapers, perfil, msn) — WindowsAesthetics.
+Fotos do MSN (Avatares) — TReKiE.
 Ícone do LimeWire — Lime Wire LLC.
 Ícone do Nero Burning ROM — Nero AG.
 Ícone do Winamp — Nullsoft / Radionomy Group.
