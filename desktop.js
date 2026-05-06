@@ -3132,7 +3132,7 @@
         },
 
         messenger: () => {
-            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#f5f5f5', fontFamily: 'Tahoma' } });
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: 'linear-gradient(180deg, #d6dfe8, #bcc8d6)', fontFamily: 'Tahoma, Segoe UI, sans-serif', fontSize: '11px' } });
 
             const viewContainer = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' } });
             wrap.appendChild(viewContainer);
@@ -3160,28 +3160,47 @@
             const renderChat = (contactName, subtitle, isLets, contactDP) => {
                 viewContainer.innerHTML = '';
 
-                const header = h('div', { style: { padding: '8px', background: 'linear-gradient(180deg, #fff, #e4ede6)', borderBottom: '1px solid #7f9db9', display: 'flex', alignItems: 'center', gap: '8px' } });
+                // ── MSN Chat Toolbar (Invite, Send Files, etc) ──
+                const chatToolbar = h('div', { style: { background: 'linear-gradient(180deg, #e8eef6, #c8d4e4)', borderBottom: '1px solid #a0b4cc', padding: '4px 8px', display: 'flex', gap: '14px', alignItems: 'center' } });
+                const toolbarItems = [
+                    { icon: '👥', label: 'Invite' },
+                    { icon: '📁', label: 'Send Files' },
+                    { icon: '🎤', label: 'Voice' },
+                    { icon: '🎮', label: 'Activities' },
+                    { icon: '🎯', label: 'Games' }
+                ];
+                toolbarItems.forEach(t => {
+                    const item = h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', fontSize: '8px', color: '#1c3a5e', gap: '1px' } });
+                    item.innerHTML = `<span style="font-size:16px">${t.icon}</span><span>${t.label}</span>`;
+                    item.onmouseover = () => { item.style.background = '#d6e6f5'; item.style.borderRadius = '3px'; };
+                    item.onmouseout = () => { item.style.background = 'transparent'; };
+                    chatToolbar.appendChild(item);
+                });
+                // MSN butterfly in center
+                const butterflyCenter = h('div', { style: { flex: 1, textAlign: 'center' } });
+                butterflyCenter.innerHTML = `<span style="font-size:18px">🦋</span>`;
+                chatToolbar.appendChild(butterflyCenter);
 
-                const backBtn = h('button', { style: { padding: '2px 5px', fontSize: '10px', cursor: 'pointer' }, onclick: renderContacts }, '◀ Voltar');
-                header.appendChild(backBtn);
-
-                const titleInfo = h('div', { html: `<h3 style="margin:0; font-size:12px; color:#1c4b9e">${contactName}</h3><p style="margin:0; font-size:10px; color:#666">${subtitle}</p>` });
-
-                const iconWrap = h('span', { style: { fontSize: '20px' } }, '💬');
-                header.appendChild(iconWrap);
-                header.appendChild(titleInfo);
+                // ── To: header ──
+                const header = h('div', { style: { padding: '5px 10px', background: '#fff', borderBottom: '1px solid #c8d5e2', fontSize: '11px', color: '#333' } });
+                header.innerHTML = `<span style="color:#666">To:</span> <strong>${contactName}</strong> <span style="color:#888">${subtitle}</span>`;
+                const backBtn = h('button', { style: { float: 'right', padding: '1px 6px', fontSize: '9px', cursor: 'pointer', background: 'linear-gradient(180deg, #f0f4fa, #d6e0ec)', border: '1px solid #a0b4cc', borderRadius: '2px', color: '#1c3a5e' }, onclick: renderContacts }, '◀ Voltar');
+                header.prepend(backBtn);
 
                 // Chat area wrapper
-                const chatAreaWrap = h('div', { style: { display: 'flex', flex: 1, borderBottom: '1px solid #ccc', minHeight: 0 } });
+                const chatAreaWrap = h('div', { style: { display: 'flex', flex: 1, minHeight: 0 } });
 
                 // Main Chat area
-                const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', scrollBehavior: 'smooth' } });
+                const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', scrollBehavior: 'smooth', borderRight: '1px solid #c8d5e2' } });
 
-                // Contact DP Sidebar
-                const topSidebar = h('div', { style: { width: '100px', background: '#eff3f7', borderLeft: '1px solid #ccc', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '10px' } });
-                const contactImgWrap = h('div', { style: { width: '80px', height: '80px', border: '1px solid #aaa', borderRadius: '3px', background: '#fff', padding: '2px' } });
-                contactImgWrap.innerHTML = `<img src="${contactDP || 'icones/profiles/guest.webp'}" style="width:100%; height:100%; object-fit:cover;">`;
+                // Contact DP Sidebar (right side, blue-grey bg)
+                const topSidebar = h('div', { style: { width: '96px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '8px', gap: '6px' } });
+                const contactImgWrap = h('div', { style: { width: '80px', height: '80px', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
+                contactImgWrap.innerHTML = `<img src="${contactDP || 'DefaultDPs/Rubber Ducky.png'}" style="width:100%; height:100%; object-fit:cover;">`;
                 topSidebar.appendChild(contactImgWrap);
+                // small dropdown arrow under DP
+                const dpArrow = h('div', { style: { width: '14px', height: '14px', background: 'linear-gradient(180deg,#eef2f7,#dce3ed)', border: '1px solid #a0b4cc', borderRadius: '2px', textAlign: 'center', lineHeight: '12px', fontSize: '8px', cursor: 'pointer', color: '#6e98cf' } }, '▼');
+                topSidebar.appendChild(dpArrow);
                 
                 chatAreaWrap.appendChild(chatBox);
                 chatAreaWrap.appendChild(topSidebar);
@@ -3283,14 +3302,14 @@
                 };
 
                 // Input area wrapper
-                const inputBoxWrap = h('div', { style: { display: 'flex', height: '100px', background: '#ece9d8', borderTop: '1px solid #ccc' } });
+                const inputBoxWrap = h('div', { style: { display: 'flex', height: '110px', background: 'linear-gradient(180deg, #e8eef6, #d6dfe8)', borderTop: '1px solid #a0b4cc' } });
 
                 // Input area
-                const inputBox = h('div', { style: { flex: 1, padding: '5px', display: 'flex', flexDirection: 'column', gap: '5px' } });
+                const inputBox = h('div', { style: { flex: 1, padding: '5px', display: 'flex', flexDirection: 'column', gap: '3px' } });
 
                 // My DP Sidebar
-                const botSidebar = h('div', { style: { width: '100px', borderLeft: '1px solid #ccc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
-                const myDPWrap = h('div', { style: { width: '60px', height: '60px', border: '1px solid #aaa', borderRadius: '3px', background: '#fff', padding: '2px' } });
+                const botSidebar = h('div', { style: { width: '96px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', borderLeft: '1px solid #c8d5e2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } });
+                const myDPWrap = h('div', { style: { width: '64px', height: '64px', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
                 let myDP = localStorage.getItem('tulio_msn_my_dp') || 'DefaultDPs/Rubber Ducky.png';
                 myDPWrap.innerHTML = `<img src="${myDP}" style="width:100%; height:100%; object-fit:cover;">`;
                 botSidebar.appendChild(myDPWrap);
@@ -3298,7 +3317,7 @@
                 inputBoxWrap.appendChild(inputBox);
                 inputBoxWrap.appendChild(botSidebar);
 
-                const toolBar = h('div', { style: { display: 'flex', gap: '8px', marginBottom: '4px', fontSize: '13px' } });
+                const toolBar = h('div', { style: { display: 'flex', gap: '8px', marginBottom: '2px', fontSize: '13px', padding: '2px 0' } });
 
                 // Emoticons Button
                 const btnEmoji = h('span', { style: { cursor: 'pointer', position: 'relative' }, title: 'Emoticons' }, '😊');
@@ -3372,9 +3391,9 @@
                 toolBar.appendChild(btnEmoji);
                 toolBar.appendChild(btnNudge);
 
-                const form = h('form', { style: { display: 'flex', gap: '5px', flex: 1 } });
-                const input = h('input', { type: 'text', style: { flex: 1, border: '1px solid #7f9db9', padding: '4px' }, placeholder: 'Escreva uma mensagem...' });
-                const btn = h('button', { type: 'submit', style: { padding: '0 15px', fontFamily: 'Tahoma' } }, 'Enviar');
+                const form = h('form', { style: { display: 'flex', gap: '4px', flex: 1 } });
+                const input = h('input', { type: 'text', style: { flex: 1, border: '1px solid #8ba7c8', padding: '4px', fontSize: '11px', fontFamily: 'Tahoma', borderRadius: '2px' }, placeholder: 'Escreva uma mensagem...' });
+                const btn = h('button', { type: 'submit', style: { padding: '2px 14px', fontFamily: 'Tahoma', fontSize: '11px', background: 'linear-gradient(180deg, #f0f4fa, #d6e0ec)', border: '1px solid #8ba7c8', borderRadius: '2px', cursor: 'pointer', color: '#1c3a5e' } }, 'Send');
 
                 form.appendChild(input);
                 form.appendChild(btn);
@@ -3491,6 +3510,7 @@
 
                 renderHistory();
 
+                viewContainer.appendChild(chatToolbar);
                 viewContainer.appendChild(header);
                 viewContainer.appendChild(chatAreaWrap);
                 viewContainer.appendChild(inputBoxWrap);
@@ -3502,9 +3522,23 @@
                 let myDP = localStorage.getItem('tulio_msn_my_dp') || 'DefaultDPs/Rubber Ducky.png';
                 let myStatus = localStorage.getItem('tulio_msn_my_status') || '<Digite uma mensagem pessoal>';
 
-                const topBar = h('div', { style: { background: 'linear-gradient(180deg, #fff, #e4ede6)', borderBottom: '1px solid #7f9db9', padding: '10px', display: 'flex', gap: '10px', alignItems: 'center', position: 'relative' } });
+                // ── MSN Header: butterfly logo + title ──
+                const msnHeader = h('div', { style: { background: 'linear-gradient(180deg, #6e98cf, #4a7abf)', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '6px' } });
+                msnHeader.innerHTML = `<span style="font-size:14px">🦋</span><span style="color:#fff; font-weight:bold; font-size:12px; text-shadow:0 1px 2px rgba(0,0,0,0.3)">MSN Messenger</span>`;
+
+                // ── Menu bar ──
+                const menuBar = h('div', { style: { background: 'linear-gradient(180deg, #eef2f7, #dce3ed)', borderBottom: '1px solid #a4b4c8', padding: '2px 6px', display: 'flex', gap: '12px', fontSize: '11px', color: '#1c3a5e' } });
+                ['File', 'Contacts', 'Actions', 'Tools', 'Help'].forEach(m => {
+                    const item = h('span', { style: { cursor: 'pointer', padding: '1px 3px' } }, m);
+                    item.onmouseover = () => { item.style.background = '#c1d2ee'; item.style.borderRadius = '2px'; };
+                    item.onmouseout = () => { item.style.background = 'transparent'; };
+                    menuBar.appendChild(item);
+                });
+
+                // ── User panel (DP + name + status) ──
+                const userPanel = h('div', { style: { background: 'linear-gradient(180deg, #d6e4f1, #c4d4e8)', padding: '10px', display: 'flex', gap: '10px', alignItems: 'center', borderBottom: '1px solid #a0b4cc', position: 'relative' } });
                 
-                const dpWrap = h('div', { style: { width:'40px', height:'40px', border:'1px solid #aaa', borderRadius:'3px', background:'#fff', overflow:'hidden', cursor:'pointer', padding: '2px' } });
+                const dpWrap = h('div', { style: { width:'50px', height:'50px', border:'2px solid #8ba7c8', borderRadius:'3px', background:'#fff', overflow:'hidden', cursor:'pointer', padding: '1px', flexShrink: 0 } });
                 const dpImg = h('img', { src: myDP, style: { width:'100%', height:'100%', objectFit:'cover' } });
                 dpWrap.appendChild(dpImg);
                 
@@ -3513,25 +3547,29 @@
                         viewContainer.querySelector('.dp-selector').remove();
                         return;
                     }
-                    const selectWrap = h('div', { className: 'dp-selector', style: { position:'absolute', top:'60px', left:'10px', background:'#fff', border:'1px solid #7f9db9', zIndex:100, display:'grid', gridTemplateColumns:'repeat(4, 40px)', gap:'5px', padding:'5px', boxShadow:'2px 2px 5px rgba(0,0,0,0.5)' } });
+                    const selectWrap = h('div', { className: 'dp-selector', style: { position:'absolute', top:'70px', left:'10px', background:'#fff', border:'2px solid #6e98cf', zIndex:100, display:'grid', gridTemplateColumns:'repeat(4, 50px)', gap:'4px', padding:'8px', boxShadow:'2px 2px 8px rgba(0,0,0,0.35)', borderRadius: '3px' } });
                     const dps = ['Beach Chairs.png','Chess Pieces.png','Dirt Bike.png','Friendly Dog.png','Orange Daisy.png','Palm Trees.png','Rocket Launch.png','Rubber Ducky.png','Running Horses.png','Skateboarder.png','Soccer Ball.png'];
                     dps.forEach(dp => {
-                        const img = h('img', { src: 'DefaultDPs/' + dp, style: { width:'40px', height:'40px', cursor:'pointer', border:'1px solid #ccc' } });
+                        const img = h('img', { src: 'DefaultDPs/' + dp, style: { width:'50px', height:'50px', cursor:'pointer', border:'1px solid #b0c4de', borderRadius:'2px' } });
+                        img.onmouseover = () => { img.style.borderColor = '#4a7abf'; img.style.boxShadow = '0 0 4px rgba(74,122,191,0.5)'; };
+                        img.onmouseout = () => { img.style.borderColor = '#b0c4de'; img.style.boxShadow = 'none'; };
                         img.onclick = () => {
                             localStorage.setItem('tulio_msn_my_dp', 'DefaultDPs/' + dp);
                             renderContacts();
                         };
                         selectWrap.appendChild(img);
                     });
-                    const closeBtn = h('div', { style: { gridColumn:'span 4', textAlign:'center', cursor:'pointer', fontSize:'10px', background:'#eee', padding:'2px', marginTop:'5px', border: '1px solid #ccc' }, onclick: () => selectWrap.remove() }, 'Fechar');
+                    const closeBtn = h('div', { style: { gridColumn:'span 4', textAlign:'center', cursor:'pointer', fontSize:'10px', background:'linear-gradient(180deg, #eef2f7, #dce3ed)', padding:'3px', marginTop:'4px', border: '1px solid #a0b4cc', borderRadius:'2px', color:'#1c3a5e' }, onclick: () => selectWrap.remove() }, 'Fechar');
                     selectWrap.appendChild(closeBtn);
                     viewContainer.appendChild(selectWrap);
                 };
 
-                const infoWrap = h('div', { style: { flex: 1 } });
-                infoWrap.innerHTML = `<strong style="color:#000; font-size:12px; font-weight:bold;">Visitante (Online) <span style="font-size:10px;color:#008000">▼</span></strong><br>`;
-                
-                const statusSpan = h('span', { style: { color:'#666', fontSize:'10px', cursor:'pointer', display: 'inline-block', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }, title: 'Clique para alterar' });
+                const infoWrap = h('div', { style: { flex: 1, minWidth: 0 } });
+                const nameRow = h('div', { style: { display: 'flex', alignItems: 'center', gap: '4px' } });
+                nameRow.innerHTML = `<span style="color:#1c3a5e; font-size:13px; font-weight:bold;">Visitante</span> <span style="color:#4a8a3c; font-size:10px">(Online)</span> <span style="font-size:8px; color:#6e98cf; cursor:pointer">▼</span>`;
+                infoWrap.appendChild(nameRow);
+
+                const statusSpan = h('span', { style: { color:'#7a8a9c', fontSize:'10px', cursor:'pointer', display:'block', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', fontStyle:'italic', marginTop:'2px' }, title: 'Clique para alterar' });
                 statusSpan.textContent = myStatus;
                 statusSpan.onclick = () => {
                     const newStatus = prompt("Digite seu status:", myStatus === '<Digite uma mensagem pessoal>' ? '' : myStatus);
@@ -3539,10 +3577,6 @@
                         const finalStatus = newStatus.trim() || '<Digite uma mensagem pessoal>';
                         localStorage.setItem('tulio_msn_my_status', finalStatus);
                         statusSpan.textContent = finalStatus;
-                        // Trigger an event to let TulioAMP know, though the prompt asked to sync from TulioAMP... wait.
-                        // "E ele pode escrever um status ali ou escolher uma das musicas que estão no TulioAMP pra deixar lá no status. e essa mudança também fica salva na memo".
-                        // Wait, to keep it simple, they can type whatever they want, and if they change it, we save it.
-                        // If they play a song in TulioAMP, it updates the localStorage and updates the status.
                     }
                 };
                 infoWrap.appendChild(statusSpan);
@@ -3560,47 +3594,56 @@
                     }
                 }, 1000);
 
-                topBar.appendChild(dpWrap);
-                topBar.appendChild(infoWrap);
+                userPanel.appendChild(dpWrap);
+                userPanel.appendChild(infoWrap);
 
-                const listWrap = h('div', { style: { flex: 1, background: '#fff', overflowY: 'auto', padding: '10px 0' } });
+                // ── Contact list area ──
+                const listWrap = h('div', { style: { flex: 1, background: '#fff', overflowY: 'auto', padding: '0', borderLeft: '1px solid #c8d5e2', borderRight: '1px solid #c8d5e2' } });
 
                 // Online Group
-                const grpOnline = h('div', { style: {} });
-                grpOnline.innerHTML = `<div style="padding: 2px 10px; font-weight:bold; color:#1c4b9e; border-bottom: 1px solid #eee; margin-bottom:5px; font-size:11px">Amigos e Família (2/5)</div>`;
+                const grpOnlineHeader = h('div', { style: { padding: '4px 10px', fontWeight:'bold', color:'#1c3a5e', fontSize:'11px', background:'linear-gradient(180deg, #eef3fa, #dce6f0)', borderBottom:'1px solid #c8d5e2', cursor:'pointer', display:'flex', alignItems:'center', gap:'4px' } });
+                grpOnlineHeader.innerHTML = `<span style="font-size:8px">▼</span> Amigos e Família (2/5)`;
 
-                const btnTulio = h('div', { style: { padding: '5px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
-                btnTulio.innerHTML = `<img src="icones xp resized/MSN OUT.webp" style="width:14px"> <div><strong style="color:#000">Túlio</strong> <span style="color:#888">- "Bora CS?"</span></div>`;
-                btnTulio.onmouseover = () => btnTulio.style.background = '#eef3fc';
-                btnTulio.onmouseout = () => btnTulio.style.background = 'transparent';
-                btnTulio.onclick = () => renderChat('Túlio', '"Bora CS?"', false, 'DefaultDPs/Skateboarder.png');
+                const makeContact = (name, status, dp, isOnline, clickFn) => {
+                    const row = h('div', { style: { padding: '4px 10px 4px 22px', cursor: isOnline ? 'pointer' : 'default', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
+                    const dot = `<img src="icones xp resized/MSN OUT.webp" style="width:16px; height:16px;${isOnline ? '' : ' opacity:0.4; filter:grayscale(100%)'}">`;
+                    const nameStyle = isOnline ? 'color:#000; font-weight:normal' : 'color:#999';
+                    const statusPart = status ? ` <span style="color:#888; font-style:italic">- ${status}</span>` : '';
+                    row.innerHTML = `${dot} <span style="${nameStyle}">${name}${statusPart}</span>`;
+                    if (isOnline && clickFn) {
+                        row.onmouseover = () => { row.style.background = '#d6e6f5'; };
+                        row.onmouseout = () => { row.style.background = 'transparent'; };
+                        row.ondblclick = clickFn;
+                        row.onclick = clickFn;
+                    }
+                    return row;
+                };
 
-                const btnLets = h('div', { style: { padding: '5px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' } });
-                btnLets.innerHTML = `<img src="icones xp resized/MSN OUT.webp" style="width:14px"> <div><strong style="color:#000">Lets</strong> <span style="color:#888">- "Naquelas longas noites em claro..."</span></div>`;
-                btnLets.onmouseover = () => btnLets.style.background = '#eef3fc';
-                btnLets.onmouseout = () => btnLets.style.background = 'transparent';
-                btnLets.onclick = () => renderChat('Lets', '"Naquelas longas noites em claro..."', true, 'DefaultDPs/Orange Daisy.png');
-
-                grpOnline.appendChild(btnTulio);
-                grpOnline.appendChild(btnLets);
+                const grpOnline = h('div');
+                grpOnline.appendChild(grpOnlineHeader);
+                grpOnline.appendChild(makeContact('Túlio', '"Bora CS?"', null, true, () => renderChat('Túlio', '"Bora CS?"', false, 'DefaultDPs/Skateboarder.png')));
+                grpOnline.appendChild(makeContact('Lets', '"Naquelas longas noites em claro..."', null, true, () => renderChat('Lets', '"Naquelas longas noites em claro..."', true, 'DefaultDPs/Orange Daisy.png')));
 
                 // Offline Group
-                const grpOffline = h('div', { style: { marginTop: '10px' } });
-                grpOffline.innerHTML = `<div style="padding: 2px 10px; font-weight:bold; color:#888; border-bottom: 1px solid #eee; margin-bottom:5px; font-size:11px">Offline (3)</div>`;
+                const grpOfflineHeader = h('div', { style: { padding: '4px 10px', fontWeight:'bold', color:'#999', fontSize:'11px', background:'linear-gradient(180deg, #f0f0f0, #e6e6e6)', borderBottom:'1px solid #d5d5d5', borderTop:'1px solid #d5d5d5', cursor:'pointer', display:'flex', alignItems:'center', gap:'4px', marginTop:'2px' } });
+                grpOfflineHeader.innerHTML = `<span style="font-size:8px">▼</span> Offline (3)`;
 
+                const grpOffline = h('div');
+                grpOffline.appendChild(grpOfflineHeader);
                 ['Calazdroid', 'JubaJubs86', 'ZedTHPS'].forEach(name => {
-                    const offC = h('div', { style: { padding: '5px 15px', display: 'flex', alignItems: 'center', gap: '8px', color: '#888', fontSize: '11px' } });
-                    offC.innerHTML = `<img src="icones xp resized/MSN OUT.webp" style="width:14px; opacity:0.5; filter:grayscale(100%)"> <span>${name}</span>`;
-                    grpOffline.appendChild(offC);
+                    grpOffline.appendChild(makeContact(name, null, null, false));
                 });
 
                 listWrap.appendChild(grpOnline);
                 listWrap.appendChild(grpOffline);
 
-                const botBar = h('div', { style: { background: '#ece9d8', borderTop: '1px solid #c0c0c0', padding: '5px', textAlign: 'center', fontSize: '10px', color: '#1c4b9e', cursor: 'pointer' } });
-                botBar.textContent = "CHAT Today -> Descubra seu horóscopo!";
+                // ── Bottom branding bar ──
+                const botBar = h('div', { style: { background: 'linear-gradient(180deg, #d6e4f1, #b8c8da)', borderTop: '1px solid #a0b4cc', padding: '6px 10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px' } });
+                botBar.innerHTML = `<span style="font-size:12px">🦋</span><span style="font-size:10px; color:#1c3a5e; font-weight:bold;">msn</span><span style="font-size:10px; color:#ff6611; font-weight:bold">Messenger</span>`;
 
-                viewContainer.appendChild(topBar);
+                viewContainer.appendChild(msnHeader);
+                viewContainer.appendChild(menuBar);
+                viewContainer.appendChild(userPanel);
                 viewContainer.appendChild(listWrap);
                 viewContainer.appendChild(botBar);
             };
@@ -4725,7 +4768,7 @@ NUTTERTOOLS - Armas Pesadas
             calculator: { w: '260px', h: '340px' },
             minesweeper: { w: '220px' },
             burningrom: { w: '480px', h: '420px' },
-            messenger: { w: '480px', h: '380px' },
+            messenger: { w: '340px', h: '560px' },
             winamp: { w: '280px', h: '580px' },
             wordpad: { w: '440px', h: '400px' },
             readme: { w: '500px', h: '400px' },
