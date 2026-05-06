@@ -3137,385 +3137,6 @@
             const viewContainer = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' } });
             wrap.appendChild(viewContainer);
 
-            const playNudgeSound = () => {
-                try {
-                    const C = window.AudioContext || window.webkitAudioContext;
-                    if (C) {
-                        const c = new C();
-                        const g = c.createGain();
-                        const o = c.createOscillator();
-                        o.type = 'triangle';
-                        o.frequency.setValueAtTime(150, c.currentTime);
-                        o.frequency.exponentialRampToValueAtTime(40, c.currentTime + 0.3);
-                        g.gain.setValueAtTime(1, c.currentTime);
-                        g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.3);
-                        o.connect(g);
-                        g.connect(c.destination);
-                        o.start();
-                        o.stop(c.currentTime + 0.4);
-                    }
-                } catch (err) { }
-            };
-
-            const renderChat = (contactName, subtitle, isLets, contactDP) => {
-                viewContainer.innerHTML = '';
-
-                // ── MSN Chat Toolbar (Invite, Send Files, etc) ──
-                const chatToolbar = h('div', { style: { background: 'linear-gradient(180deg, #e8eef6, #c8d4e4)', borderBottom: '1px solid #a0b4cc', padding: '4px 8px', display: 'flex', gap: '14px', alignItems: 'center' } });
-                const toolbarItems = [
-                    { icon: '👥', label: 'Invite' },
-                    { icon: '📁', label: 'Send Files' },
-                    { icon: '🎤', label: 'Voice' },
-                    { icon: '🎮', label: 'Activities' },
-                    { icon: '🎯', label: 'Games' }
-                ];
-                toolbarItems.forEach(t => {
-                    const item = h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', fontSize: '8px', color: '#1c3a5e', gap: '1px' } });
-                    item.innerHTML = `<span style="font-size:16px">${t.icon}</span><span>${t.label}</span>`;
-                    item.onmouseover = () => { item.style.background = '#d6e6f5'; item.style.borderRadius = '3px'; };
-                    item.onmouseout = () => { item.style.background = 'transparent'; };
-                    chatToolbar.appendChild(item);
-                });
-                // MSN butterfly in center
-                const butterflyCenter = h('div', { style: { flex: 1, textAlign: 'center' } });
-                butterflyCenter.innerHTML = `<span style="font-size:18px">🦋</span>`;
-                chatToolbar.appendChild(butterflyCenter);
-
-                // ── To: header ──
-                const header = h('div', { style: { padding: '5px 10px', background: '#fff', borderBottom: '1px solid #c8d5e2', fontSize: '11px', color: '#333' } });
-                header.innerHTML = `<span style="color:#666">To:</span> <strong>${contactName}</strong> <span style="color:#888">${subtitle}</span>`;
-                const backBtn = h('button', { style: { float: 'right', padding: '1px 6px', fontSize: '9px', cursor: 'pointer', background: 'linear-gradient(180deg, #f0f4fa, #d6e0ec)', border: '1px solid #a0b4cc', borderRadius: '2px', color: '#1c3a5e' }, onclick: renderContacts }, '◀ Voltar');
-                header.prepend(backBtn);
-
-                // Chat area wrapper
-                const chatAreaWrap = h('div', { style: { display: 'flex', flex: 1, minHeight: 0 } });
-
-                // Main Chat area
-                const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', scrollBehavior: 'smooth', borderRight: '1px solid #c8d5e2' } });
-
-                // Contact DP Sidebar (right side, blue-grey bg)
-                const topSidebar = h('div', { style: { width: '30%', minWidth: '96px', maxWidth: '140px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '8px', paddingLeft: '8px', paddingRight: '8px', gap: '6px' } });
-                const contactImgWrap = h('div', { style: { width: '100%', aspectRatio: '1', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
-                contactImgWrap.innerHTML = `<img src="${contactDP || 'DefaultDPs/Rubber Ducky.png'}" style="width:100%; height:100%; object-fit:cover;">`;
-                topSidebar.appendChild(contactImgWrap);
-                // small dropdown arrow under DP
-                const dpArrow = h('div', { style: { width: '14px', height: '14px', background: 'linear-gradient(180deg,#eef2f7,#dce3ed)', border: '1px solid #a0b4cc', borderRadius: '2px', textAlign: 'center', lineHeight: '12px', fontSize: '8px', cursor: 'pointer', color: '#6e98cf' } }, '▼');
-                topSidebar.appendChild(dpArrow);
-                
-                chatAreaWrap.appendChild(chatBox);
-                chatAreaWrap.appendChild(topSidebar);
-
-                // Add shake style globally if not present
-                if (!document.getElementById('msn-shake-style')) {
-                    const style = document.createElement('style');
-                    style.id = 'msn-shake-style';
-                    style.textContent = `
-                        @keyframes msn-shake {
-                            0% { transform: translate(1px, 1px) rotate(0deg); }
-                            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-                            20% { transform: translate(-3px, 0px) rotate(1deg); }
-                            30% { transform: translate(3px, 2px) rotate(0deg); }
-                            40% { transform: translate(1px, -1px) rotate(1deg); }
-                            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-                            60% { transform: translate(-3px, 1px) rotate(0deg); }
-                            70% { transform: translate(3px, 1px) rotate(-1deg); }
-                            80% { transform: translate(-1px, -1px) rotate(1deg); }
-                            90% { transform: translate(1px, 2px) rotate(0deg); }
-                            100% { transform: translate(1px, -2px) rotate(-1deg); }
-                        }
-                        .shaking {
-                            animation: msn-shake 0.1s;
-                            animation-iteration-count: 4;
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
-
-                // Storage key for this contact
-                const storageKey = `tulio_msn_hist_${contactName}`;
-                let history = [];
-                try {
-                    const stored = localStorage.getItem(storageKey);
-                    if (stored) history = JSON.parse(stored);
-                } catch (e) { }
-
-                const saveHistory = () => {
-                    localStorage.setItem(storageKey, JSON.stringify(history));
-                };
-
-                const escHTML = (str) => String(str).replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
-
-
-                const renderHistory = () => {
-                    chatBox.innerHTML = `<div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- ${contactName} acabou de entrar ---</div>`;
-
-                    if (history.length === 0) {
-                        // Default first message if no history
-                        if (isLets) {
-                            chatBox.innerHTML += `
-                                <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
-                                <div style="margin-bottom: 10px; padding-left: 10px; font-family: 'Comic Sans MS'; color: #000080">oioioioi</div>
-                            `;
-                        } else {
-                            chatBox.innerHTML += `
-                                <div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div>
-                                <div style="margin-bottom: 10px; padding-left: 10px; color: #000080">Olá, tudo bem por ai?</div>
-                            `;
-                        }
-                    } else {
-                        // Render stored history
-                        history.forEach(msg => {
-                            if (msg.type === 'system') {
-                                appendSystemMessage(msg.text, msg.color, false);
-                            } else if (msg.sender === 'Você' || msg.sender === 'Visitante') {
-                                const msgWrap = document.createElement('div');
-                                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Visitante diz:</strong></div><div style="padding-left: 10px">${escHTML(msg.text)}</div>`;
-                                chatBox.appendChild(msgWrap);
-                            } else {
-                                const botWrap = document.createElement('div');
-                                botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${escHTML(msg.text)}</div>`;
-                                chatBox.appendChild(botWrap);
-                            }
-                        });
-                    }
-                    setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 10);
-                };
-
-                const playReceiveMsgSound = () => {
-                    try {
-                        const C = window.AudioContext || window.webkitAudioContext;
-                        if (C) {
-                            const c = new C();
-                            const playBeep = (freq, start, dur) => {
-                                const o = c.createOscillator(), g = c.createGain();
-                                o.type = 'sine'; o.frequency.setValueAtTime(freq, start);
-                                g.gain.setValueAtTime(0, start);
-                                g.gain.linearRampToValueAtTime(0.3, start + 0.02);
-                                g.gain.exponentialRampToValueAtTime(0.01, start + dur);
-                                o.connect(g); g.connect(c.destination);
-                                o.start(start); o.stop(start + dur);
-                            };
-                            playBeep(600, c.currentTime, 0.15);
-                            playBeep(800, c.currentTime + 0.15, 0.2);
-                        }
-                    } catch (e) { }
-                };
-
-                // Input area wrapper
-                const inputBoxWrap = h('div', { style: { display: 'flex', height: '110px', background: 'linear-gradient(180deg, #e8eef6, #d6dfe8)', borderTop: '1px solid #a0b4cc' } });
-
-                // Input area
-                const inputBox = h('div', { style: { flex: 1, padding: '5px', display: 'flex', flexDirection: 'column', gap: '3px' } });
-
-                // My DP Sidebar
-                const botSidebar = h('div', { style: { width: '30%', minWidth: '96px', maxWidth: '140px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', borderLeft: '1px solid #c8d5e2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingLeft: '8px', paddingRight: '8px' } });
-                const myDPWrap = h('div', { style: { width: '100%', aspectRatio: '1', maxWidth: '80px', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
-                let myDP = localStorage.getItem('tulio_msn_my_dp') || 'DefaultDPs/Rubber Ducky.png';
-                myDPWrap.innerHTML = `<img src="${myDP}" style="width:100%; height:100%; object-fit:cover;">`;
-                botSidebar.appendChild(myDPWrap);
-
-                inputBoxWrap.appendChild(inputBox);
-                inputBoxWrap.appendChild(botSidebar);
-
-                const toolBar = h('div', { style: { display: 'flex', gap: '8px', marginBottom: '2px', fontSize: '13px', padding: '2px 0' } });
-
-                // Emoticons Button
-                const btnEmoji = h('span', { style: { cursor: 'pointer', position: 'relative' }, title: 'Emoticons' }, '😊');
-
-                // Emoji Panel
-                const emojiPanel = h('div', {
-                    style: {
-                        display: 'none', position: 'absolute', bottom: '25px', left: '0',
-                        background: '#f9fbfd', border: '1px solid #7f9db9', padding: '5px',
-                        boxShadow: '2px 2px 5px rgba(0,0,0,0.2)', width: '380px',
-                        gridTemplateColumns: 'repeat(10, 1fr)', gap: '2px', zIndex: 100
-                    }
-                });
-
-                const emoticons = [
-                    { e: '🙂', t: ':)' }, { e: '😀', t: ':D' }, { e: '😉', t: ';)' }, { e: '😲', t: ':-O' }, { e: '😛', t: ':P' }, { e: '😎', t: '(H)' }, { e: '😡', t: ':@' }, { e: '😕', t: ':S' }, { e: '😳', t: ':$' }, { e: '🙁', t: ':(' },
-                    { e: '😢', t: ':\\\'(' }, { e: '😐', t: ':|' }, { e: '😇', t: '(A)' }, { e: '😬', t: '8o|' }, { e: '🤓', t: '8-|' }, { e: '🤢', t: '+o(' }, { e: '🥳', t: '<:o)' }, { e: '😴', t: '|-)' }, { e: '🤔', t: '*-)' }, { e: '🤐', t: ':-#' },
-                    { e: '😙', t: ':-*' }, { e: '🤨', t: '^o)' }, { e: '🙄', t: '8-)' }, { e: '❤️', t: '(L)' }, { e: '💔', t: '(U)' }, { e: '👤', t: '(M)' }, { e: '🐱', t: '(@)' }, { e: '🐶', t: '(&)' }, { e: '🐌', t: '(sn)' }, { e: '🐑', t: '(bah)' },
-                    { e: '🌙', t: '(S)' }, { e: '⭐', t: '(*)' }, { e: '☀️', t: '(#)' }, { e: '🌈', t: '(R)' }, { e: '🫂', t: '({})' }, { e: '🫂', t: '(})' }, { e: '💋', t: '(K)' }, { e: '🌹', t: '(F)' }, { e: '🥀', t: '(W)' }, { e: '⌚', t: '(O)' }
-                ];
-
-                emoticons.forEach(emo => {
-                    const wrapEmo = h('div', {
-                        style: {
-                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                            height: '36px', cursor: 'pointer', border: '1px solid transparent', backgroundColor: 'transparent'
-                        }
-                    });
-                    wrapEmo.innerHTML = `<div style="font-size:16px; line-height:1.2; text-shadow:0px 0px 1px rgba(0,0,0,0.2)">${emo.e}</div><div style="font-size:9px; color:#333; font-family:Tahoma">${emo.t}</div>`;
-
-                    wrapEmo.onclick = (e) => {
-                        e.stopPropagation();
-                        input.value += (input.value ? ' ' : '') + emo.t;
-                        emojiPanel.style.display = 'none';
-                        input.focus();
-                    };
-                    wrapEmo.onmouseover = () => { wrapEmo.style.borderColor = '#316ac5'; wrapEmo.style.backgroundColor = '#c1d2ee'; };
-                    wrapEmo.onmouseout = () => { wrapEmo.style.borderColor = 'transparent'; wrapEmo.style.backgroundColor = 'transparent'; };
-
-                    emojiPanel.appendChild(wrapEmo);
-                });
-
-                btnEmoji.appendChild(emojiPanel);
-                btnEmoji.onclick = () => {
-                    emojiPanel.style.display = emojiPanel.style.display === 'none' ? 'grid' : 'none';
-                };
-
-                // Close panel if clicked outside
-                viewContainer.addEventListener('click', (e) => {
-                    if (e.target !== btnEmoji && !emojiPanel.contains(e.target)) {
-                        emojiPanel.style.display = 'none';
-                    }
-                });
-
-                // Nudge Button
-                const btnNudge = h('span', { style: { cursor: 'pointer' }, title: 'Chamar a atenção' }, '🔔');
-                btnNudge.onclick = () => {
-                    appendSystemMessage('Você enviou um chamar a atenção!', '#000000');
-                    playNudgeSound();
-
-                    // Encontrar a janela raiz .xp-window relativa ao viewContainer
-                    let win = wrap.closest('.xp-window');
-                    if (win) {
-                        win.classList.remove('shaking');
-                        void win.offsetWidth; // trigger reflow
-                        win.classList.add('shaking');
-                    }
-                };
-
-                toolBar.appendChild(h('span', { style: { cursor: 'pointer' }, title: 'Fonte' }, '🅰️'));
-                toolBar.appendChild(btnEmoji);
-                toolBar.appendChild(btnNudge);
-
-                const form = h('form', { style: { display: 'flex', gap: '4px', flex: 1 } });
-                const input = h('input', { type: 'text', style: { flex: 1, border: '1px solid #8ba7c8', padding: '4px', fontSize: '11px', fontFamily: 'Tahoma', borderRadius: '2px' }, placeholder: 'Escreva uma mensagem...' });
-                const btn = h('button', { type: 'submit', style: { padding: '2px 14px', fontFamily: 'Tahoma', fontSize: '11px', background: 'linear-gradient(180deg, #f0f4fa, #d6e0ec)', border: '1px solid #8ba7c8', borderRadius: '2px', cursor: 'pointer', color: '#1c3a5e' } }, 'Send');
-
-                form.appendChild(input);
-                form.appendChild(btn);
-                inputBox.appendChild(toolBar);
-                inputBox.appendChild(form);
-
-                let sessionMsgCount = 0;
-                const SESSION_MSG_LIMIT = 15;
-                let isWaitingReply = false;
-
-                const appendBotMessage = (resp) => {
-                    const botWrap = document.createElement('div');
-                    botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${escHTML(resp)}</div>`;
-                    chatBox.appendChild(botWrap);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                    history.push({ sender: contactName, text: resp });
-                    saveHistory();
-                    playReceiveMsgSound();
-                };
-
-                const appendSystemMessage = (text, color = '#666', shouldSave = true) => {
-                    const sysWrap = document.createElement('div');
-                    sysWrap.style.cssText = `color:${color}; font-size:11px; text-align:center; margin:10px 0; font-style:italic`;
-                    sysWrap.innerText = text;
-                    chatBox.appendChild(sysWrap);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                    if (shouldSave) {
-                        history.push({ type: 'system', text: text, color: color });
-                        saveHistory();
-                    }
-                };
-
-                form.onsubmit = async (e) => {
-                    e.preventDefault();
-                    const rawMsg = input.value.trim();
-                    if (!rawMsg || isWaitingReply) return;
-
-                    if (sessionMsgCount >= SESSION_MSG_LIMIT) {
-                        appendSystemMessage('Limite de mensagens atingido para esta sessão.', '#c0392b');
-                        input.disabled = true; btn.disabled = true;
-                        return;
-                    }
-
-                    // Render User Message
-                    const msgWrap = document.createElement('div');
-                    msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Visitante diz:</strong></div><div style="padding-left: 10px">${escHTML(rawMsg)}</div>`;
-                    chatBox.appendChild(msgWrap);
-                    history.push({ sender: 'Visitante', text: rawMsg });
-                    saveHistory();
-
-                    input.value = '';
-                    chatBox.scrollTop = chatBox.scrollHeight;
-
-                    if (isLets) {
-                        isWaitingReply = true;
-                        btn.disabled = true;
-                        
-                        setTimeout(() => {
-                            appendBotMessage('Oioi');
-                            isWaitingReply = false;
-                            btn.disabled = false;
-                            input.focus();
-                            
-                            setTimeout(() => {
-                                appendSystemMessage('Lets enviou um chamar a atenção!', '#000000');
-                                playNudgeSound();
-                                let win = wrap.closest('.xp-window');
-                                if (win) {
-                                    win.classList.remove('shaking');
-                                    void win.offsetWidth;
-                                    win.classList.add('shaking');
-                                }
-                            }, 1000);
-                        }, 1000);
-                        return;
-                    }
-
-                    // Update State
-                    sessionMsgCount++;
-                    isWaitingReply = true;
-                    btn.disabled = true;
-
-                    // Typing indicator
-                    const typingEl = document.createElement('div');
-                    typingEl.style.cssText = 'color:#888; font-style:italic; padding-left:10px; margin-top:8px; font-size:11px;';
-                    typingEl.innerText = `${contactName} está digitando...`;
-                    chatBox.appendChild(typingEl);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-
-                    try {
-                        const response = await fetch('/api/chat', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ message: rawMsg })
-                        });
-
-                        typingEl.remove();
-
-                        if (!response.ok) {
-                            appendBotMessage('Opa, tive um probleminha aqui. Tenta de novo já já!');
-                        } else {
-                            const data = await response.json();
-                            appendBotMessage(data.reply || '... (sem palavras)');
-                        }
-                    } catch (err) {
-                        typingEl.remove();
-                        appendBotMessage('Conexão instável. Tenta de novo?');
-                    } finally {
-                        isWaitingReply = false;
-                        btn.disabled = false;
-                        input.focus();
-                    }
-                };
-
-                renderHistory();
-
-                viewContainer.appendChild(chatToolbar);
-                viewContainer.appendChild(header);
-                viewContainer.appendChild(chatAreaWrap);
-                viewContainer.appendChild(inputBoxWrap);
-            };
-
             const renderContacts = () => {
                 viewContainer.innerHTML = '';
                 
@@ -3620,8 +3241,8 @@
 
                 const grpOnline = h('div');
                 grpOnline.appendChild(grpOnlineHeader);
-                grpOnline.appendChild(makeContact('Túlio', '"Bora CS?"', null, true, () => renderChat('Túlio', '"Bora CS?"', false, 'DefaultDPs/Skateboarder.png')));
-                grpOnline.appendChild(makeContact('Lets', '"Naquelas longas noites em claro..."', null, true, () => renderChat('Lets', '"Naquelas longas noites em claro..."', true, 'DefaultDPs/Orange Daisy.png')));
+                grpOnline.appendChild(makeContact('Túlio', '"Bora CS?"', null, true, () => openWin('msn_chat_tulio')));
+                grpOnline.appendChild(makeContact('Lets', '"Naquelas longas noites em claro..."', null, true, () => openWin('msn_chat_lets')));
 
                 // Offline Group
                 const grpOfflineHeader = h('div', { style: { padding: '4px 10px', fontWeight:'bold', color:'#999', fontSize:'11px', background:'linear-gradient(180deg, #f0f0f0, #e6e6e6)', borderBottom:'1px solid #d5d5d5', borderTop:'1px solid #d5d5d5', cursor:'pointer', display:'flex', alignItems:'center', gap:'4px', marginTop:'2px' } });
@@ -3638,7 +3259,7 @@
 
                 // ── Bottom branding bar ──
                 const botBar = h('div', { style: { background: 'linear-gradient(180deg, #d6e4f1, #b8c8da)', borderTop: '1px solid #a0b4cc', padding: '6px 10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px' } });
-                botBar.innerHTML = `<span style="font-size:12px">🦋</span><span style="font-size:10px; color:#1c3a5e; font-weight:bold;">msn</span><span style="font-size:10px; color:#ff6611; font-weight:bold">Messenger</span>`;
+                botBar.innerHTML = `<img src="icones/msn_messenger.webp" style="width:16px; height:16px;"><span style="font-size:10px; color:#1c3a5e; font-weight:bold;">Tulio</span><span style="font-size:10px; color:#ff6611; font-weight:bold">Messenger</span>`;
 
                 viewContainer.appendChild(menuBar);
                 viewContainer.appendChild(userPanel);
@@ -3651,6 +3272,263 @@
 
             return wrap;
         },
+
+        // ── MSN CHAT WINDOW FACTORY ─────────────
+        _createMsnChat: (contactName, subtitle, isLets, contactDP) => {
+            const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: 'linear-gradient(180deg, #d6dfe8, #bcc8d6)', fontFamily: 'Tahoma, Segoe UI, sans-serif', fontSize: '11px' } });
+
+            const playNudgeSound = () => {
+                try {
+                    const C = window.AudioContext || window.webkitAudioContext;
+                    if (C) {
+                        const c = new C();
+                        const g = c.createGain();
+                        const o = c.createOscillator();
+                        o.type = 'triangle';
+                        o.frequency.setValueAtTime(150, c.currentTime);
+                        o.frequency.exponentialRampToValueAtTime(40, c.currentTime + 0.3);
+                        g.gain.setValueAtTime(1, c.currentTime);
+                        g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.3);
+                        o.connect(g);
+                        g.connect(c.destination);
+                        o.start();
+                        o.stop(c.currentTime + 0.4);
+                    }
+                } catch (err) { }
+            };
+
+            // ── MSN Chat Toolbar ──
+            const chatToolbar = h('div', { style: { background: 'linear-gradient(180deg, #e8eef6, #c8d4e4)', borderBottom: '1px solid #a0b4cc', padding: '4px 8px', display: 'flex', gap: '14px', alignItems: 'center' } });
+            [{ icon: '👥', label: 'Invite' }, { icon: '📁', label: 'Send Files' }, { icon: '🎤', label: 'Voice' }, { icon: '🎮', label: 'Activities' }, { icon: '🎯', label: 'Games' }].forEach(t => {
+                const item = h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', fontSize: '8px', color: '#1c3a5e', gap: '1px' } });
+                item.innerHTML = `<span style="font-size:16px">${t.icon}</span><span>${t.label}</span>`;
+                item.onmouseover = () => { item.style.background = '#d6e6f5'; item.style.borderRadius = '3px'; };
+                item.onmouseout = () => { item.style.background = 'transparent'; };
+                chatToolbar.appendChild(item);
+            });
+            const butterflyCenter = h('div', { style: { flex: 1, textAlign: 'center' } });
+            butterflyCenter.innerHTML = `<img src="icones/msn_messenger.webp" style="width:20px; height:20px;">`;
+            chatToolbar.appendChild(butterflyCenter);
+
+            // ── To: header ──
+            const header = h('div', { style: { padding: '5px 10px', background: '#fff', borderBottom: '1px solid #c8d5e2', fontSize: '11px', color: '#333' } });
+            header.innerHTML = `<span style="color:#666">To:</span> <strong>${contactName}</strong> <span style="color:#888">${subtitle}</span>`;
+
+            // Chat area wrapper
+            const chatAreaWrap = h('div', { style: { display: 'flex', flex: 1, minHeight: 0 } });
+            const chatBox = h('div', { style: { flex: 1, padding: '10px', background: '#fff', overflowY: 'auto', scrollBehavior: 'smooth', borderRight: '1px solid #c8d5e2' } });
+
+            // Contact DP Sidebar
+            const topSidebar = h('div', { style: { width: '30%', minWidth: '96px', maxWidth: '140px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '8px', paddingLeft: '8px', paddingRight: '8px', gap: '6px' } });
+            const contactImgWrap = h('div', { style: { width: '100%', aspectRatio: '1', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
+            contactImgWrap.innerHTML = `<img src="${contactDP || 'DefaultDPs/Rubber Ducky.png'}" style="width:100%; height:100%; object-fit:cover;">`;
+            topSidebar.appendChild(contactImgWrap);
+            topSidebar.appendChild(h('div', { style: { width: '14px', height: '14px', background: 'linear-gradient(180deg,#eef2f7,#dce3ed)', border: '1px solid #a0b4cc', borderRadius: '2px', textAlign: 'center', lineHeight: '12px', fontSize: '8px', cursor: 'pointer', color: '#6e98cf' } }, '▼'));
+            chatAreaWrap.appendChild(chatBox);
+            chatAreaWrap.appendChild(topSidebar);
+
+            // Shake style
+            if (!document.getElementById('msn-shake-style')) {
+                const style = document.createElement('style');
+                style.id = 'msn-shake-style';
+                style.textContent = `@keyframes msn-shake{0%{transform:translate(1px,1px) rotate(0deg)}10%{transform:translate(-1px,-2px) rotate(-1deg)}20%{transform:translate(-3px,0px) rotate(1deg)}30%{transform:translate(3px,2px) rotate(0deg)}40%{transform:translate(1px,-1px) rotate(1deg)}50%{transform:translate(-1px,2px) rotate(-1deg)}60%{transform:translate(-3px,1px) rotate(0deg)}70%{transform:translate(3px,1px) rotate(-1deg)}80%{transform:translate(-1px,-1px) rotate(1deg)}90%{transform:translate(1px,2px) rotate(0deg)}100%{transform:translate(1px,-2px) rotate(-1deg)}}.shaking{animation:msn-shake 0.1s;animation-iteration-count:4}`;
+                document.head.appendChild(style);
+            }
+
+            // Chat history
+            const storageKey = `tulio_msn_hist_${contactName}`;
+            let history = [];
+            try { const stored = localStorage.getItem(storageKey); if (stored) history = JSON.parse(stored); } catch (e) { }
+            const saveHistory = () => localStorage.setItem(storageKey, JSON.stringify(history));
+            const escHTML = (str) => String(str).replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
+
+            const appendSystemMessage = (text, color = '#666', shouldSave = true) => {
+                const sysWrap = document.createElement('div');
+                sysWrap.style.cssText = `color:${color}; font-size:11px; text-align:center; margin:10px 0; font-style:italic`;
+                sysWrap.innerText = text;
+                chatBox.appendChild(sysWrap);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                if (shouldSave) { history.push({ type: 'system', text, color }); saveHistory(); }
+            };
+
+            const playReceiveMsgSound = () => {
+                try {
+                    const C = window.AudioContext || window.webkitAudioContext;
+                    if (C) {
+                        const c = new C();
+                        const playBeep = (freq, start, dur) => {
+                            const o = c.createOscillator(), g = c.createGain();
+                            o.type = 'sine'; o.frequency.setValueAtTime(freq, start);
+                            g.gain.setValueAtTime(0, start);
+                            g.gain.linearRampToValueAtTime(0.3, start + 0.02);
+                            g.gain.exponentialRampToValueAtTime(0.01, start + dur);
+                            o.connect(g); g.connect(c.destination);
+                            o.start(start); o.stop(start + dur);
+                        };
+                        playBeep(600, c.currentTime, 0.15);
+                        playBeep(800, c.currentTime + 0.15, 0.2);
+                    }
+                } catch (e) { }
+            };
+
+            const appendBotMessage = (resp) => {
+                const botWrap = document.createElement('div');
+                botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${escHTML(resp)}</div>`;
+                chatBox.appendChild(botWrap);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                history.push({ sender: contactName, text: resp });
+                saveHistory();
+                playReceiveMsgSound();
+            };
+
+            // Render history
+            chatBox.innerHTML = `<div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- ${contactName} acabou de entrar ---</div>`;
+            if (history.length === 0) {
+                if (isLets) {
+                    chatBox.innerHTML += `<div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div><div style="margin-bottom: 10px; padding-left: 10px; font-family: 'Comic Sans MS'; color: #000080">oioioioi</div>`;
+                } else {
+                    chatBox.innerHTML += `<div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div><div style="margin-bottom: 10px; padding-left: 10px; color: #000080">Olá, tudo bem por ai?</div>`;
+                }
+            } else {
+                history.forEach(msg => {
+                    if (msg.type === 'system') {
+                        appendSystemMessage(msg.text, msg.color, false);
+                    } else if (msg.sender === 'Você' || msg.sender === 'Visitante') {
+                        const msgWrap = document.createElement('div');
+                        msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Visitante diz:</strong></div><div style="padding-left: 10px">${escHTML(msg.text)}</div>`;
+                        chatBox.appendChild(msgWrap);
+                    } else {
+                        const botWrap = document.createElement('div');
+                        botWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #004d9b">${contactName} diz:</strong></div><div style="padding-left: 10px">${escHTML(msg.text)}</div>`;
+                        chatBox.appendChild(botWrap);
+                    }
+                });
+            }
+            setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 10);
+
+            // Input area
+            const inputBoxWrap = h('div', { style: { display: 'flex', height: '110px', background: 'linear-gradient(180deg, #e8eef6, #d6dfe8)', borderTop: '1px solid #a0b4cc' } });
+            const inputBox = h('div', { style: { flex: 1, padding: '5px', display: 'flex', flexDirection: 'column', gap: '3px' } });
+
+            // My DP Sidebar
+            const botSidebar = h('div', { style: { width: '30%', minWidth: '96px', maxWidth: '140px', background: 'linear-gradient(180deg, #dfe8f2, #c8d4e4)', borderLeft: '1px solid #c8d5e2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingLeft: '8px', paddingRight: '8px' } });
+            const myDPWrap = h('div', { style: { width: '100%', aspectRatio: '1', maxWidth: '80px', border: '2px solid #8ba7c8', borderRadius: '3px', background: '#fff', padding: '1px' } });
+            let myDP = localStorage.getItem('tulio_msn_my_dp') || 'DefaultDPs/Rubber Ducky.png';
+            myDPWrap.innerHTML = `<img src="${myDP}" style="width:100%; height:100%; object-fit:cover;">`;
+            botSidebar.appendChild(myDPWrap);
+            inputBoxWrap.appendChild(inputBox);
+            inputBoxWrap.appendChild(botSidebar);
+
+            // Toolbar (emoji, nudge, font)
+            const toolBar = h('div', { style: { display: 'flex', gap: '8px', marginBottom: '2px', fontSize: '13px', padding: '2px 0' } });
+            const btnEmoji = h('span', { style: { cursor: 'pointer', position: 'relative' }, title: 'Emoticons' }, '😊');
+            const emojiPanel = h('div', { style: { display: 'none', position: 'absolute', bottom: '25px', left: '0', background: '#f9fbfd', border: '1px solid #7f9db9', padding: '5px', boxShadow: '2px 2px 5px rgba(0,0,0,0.2)', width: '380px', gridTemplateColumns: 'repeat(10, 1fr)', gap: '2px', zIndex: 100 } });
+
+            const emoticons = [
+                { e: '🙂', t: ':)' }, { e: '😀', t: ':D' }, { e: '😉', t: ';)' }, { e: '😲', t: ':-O' }, { e: '😛', t: ':P' }, { e: '😎', t: '(H)' }, { e: '😡', t: ':@' }, { e: '😕', t: ':S' }, { e: '😳', t: ':$' }, { e: '🙁', t: ':(' },
+                { e: '😢', t: ':\\\'(' }, { e: '😐', t: ':|' }, { e: '😇', t: '(A)' }, { e: '😬', t: '8o|' }, { e: '🤓', t: '8-|' }, { e: '🤢', t: '+o(' }, { e: '🥳', t: '<:o)' }, { e: '😴', t: '|-)' }, { e: '🤔', t: '*-)' }, { e: '🤐', t: ':-#' },
+                { e: '😙', t: ':-*' }, { e: '🤨', t: '^o)' }, { e: '🙄', t: '8-)' }, { e: '❤️', t: '(L)' }, { e: '💔', t: '(U)' }, { e: '👤', t: '(M)' }, { e: '🐱', t: '(@)' }, { e: '🐶', t: '(&)' }, { e: '🐌', t: '(sn)' }, { e: '🐑', t: '(bah)' },
+                { e: '🌙', t: '(S)' }, { e: '⭐', t: '(*)' }, { e: '☀️', t: '(#)' }, { e: '🌈', t: '(R)' }, { e: '🫂', t: '({})' }, { e: '🫂', t: '(})' }, { e: '💋', t: '(K)' }, { e: '🌹', t: '(F)' }, { e: '🥀', t: '(W)' }, { e: '⌚', t: '(O)' }
+            ];
+            emoticons.forEach(emo => {
+                const wrapEmo = h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '36px', cursor: 'pointer', border: '1px solid transparent', backgroundColor: 'transparent' } });
+                wrapEmo.innerHTML = `<div style="font-size:16px; line-height:1.2; text-shadow:0px 0px 1px rgba(0,0,0,0.2)">${emo.e}</div><div style="font-size:9px; color:#333; font-family:Tahoma">${emo.t}</div>`;
+                wrapEmo.onclick = (e) => { e.stopPropagation(); input.value += (input.value ? ' ' : '') + emo.t; emojiPanel.style.display = 'none'; input.focus(); };
+                wrapEmo.onmouseover = () => { wrapEmo.style.borderColor = '#316ac5'; wrapEmo.style.backgroundColor = '#c1d2ee'; };
+                wrapEmo.onmouseout = () => { wrapEmo.style.borderColor = 'transparent'; wrapEmo.style.backgroundColor = 'transparent'; };
+                emojiPanel.appendChild(wrapEmo);
+            });
+            btnEmoji.appendChild(emojiPanel);
+            btnEmoji.onclick = () => { emojiPanel.style.display = emojiPanel.style.display === 'none' ? 'grid' : 'none'; };
+            wrap.addEventListener('click', (e) => { if (e.target !== btnEmoji && !emojiPanel.contains(e.target)) emojiPanel.style.display = 'none'; });
+
+            const btnNudge = h('span', { style: { cursor: 'pointer' }, title: 'Chamar a atenção' }, '🔔');
+            btnNudge.onclick = () => {
+                appendSystemMessage('Você enviou um chamar a atenção!', '#000000');
+                playNudgeSound();
+                let win = wrap.closest('.xp-window');
+                if (win) { win.classList.remove('shaking'); void win.offsetWidth; win.classList.add('shaking'); }
+            };
+
+            toolBar.appendChild(h('span', { style: { cursor: 'pointer' }, title: 'Fonte' }, '🅰️'));
+            toolBar.appendChild(btnEmoji);
+            toolBar.appendChild(btnNudge);
+
+            const form = h('form', { style: { display: 'flex', gap: '4px', flex: 1 } });
+            const input = h('input', { type: 'text', style: { flex: 1, border: '1px solid #8ba7c8', padding: '4px', fontSize: '11px', fontFamily: 'Tahoma', borderRadius: '2px' }, placeholder: 'Escreva uma mensagem...' });
+            const btn = h('button', { type: 'submit', style: { padding: '2px 14px', fontFamily: 'Tahoma', fontSize: '11px', background: 'linear-gradient(180deg, #f0f4fa, #d6e0ec)', border: '1px solid #8ba7c8', borderRadius: '2px', cursor: 'pointer', color: '#1c3a5e' } }, 'Send');
+            form.appendChild(input);
+            form.appendChild(btn);
+            inputBox.appendChild(toolBar);
+            inputBox.appendChild(form);
+
+            let sessionMsgCount = 0;
+            const SESSION_MSG_LIMIT = 15;
+            let isWaitingReply = false;
+
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const rawMsg = input.value.trim();
+                if (!rawMsg || isWaitingReply) return;
+                if (sessionMsgCount >= SESSION_MSG_LIMIT) {
+                    appendSystemMessage('Limite de mensagens atingido para esta sessão.', '#c0392b');
+                    input.disabled = true; btn.disabled = true;
+                    return;
+                }
+                const msgWrap = document.createElement('div');
+                msgWrap.innerHTML = `<div style="margin-bottom: 5px; margin-top: 10px"><strong style="color: #000">Visitante diz:</strong></div><div style="padding-left: 10px">${escHTML(rawMsg)}</div>`;
+                chatBox.appendChild(msgWrap);
+                history.push({ sender: 'Visitante', text: rawMsg });
+                saveHistory();
+                input.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                if (isLets) {
+                    isWaitingReply = true; btn.disabled = true;
+                    setTimeout(() => {
+                        appendBotMessage('Oioi');
+                        isWaitingReply = false; btn.disabled = false; input.focus();
+                        setTimeout(() => {
+                            appendSystemMessage('Lets enviou um chamar a atenção!', '#000000');
+                            playNudgeSound();
+                            let win = wrap.closest('.xp-window');
+                            if (win) { win.classList.remove('shaking'); void win.offsetWidth; win.classList.add('shaking'); }
+                        }, 1000);
+                    }, 1000);
+                    return;
+                }
+
+                sessionMsgCount++;
+                isWaitingReply = true; btn.disabled = true;
+                const typingEl = document.createElement('div');
+                typingEl.style.cssText = 'color:#888; font-style:italic; padding-left:10px; margin-top:8px; font-size:11px;';
+                typingEl.innerText = `${contactName} está digitando...`;
+                chatBox.appendChild(typingEl);
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: rawMsg })
+                    });
+                    typingEl.remove();
+                    if (!response.ok) { appendBotMessage('Opa, tive um probleminha aqui. Tenta de novo já já!'); }
+                    else { const data = await response.json(); appendBotMessage(data.reply || '... (sem palavras)'); }
+                } catch (err) { typingEl.remove(); appendBotMessage('Conexão instável. Tenta de novo?'); }
+                finally { isWaitingReply = false; btn.disabled = false; input.focus(); }
+            };
+
+            wrap.appendChild(chatToolbar);
+            wrap.appendChild(header);
+            wrap.appendChild(chatAreaWrap);
+            wrap.appendChild(inputBoxWrap);
+
+            return wrap;
+        },
+
+        msn_chat_tulio: function() { return CONTENT._createMsnChat('Túlio', '"Bora CS?"', false, 'DefaultDPs/Skateboarder.png'); },
+        msn_chat_lets: function() { return CONTENT._createMsnChat('Lets', '"Naquelas longas noites em claro..."', true, 'DefaultDPs/Orange Daisy.png'); },
 
         readme: () => {
             const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' } });
@@ -4732,12 +4610,23 @@ NUTTERTOOLS - Armas Pesadas
         }
 
         const icon = ICONS.find(i => i.id === id);
-        const title = icon ? icon.label : id;
+        let title = icon ? icon.label : id;
         const fallbackIcon = id.includes('.exe') ? '🎮' : '📁';
 
-        const titleIcon = (icon?.icon && icon.icon.includes('.')) 
-            ? h('img', { src: icon.icon, style: { width: '16px', height: '16px', marginRight: '6px', verticalAlign: 'middle' } })
-            : (icon?.icon || fallbackIcon);
+        // MSN chat windows: show contact name as title with MSN icon
+        const MSN_CHAT_META = {
+            msn_chat_tulio: 'Túlio',
+            msn_chat_lets: 'Lets',
+        };
+        if (MSN_CHAT_META[id]) {
+            title = MSN_CHAT_META[id];
+        }
+
+        const titleIcon = MSN_CHAT_META[id]
+            ? h('img', { src: 'icones/msn_messenger.webp', style: { width: '16px', height: '16px', marginRight: '6px', verticalAlign: 'middle' } })
+            : (icon?.icon && icon.icon.includes('.'))
+                ? h('img', { src: icon.icon, style: { width: '16px', height: '16px', marginRight: '6px', verticalAlign: 'middle' } })
+                : (icon?.icon || fallbackIcon);
 
         // Posição em cascata
         const offset = (Object.keys(openWindows).length % 6) * 24;
@@ -4782,6 +4671,8 @@ NUTTERTOOLS - Armas Pesadas
             doom: { w: '640px', h: '400px' },
             display_properties: { w: '380px', h: '420px' },
             profile_picture_modal: { w: '500px', h: '460px' },
+            msn_chat_tulio: { w: '380px', h: '480px' },
+            msn_chat_lets: { w: '380px', h: '480px' },
         };
         const sz = WIN_SIZES[id] || {};
         if (id.startsWith('proj_')) {
@@ -4907,11 +4798,15 @@ NUTTERTOOLS - Armas Pesadas
                 },
             });
 
-            const tbIcon = (icon?.icon && icon.icon.includes('.')) 
-                ? h('img', { src: icon.icon, style: { width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' } })
-                : (icon?.icon || '🗂️');
+            // MSN chat windows: resolve icon/label for taskbar
+            const MSN_TB = { msn_chat_tulio: 'Túlio', msn_chat_lets: 'Lets' };
+            const tbIcon = MSN_TB[id]
+                ? h('img', { src: 'icones/msn_messenger.webp', style: { width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' } })
+                : (icon?.icon && icon.icon.includes('.')) 
+                    ? h('img', { src: icon.icon, style: { width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' } })
+                    : (icon?.icon || '🗂️');
 
-            btn.appendChild(h('span', {}, tbIcon, ' ', (icon?.label || id)));
+            btn.appendChild(h('span', {}, tbIcon, ' ', (MSN_TB[id] || icon?.label || id)));
             bar.appendChild(btn);
         });
     }
