@@ -2505,12 +2505,27 @@
             previewWrap.appendChild(monitor);
             
             // Background selection
-            const bgContainer = h('div', { style: { flex: 1, display: 'flex', gap: '10px' } });
+            const bgContainer = h('div', { style: { flex: 1, display: 'flex', gap: '10px', minHeight: 0 } });
             
-            const listWrap = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column' } });
-            listWrap.appendChild(h('label', { style: { fontSize: '11px', fontFamily: 'Tahoma', marginBottom: '2px' } }, 'Plano de Fundo:'));
+            const listWrap = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 } });
+            listWrap.appendChild(h('label', { style: { fontSize: '11px', fontFamily: 'Tahoma', marginBottom: '2px', flexShrink: 0 } }, 'Plano de Fundo:'));
             
-            const selectBox = h('select', { size: 6, style: { flex: 1, width: '100%', border: '1px inset #aca899', fontSize: '11px', fontFamily: 'Tahoma' } });
+            // Custom listbox div — replaces native <select size> which breaks on iOS Safari
+            // (iOS renders size-attribute selects as oversized native pickers, destroying the dialog layout)
+            let currentValue = selectedBg;
+            const listRows = [];
+            const selectBox = { value: selectedBg }; // compat shim for applyBtn reference below
+            const listBox = h('div', { style: {
+                flex: 1,
+                overflowY: 'auto',
+                border: '2px inset #aca899',
+                background: '#fff',
+                fontSize: '11px',
+                fontFamily: 'Tahoma',
+                minHeight: '80px',
+                cursor: 'default',
+                WebkitOverflowScrolling: 'touch',
+            } });
             
             const wallpapers = [
                 { name: 'Bliss', file: 'Bliss.webp' },
@@ -2537,18 +2552,32 @@
             previewInner.style.backgroundImage = `url("${selectedBg}")`;
 
             wallpapers.forEach(wp => {
-                const opt = h('option', { value: 'wallpaper/' + wp.file }, wp.name);
-                if (selectedBg === opt.value) opt.selected = true;
-                selectBox.appendChild(opt);
+                const val = 'wallpaper/' + wp.file;
+                const row = h('div', {
+                    style: {
+                        padding: '2px 4px',
+                        background: val === currentValue ? '#316ac5' : 'transparent',
+                        color: val === currentValue ? '#fff' : '#000',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                    },
+                    onclick: () => {
+                        currentValue = val;
+                        selectBox.value = val; // keep compat shim in sync
+                        listRows.forEach(r => {
+                            r.el.style.background = r.val === currentValue ? '#316ac5' : 'transparent';
+                            r.el.style.color = r.val === currentValue ? '#fff' : '#000';
+                        });
+                        previewInner.style.backgroundImage = `url("${val}")`;
+                    }
+                }, wp.name);
+                listRows.push({ el: row, val });
+                listBox.appendChild(row);
             });
 
-            selectBox.onchange = () => {
-                previewInner.style.backgroundImage = `url("${selectBox.value}")`;
-            };
+            listWrap.appendChild(listBox);
 
-            listWrap.appendChild(selectBox);
-
-            const sideWrap = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '5px' } });
+            const sideWrap = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '5px', flexShrink: 0 } });
             const applyBtn = h('button', { style: { width: '80px', padding: '2px', fontSize: '11px', fontFamily: 'Tahoma' }, onclick: () => {
                 const area = document.getElementById('xpDesktopArea');
                 if (area) {
