@@ -2492,41 +2492,6 @@
         display_properties: () => {
             const wrap = h('div', { style: { height: '100%', padding: '10px', background: '#ece9d8', display: 'flex', flexDirection: 'column', gap: '10px' } });
 
-            // Tabs mock
-            const tabs = h('div', { style: { display: 'flex', borderBottom: '1px solid #aca899' } });
-            const desktopTab = h('div', { style: { padding: '3px 8px', background: '#fff', border: '1px solid #aca899', borderBottom: 'none', borderTopLeftRadius: '3px', borderTopRightRadius: '3px', fontSize: '11px', fontFamily: 'Tahoma', marginTop: '2px' } }, 'Desktop');
-            tabs.appendChild(desktopTab);
-
-            // Preview monitor
-            const previewWrap = h('div', { style: { display: 'flex', justifyContent: 'center', margin: '10px 0' } });
-            const monitor = h('div', { style: { width: '150px', height: '110px', background: '#ece9d8', border: '16px solid #e1e1d1', borderBottomWidth: '24px', borderRadius: '4px', outline: '1px solid #888', display: 'flex', justifyContent: 'center', alignItems: 'center' } });
-            const previewInner = h('div', { style: { width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', border: '1px inset #fff' } });
-            monitor.appendChild(previewInner);
-            previewWrap.appendChild(monitor);
-            
-            // Background selection
-            const bgContainer = h('div', { style: { flex: 1, display: 'flex', gap: '10px', minHeight: 0 } });
-            
-            const listWrap = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 } });
-            listWrap.appendChild(h('label', { style: { fontSize: '11px', fontFamily: 'Tahoma', marginBottom: '2px', flexShrink: 0 } }, 'Plano de Fundo:'));
-            
-            // Custom listbox div — replaces native <select size> which breaks on iOS Safari
-            // (iOS renders size-attribute selects as oversized native pickers, destroying the dialog layout)
-            let currentValue = selectedBg;
-            const listRows = [];
-            const selectBox = { value: selectedBg }; // compat shim for applyBtn reference below
-            const listBox = h('div', { style: {
-                flex: 1,
-                overflowY: 'auto',
-                border: '2px inset #aca899',
-                background: '#fff',
-                fontSize: '11px',
-                fontFamily: 'Tahoma',
-                minHeight: '80px',
-                cursor: 'default',
-                WebkitOverflowScrolling: 'touch',
-            } });
-            
             const wallpapers = [
                 { name: 'Bliss', file: 'Bliss.webp' },
                 { name: 'Ascent', file: 'Ascent.webp' },
@@ -2548,8 +2513,41 @@
                 localStorage.removeItem('tulio_os_wallpaper');
             }
             if (!selectedBg) selectedBg = 'wallpaper/' + wallpapers[0].file;
+
+            // Tabs mock
+            const tabs = h('div', { style: { display: 'flex', borderBottom: '1px solid #aca899' } });
+            const desktopTab = h('div', { style: { padding: '3px 8px', background: '#fff', border: '1px solid #aca899', borderBottom: 'none', borderTopLeftRadius: '3px', borderTopRightRadius: '3px', fontSize: '11px', fontFamily: 'Tahoma', marginTop: '2px' } }, 'Desktop');
+            tabs.appendChild(desktopTab);
+
+            // Preview monitor
+            const previewWrap = h('div', { style: { display: 'flex', justifyContent: 'center', margin: '10px 0' } });
+            const monitor = h('div', { style: { width: '150px', height: '110px', background: '#ece9d8', border: '16px solid #e1e1d1', borderBottomWidth: '24px', borderRadius: '4px', outline: '1px solid #888', display: 'flex', justifyContent: 'center', alignItems: 'center' } });
+            const previewInner = h('div', { style: { width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', border: '1px inset #fff' } });
+            monitor.appendChild(previewInner);
+            previewWrap.appendChild(monitor);
             
             previewInner.style.backgroundImage = `url("${selectedBg}")`;
+
+            // Background selection
+            const bgContainer = h('div', { style: { flex: 1, display: 'flex', gap: '10px', minHeight: 0 } });
+            
+            const listWrap = h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 } });
+            listWrap.appendChild(h('label', { style: { fontSize: '11px', fontFamily: 'Tahoma', marginBottom: '2px', flexShrink: 0 } }, 'Plano de Fundo:'));
+            
+            let currentValue = selectedBg;
+            const listRows = [];
+            const selectBox = { value: selectedBg };
+            const listBox = h('div', { style: {
+                flex: 1,
+                overflowY: 'auto',
+                border: '2px inset #aca899',
+                background: '#fff',
+                fontSize: '11px',
+                fontFamily: 'Tahoma',
+                minHeight: '80px',
+                cursor: 'default',
+                WebkitOverflowScrolling: 'touch',
+            } });
 
             wallpapers.forEach(wp => {
                 const val = 'wallpaper/' + wp.file;
@@ -2563,7 +2561,7 @@
                     },
                     onclick: () => {
                         currentValue = val;
-                        selectBox.value = val; // keep compat shim in sync
+                        selectBox.value = val;
                         listRows.forEach(r => {
                             r.el.style.background = r.val === currentValue ? '#316ac5' : 'transparent';
                             r.el.style.color = r.val === currentValue ? '#fff' : '#000';
