@@ -4537,11 +4537,9 @@ NUTTERTOOLS - Armas Pesadas
         meus_projetos: () => {
             const projetos = [
                 { name: 'Tulio OS', url: 'https://tuliocareli.com/portfolio/tulio-os/' },
-                { name: 'Redesign Web GuiaVet', url: 'https://tuliocareli.com/portfolio/redesign-web-guiavet/' },
-                { name: 'Redesign Site IPGC', url: 'https://tuliocareli.com/portfolio/redesign-site-ipgc/' },
-                { name: 'Fábrica de Parcerias IPGC', url: 'https://tuliocareli.com/portfolio/fabrica-de-parcerias-ipgc/' },
-                { name: 'Pitstop Velox', url: 'https://tuliocareli.com/portfolio/pitstop-velox/' },
-                { name: 'Kit Colaborador IPGC', url: 'https://tuliocareli.com/portfolio/kit-colaborador-ipgc/' },
+                { name: 'Redesign Web → +103% de Crescimento em Tráfego Orgânico', url: 'https://tuliocareli.com/portfolio/redesign-web-guiavet/' },
+                { name: 'Implementação da Jornada de Busca de Dados de Projetos → +2.000 Novos Usuários Orgânicos', url: 'https://tuliocareli.com/portfolio/redesign-site-ipgc/' },
+                { name: 'App de Gestão Financeira → 90% de Retenção em Fluxos Críticos', url: 'https://tuliocareli.com/portfolio/purso/' },
             ];
 
             const openProjectInIframe = (p) => {
