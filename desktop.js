@@ -472,7 +472,7 @@
                 wrapOuter.appendChild(wrap);
 
                 const infoRows = [
-                    { label: 'relacionamento:', val: 'compromissado' },
+                    { label: 'relacionamento:', val: 'solteiro' },
                     { label: 'aniversário:', val: '23 de abril' },
                     { label: 'idade:', val: '28' },
                     { label: 'interesses no orkut:', val: 'amigos' },
@@ -3269,7 +3269,7 @@
                 const grpOnline = h('div');
                 grpOnline.appendChild(grpOnlineHeader);
                 grpOnline.appendChild(makeContact('Túlio', '"Bora CS?"', null, true, () => openWin('msn_chat_tulio')));
-                grpOnline.appendChild(makeContact('Lets', '"Naquelas longas noites em claro..."', null, true, () => openWin('msn_chat_lets')));
+                grpOnline.appendChild(makeContact('João', '"Naquelas longas noites em claro..."', null, true, () => openWin('msn_chat_lets')));
 
                 // Offline Group
                 const grpOfflineHeader = h('div', { style: { padding: '4px 10px', fontWeight:'bold', color:'#999', fontSize:'11px', background:'linear-gradient(180deg, #f0f0f0, #e6e6e6)', borderBottom:'1px solid #d5d5d5', borderTop:'1px solid #d5d5d5', cursor:'pointer', display:'flex', alignItems:'center', gap:'4px', marginTop:'2px' } });
