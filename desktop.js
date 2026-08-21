@@ -520,7 +520,7 @@
 
                     leftCol.appendChild(h('div', { style: { fontSize: '11px', lineHeight: '1.4' } },
                         h('div', { style: { color: '#0033cc', fontWeight: 'bold' } }, userName),
-                        h('div', { style: { color: '#666' } }, 'masculino, compromissado', h('br'), 'BH, Brasil')
+                        h('div', { style: { color: '#666' } }, 'masculino, solteiro', h('br'), 'BH, Brasil')
                     ));
 
                     leftCol.appendChild(h('div', { style: { color: '#0033cc', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' } },
