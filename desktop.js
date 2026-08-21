@@ -3269,7 +3269,7 @@
                 const grpOnline = h('div');
                 grpOnline.appendChild(grpOnlineHeader);
                 grpOnline.appendChild(makeContact('Túlio', '"Bora CS?"', null, true, () => openWin('msn_chat_tulio')));
-                grpOnline.appendChild(makeContact('João', '"Naquelas longas noites em claro..."', null, true, () => openWin('msn_chat_lets')));
+                grpOnline.appendChild(makeContact('João', '"Naquelas longas noites em claro..."', null, true, () => openWin('msn_chat_João')));
 
                 // Offline Group
                 const grpOfflineHeader = h('div', { style: { padding: '4px 10px', fontWeight:'bold', color:'#999', fontSize:'11px', background:'linear-gradient(180deg, #f0f0f0, #e6e6e6)', borderBottom:'1px solid #d5d5d5', borderTop:'1px solid #d5d5d5', cursor:'pointer', display:'flex', alignItems:'center', gap:'4px', marginTop:'2px' } });
@@ -3301,7 +3301,7 @@
         },
 
         // ── MSN CHAT WINDOW FACTORY ─────────────
-        _createMsnChat: (contactName, subtitle, isLets, contactDP) => {
+        _createMsnChat: (contactName, subtitle, isJoão, contactDP) => {
             const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: 'linear-gradient(180deg, #d6dfe8, #bcc8d6)', fontFamily: 'Tahoma, Segoe UI, sans-serif', fontSize: '11px' } });
 
             const playNudgeSound = () => {
@@ -3411,7 +3411,7 @@
             // Render history
             chatBox.innerHTML = `<div style="color: #888; text-align: center; font-size: 10px; margin-bottom: 10px">--- ${contactName} acabou de entrar ---</div>`;
             if (history.length === 0) {
-                if (isLets) {
+                if (isJoão) {
                     chatBox.innerHTML += `<div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div><div style="margin-bottom: 10px; padding-left: 10px; font-family: 'Comic Sans MS'; color: #000080">oioioioi</div>`;
                 } else {
                     chatBox.innerHTML += `<div style="margin-bottom: 5px"><strong style="color: #666">${contactName} diz:</strong></div><div style="margin-bottom: 10px; padding-left: 10px; color: #000080">Olá, tudo bem por ai?</div>`;
@@ -3510,13 +3510,13 @@
                 input.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
 
-                if (isLets) {
+                if (isJoão) {
                     isWaitingReply = true; btn.disabled = true;
                     setTimeout(() => {
                         appendBotMessage('Oioi');
                         isWaitingReply = false; btn.disabled = false; input.focus();
                         setTimeout(() => {
-                            appendSystemMessage('Lets enviou um chamar a atenção!', '#000000');
+                            appendSystemMessage('João enviou um chamar a atenção!', '#000000');
                             playNudgeSound();
                             let win = wrap.closest('.xp-window');
                             if (win) { win.classList.remove('shaking'); void win.offsetWidth; win.classList.add('shaking'); }
@@ -3555,7 +3555,7 @@
         },
 
         msn_chat_tulio: function() { return CONTENT._createMsnChat('Túlio', '"Bora CS?"', false, 'DefaultDPs/Skateboarder.png'); },
-        msn_chat_lets: function() { return CONTENT._createMsnChat('Lets', '"Naquelas longas noites em claro..."', true, 'DefaultDPs/Orange Daisy.png'); },
+        msn_chat_João: function() { return CONTENT._createMsnChat('João', '"Naquelas longas noites em claro..."', true, 'DefaultDPs/Orange Daisy.png'); },
 
         readme: () => {
             const wrap = h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' } });
@@ -4641,7 +4641,7 @@ NUTTERTOOLS - Armas Pesadas
         // MSN chat windows: show contact name as title with MSN icon
         const MSN_CHAT_META = {
             msn_chat_tulio: 'Túlio',
-            msn_chat_lets: 'Lets',
+            msn_chat_João: 'João',
         };
         if (MSN_CHAT_META[id]) {
             title = MSN_CHAT_META[id];
@@ -4697,7 +4697,7 @@ NUTTERTOOLS - Armas Pesadas
             display_properties: { w: '380px', h: '420px' },
             profile_picture_modal: { w: '500px', h: '460px' },
             msn_chat_tulio: { w: '380px', h: '480px' },
-            msn_chat_lets: { w: '380px', h: '480px' },
+            msn_chat_João: { w: '380px', h: '480px' },
         };
         const sz = WIN_SIZES[id] || {};
         if (id.startsWith('proj_')) {
@@ -4824,7 +4824,7 @@ NUTTERTOOLS - Armas Pesadas
             });
 
             // MSN chat windows: resolve icon/label for taskbar
-            const MSN_TB = { msn_chat_tulio: 'Túlio', msn_chat_lets: 'Lets' };
+            const MSN_TB = { msn_chat_tulio: 'Túlio', msn_chat_João: 'João' };
             const tbIcon = MSN_TB[id]
                 ? h('img', { src: 'icones/msn_messenger.webp', style: { width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' } })
                 : (icon?.icon && icon.icon.includes('.')) 
