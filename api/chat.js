@@ -110,6 +110,16 @@ module.exports = async function handler(req, res) {
                 const data = await resp.json();
                 return res.status(200).json(data);
             }
+            if (req.query.testModel) {
+                try {
+                    const model = genAI.getGenerativeModel({ model: req.query.testModel });
+                    const result = await model.generateContent(req.query.msg || 'Diga oi');
+                    const text = result.response.text();
+                    return res.status(200).json({ success: true, model: req.query.testModel, reply: text });
+                } catch (e) {
+                    return res.status(200).json({ success: false, model: req.query.testModel, error: e.message });
+                }
+            }
             const queryMsg = req.query.msg || 'Diga oi';
             const { text, modelUsed } = await generateWithFallback(genAI, queryMsg, TULIO_PROMPT);
             return res.status(200).json({
