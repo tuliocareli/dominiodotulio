@@ -45,8 +45,43 @@ SEU LADO PROFISSIONAL (O TÚLIO DESIGNER):
 OBJETIVO E FORMATO DA CONVERSA:
 - Responda de forma CURTA (máximo 1 a 3 frases curtas). Estamos no MSN, ninguém manda textão.`;
 
+// Modelos candidatos em ordem de prioridade (com fallback automatico caso ocorra 503/alta demanda)
+const CANDIDATE_MODELS = [
+    'gemini-1.5-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash-8b',
+    'gemini-1.5-pro',
+    'gemini-flash-latest'
+];
+
+async function generateWithFallback(genAI, contents, systemInstruction) {
+    let lastError = null;
+
+    for (const modelName of CANDIDATE_MODELS) {
+        try {
+            const modelConfig = { model: modelName };
+            if (systemInstruction) {
+                modelConfig.systemInstruction = systemInstruction;
+            }
+            const model = genAI.getGenerativeModel(modelConfig);
+
+            const result = await model.generateContent(contents);
+            const response = await result.response;
+            const text = response.text().trim();
+            if (text) {
+                return { text, modelUsed: modelName };
+            }
+        } catch (err) {
+            console.warn("[Gemini Fallback]", modelName, err.message);
+            lastError = err;
+        }
+    }
+
+    throw lastError || new Error('Nenhum modelo Gemini respondeu com sucesso.');
+}
+
 module.exports = async function handler(req, res) {
-    // Segurança: Permitir o domínio oficial, localhost e apenas URLs deste projeto na Vercel
+    // Seguranca: Permitir o dominio oficial, localhost e apenas URLs deste projeto na Vercel
     const origin = req.headers.origin;
     // Regex: Aceita 'dominiodotulio.vercel.app' ou URLs de preview como 'dominiodotulio-git-main.vercel.app'
     const isMyVercelProject = origin && /^https:\/\/dominiodotulio.*\.vercel\.app$/.test(origin);
@@ -67,16 +102,14 @@ module.exports = async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
-        // gemini-flash-latest é o alias que o Google confirmou estar disponível para sua chave
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
         if (req.method === 'GET') {
             const queryMsg = req.query.msg || 'Diga oi';
-            const result = await model.generateContent(queryMsg);
-            const response = await result.response;
+            const { text, modelUsed } = await generateWithFallback(genAI, queryMsg, TULIO_PROMPT);
             return res.status(200).json({
                 status: 'CONECTADO! 🚀',
-                reply: response.text().trim()
+                model: modelUsed,
+                reply: text
             });
         }
 
@@ -84,13 +117,11 @@ module.exports = async function handler(req, res) {
             const { message } = req.body || {};
             if (!message) return res.status(400).json({ error: 'Mensagem vazia' });
 
-            const result = await model.generateContent({
-                contents: [{ role: 'user', parts: [{ text: message }] }],
-                systemInstruction: TULIO_PROMPT
+            const { text, modelUsed } = await generateWithFallback(genAI, message, TULIO_PROMPT);
+            return res.status(200).json({
+                model: modelUsed,
+                reply: text
             });
-
-            const response = await result.response;
-            return res.status(200).json({ reply: response.text().trim() });
         }
     } catch (err) {
         return res.status(500).json({ error: 'Erro de Integração', detail: err.message });
