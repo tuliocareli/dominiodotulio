@@ -45,20 +45,43 @@ SEU LADO PROFISSIONAL (O TÚLIO DESIGNER):
 OBJETIVO E FORMATO DA CONVERSA:
 - Responda de forma CURTA (máximo 1 a 3 frases curtas). Estamos no MSN, ninguém manda textão.`;
 
-// Modelos candidatos em ordem de prioridade (com fallback automatico caso ocorra 503/alta demanda)
+// Modelos Gemini validados para a API v1beta
+// - gemini-flash-lite-latest e gemini-3.5-flash-lite: latência ultrabaixa, rápidos e com cotas disponíveis
+// - gemini-3.5-flash e gemini-3.6-flash: modelos flash robustos como fallback
+// - gemini-3.8-flash: modelo principal de última geração (caso tenha cota diária disponível)
 const CANDIDATE_MODELS = [
-    'gemini-3.8-flash',
-    'gemini-3.8-pro',
-    'gemini-2.5-flash',
-    'gemini-flash-latest'
+    'gemini-flash-lite-latest',
+    'gemini-3.5-flash-lite',
+    'gemini-3.5-flash',
+    'gemini-3.6-flash',
+    'gemini-3.8-flash'
 ];
+
+// Respostas nostálgicas em persona para fallback em caso de indisponibilidade geral da Google API
+const OFFLINE_MSN_REPLIES = [
+    'malz ai mano, minha internet discada caiu aqui rapidão O_o manda de novo em 1 seg!',
+    'vish, a linha telefonica chiou e desconectou o msn aqui xD o q vc tinha falado?',
+    'minha mãe mandou desligar o pc pq precisa usar o telefone O_o pera ai, manda de novo!',
+    'opa, deu um lag monstro aqui no msn =/ manda a msg de novo mano!'
+];
+
+function getRandomOfflineReply() {
+    const idx = Math.floor(Math.random() * OFFLINE_MSN_REPLIES.length);
+    return OFFLINE_MSN_REPLIES[idx];
+}
 
 async function generateWithFallback(genAI, contents, systemInstruction) {
     const errors = [];
 
     for (const modelName of CANDIDATE_MODELS) {
         try {
-            const modelConfig = { model: modelName };
+            const modelConfig = { 
+                model: modelName,
+                generationConfig: {
+                    maxOutputTokens: 180,
+                    temperature: 0.8
+                }
+            };
             if (systemInstruction) {
                 modelConfig.systemInstruction = systemInstruction;
             }
@@ -71,20 +94,23 @@ async function generateWithFallback(genAI, contents, systemInstruction) {
                 return { text, modelUsed: modelName };
             }
         } catch (err) {
-            console.warn("[Gemini Fallback]", modelName, err.message);
+            console.warn(`[Gemini Fallback] Modelo ${modelName} falhou:`, err.message);
             errors.push({ model: modelName, error: err.message });
         }
     }
 
-    const err = new Error('Nenhum modelo Gemini respondeu com sucesso.');
-    err.details = errors;
-    throw err;
+    // Se nenhum modelo externo responder (queda global/cota esgotada), retorna fala em persona
+    return {
+        text: getRandomOfflineReply(),
+        modelUsed: 'offline-msn-fallback',
+        isOfflineFallback: true,
+        errors
+    };
 }
 
 module.exports = async function handler(req, res) {
-    // Seguranca: Permitir o dominio oficial, localhost e apenas URLs deste projeto na Vercel
+    // Segurança: Permitir o domínio oficial, localhost e URLs do projeto na Vercel
     const origin = req.headers.origin;
-    // Regex: Aceita 'dominiodotulio.vercel.app' ou URLs de preview como 'dominiodotulio-git-main.vercel.app'
     const isMyVercelProject = origin && /^https:\/\/dominiodotulio.*\.vercel\.app$/.test(origin);
     const allowedOrigins = ['https://tuliocareli.com', 'http://localhost:3000', 'http://127.0.0.1:5500'];
 
@@ -99,28 +125,18 @@ module.exports = async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
 
     const apiKey = (process.env.GEMINI_API_KEY || '').trim().replace(/[\n\r\s]/g, '');
-    if (!apiKey) return res.status(500).json({ error: 'Falta GEMINI_API_KEY na Vercel.' });
+    if (!apiKey) {
+        return res.status(200).json({
+            model: 'offline-msn-fallback',
+            reply: getRandomOfflineReply()
+        });
+    }
 
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
 
         if (req.method === 'GET') {
-            if (req.query.listModels) {
-                const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey);
-                const data = await resp.json();
-                return res.status(200).json(data);
-            }
-            if (req.query.testModel) {
-                try {
-                    const model = genAI.getGenerativeModel({ model: req.query.testModel });
-                    const result = await model.generateContent(req.query.msg || 'Diga oi');
-                    const text = result.response.text();
-                    return res.status(200).json({ success: true, model: req.query.testModel, reply: text });
-                } catch (e) {
-                    return res.status(200).json({ success: false, model: req.query.testModel, error: e.message });
-                }
-            }
-            const queryMsg = req.query.msg || 'Diga oi';
+            const queryMsg = (req.query.msg || 'Diga oi').trim();
             const { text, modelUsed } = await generateWithFallback(genAI, queryMsg, TULIO_PROMPT);
             return res.status(200).json({
                 status: 'CONECTADO! 🚀',
@@ -131,16 +147,25 @@ module.exports = async function handler(req, res) {
 
         if (req.method === 'POST') {
             const { message } = req.body || {};
-            if (!message) return res.status(400).json({ error: 'Mensagem vazia' });
+            if (!message || typeof message !== 'string' || !message.trim()) {
+                return res.status(400).json({ error: 'Mensagem vazia' });
+            }
 
-            const { text, modelUsed } = await generateWithFallback(genAI, message, TULIO_PROMPT);
+            // Sanitiza e limita tamanho para evitar consumo excessivo de tokens
+            const sanitizedMsg = message.trim().slice(0, 400);
+
+            const { text, modelUsed } = await generateWithFallback(genAI, sanitizedMsg, TULIO_PROMPT);
             return res.status(200).json({
                 model: modelUsed,
                 reply: text
             });
         }
     } catch (err) {
-        return res.status(500).json({ error: 'Erro de Integração', detail: err.message, modelErrors: err.details || [] });
+        console.error('[API Chat Error]', err);
+        return res.status(200).json({
+            model: 'offline-msn-fallback',
+            reply: getRandomOfflineReply()
+        });
     }
 
     return res.status(405).json({ error: 'Método não suportado' });
