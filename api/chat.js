@@ -105,6 +105,11 @@ module.exports = async function handler(req, res) {
         const genAI = new GoogleGenerativeAI(apiKey);
 
         if (req.method === 'GET') {
+            if (req.query.listModels) {
+                const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey);
+                const data = await resp.json();
+                return res.status(200).json(data);
+            }
             const queryMsg = req.query.msg || 'Diga oi';
             const { text, modelUsed } = await generateWithFallback(genAI, queryMsg, TULIO_PROMPT);
             return res.status(200).json({
