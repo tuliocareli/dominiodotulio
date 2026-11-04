@@ -55,7 +55,7 @@ const CANDIDATE_MODELS = [
 ];
 
 async function generateWithFallback(genAI, contents, systemInstruction) {
-    let lastError = null;
+    const errors = [];
 
     for (const modelName of CANDIDATE_MODELS) {
         try {
@@ -73,11 +73,13 @@ async function generateWithFallback(genAI, contents, systemInstruction) {
             }
         } catch (err) {
             console.warn("[Gemini Fallback]", modelName, err.message);
-            lastError = err;
+            errors.push({ model: modelName, error: err.message });
         }
     }
 
-    throw lastError || new Error('Nenhum modelo Gemini respondeu com sucesso.');
+    const err = new Error('Nenhum modelo Gemini respondeu com sucesso.');
+    err.details = errors;
+    throw err;
 }
 
 module.exports = async function handler(req, res) {
@@ -124,7 +126,7 @@ module.exports = async function handler(req, res) {
             });
         }
     } catch (err) {
-        return res.status(500).json({ error: 'Erro de Integração', detail: err.message });
+        return res.status(500).json({ error: 'Erro de Integração', detail: err.message, modelErrors: err.details || [] });
     }
 
     return res.status(405).json({ error: 'Método não suportado' });
