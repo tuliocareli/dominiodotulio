@@ -47,10 +47,9 @@ OBJETIVO E FORMATO DA CONVERSA:
 
 // Modelos candidatos em ordem de prioridade (com fallback automatico caso ocorra 503/alta demanda)
 const CANDIDATE_MODELS = [
-    'gemini-1.5-flash',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash-8b',
-    'gemini-1.5-pro',
+    'gemini-3.8-flash',
+    'gemini-3.8-pro',
+    'gemini-2.5-flash',
     'gemini-flash-latest'
 ];
 
