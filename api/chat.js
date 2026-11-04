@@ -45,10 +45,7 @@ SEU LADO PROFISSIONAL (O TÚLIO DESIGNER):
 OBJETIVO E FORMATO DA CONVERSA:
 - Responda de forma CURTA (máximo 1 a 3 frases curtas). Estamos no MSN, ninguém manda textão.`;
 
-// Modelos Gemini validados para a API v1beta
-// - gemini-flash-lite-latest e gemini-3.5-flash-lite: latência ultrabaixa, rápidos e com cotas disponíveis
-// - gemini-3.5-flash e gemini-3.6-flash: modelos flash robustos como fallback
-// - gemini-3.8-flash: modelo principal de última geração (caso tenha cota diária disponível)
+// Modelos Gemini validados e ordenados por confiabilidade e latência
 const CANDIDATE_MODELS = [
     'gemini-flash-lite-latest',
     'gemini-3.5-flash-lite',
@@ -57,7 +54,7 @@ const CANDIDATE_MODELS = [
     'gemini-3.8-flash'
 ];
 
-// Respostas nostálgicas em persona para fallback em caso de indisponibilidade geral da Google API
+// Respostas de fallback imersivas no tema MSN 2005 caso todas as chamadas de API falhem
 const OFFLINE_MSN_REPLIES = [
     'malz ai mano, minha internet discada caiu aqui rapidão O_o manda de novo em 1 seg!',
     'vish, a linha telefonica chiou e desconectou o msn aqui xD o q vc tinha falado?',
@@ -70,8 +67,56 @@ function getRandomOfflineReply() {
     return OFFLINE_MSN_REPLIES[idx];
 }
 
-async function generateWithFallback(genAI, contents, systemInstruction) {
+/**
+ * Sanitiza e formata o histórico para os requisitos do Google Generative AI:
+ * 1. Limita estritamente às últimas 4 mensagens para máxima economia de tokens no Free Tier
+ * 2. Trunca cada mensagem para no máximo 150 caracteres
+ * 3. Garante alternância estrita de papéis (user -> model -> user -> model)
+ * 4. Garante que o histórico inicie com 'user' e termine com 'model'
+ */
+function sanitizeHistory(rawHistory) {
+    if (!Array.isArray(rawHistory) || rawHistory.length === 0) {
+        return [];
+    }
+
+    const recent = rawHistory.slice(-4);
+    const validHistory = [];
+
+    for (const item of recent) {
+        if (!item || typeof item !== 'object') continue;
+        const role = item.role === 'model' ? 'model' : item.role === 'user' ? 'user' : null;
+        if (!role) continue;
+
+        const text = typeof item.text === 'string' ? item.text.trim().slice(0, 150) : '';
+        if (!text) continue;
+
+        // Evita papéis repetidos consecutivamente
+        if (validHistory.length > 0 && validHistory[validHistory.length - 1].role === role) {
+            continue;
+        }
+
+        validHistory.push({
+            role,
+            parts: [{ text }]
+        });
+    }
+
+    // Regra da API Gemini: o histórico deve iniciar com mensagem do 'user'
+    while (validHistory.length > 0 && validHistory[0].role !== 'user') {
+        validHistory.shift();
+    }
+
+    // Regra da API Gemini: o histórico deve terminar com 'model' para a nova mensagem ser 'user'
+    while (validHistory.length > 0 && validHistory[validHistory.length - 1].role !== 'model') {
+        validHistory.pop();
+    }
+
+    return validHistory;
+}
+
+async function generateWithFallback(genAI, message, rawHistory, systemInstruction) {
     const errors = [];
+    const formattedHistory = sanitizeHistory(rawHistory);
 
     for (const modelName of CANDIDATE_MODELS) {
         try {
@@ -87,7 +132,19 @@ async function generateWithFallback(genAI, contents, systemInstruction) {
             }
             const model = genAI.getGenerativeModel(modelConfig);
 
-            const result = await model.generateContent(contents);
+            let result;
+            if (formattedHistory.length > 0) {
+                try {
+                    const chat = model.startChat({ history: formattedHistory });
+                    result = await chat.sendMessage(message);
+                } catch (chatErr) {
+                    console.warn(`[Gemini Chat History Error on ${modelName}]:`, chatErr.message);
+                    result = await model.generateContent(message);
+                }
+            } else {
+                result = await model.generateContent(message);
+            }
+
             const response = await result.response;
             const text = response.text().trim();
             if (text) {
@@ -99,7 +156,6 @@ async function generateWithFallback(genAI, contents, systemInstruction) {
         }
     }
 
-    // Se nenhum modelo externo responder (queda global/cota esgotada), retorna fala em persona
     return {
         text: getRandomOfflineReply(),
         modelUsed: 'offline-msn-fallback',
@@ -109,7 +165,6 @@ async function generateWithFallback(genAI, contents, systemInstruction) {
 }
 
 module.exports = async function handler(req, res) {
-    // Segurança: Permitir o domínio oficial, localhost e URLs do projeto na Vercel
     const origin = req.headers.origin;
     const isMyVercelProject = origin && /^https:\/\/dominiodotulio.*\.vercel\.app$/.test(origin);
     const allowedOrigins = ['https://tuliocareli.com', 'http://localhost:3000', 'http://127.0.0.1:5500'];
@@ -137,7 +192,7 @@ module.exports = async function handler(req, res) {
 
         if (req.method === 'GET') {
             const queryMsg = (req.query.msg || 'Diga oi').trim();
-            const { text, modelUsed } = await generateWithFallback(genAI, queryMsg, TULIO_PROMPT);
+            const { text, modelUsed } = await generateWithFallback(genAI, queryMsg, [], TULIO_PROMPT);
             return res.status(200).json({
                 status: 'CONECTADO! 🚀',
                 model: modelUsed,
@@ -146,15 +201,15 @@ module.exports = async function handler(req, res) {
         }
 
         if (req.method === 'POST') {
-            const { message } = req.body || {};
+            const { message, history } = req.body || {};
             if (!message || typeof message !== 'string' || !message.trim()) {
                 return res.status(400).json({ error: 'Mensagem vazia' });
             }
 
-            // Sanitiza e limita tamanho para evitar consumo excessivo de tokens
-            const sanitizedMsg = message.trim().slice(0, 400);
+            // Limita o tamanho da mensagem para economia de tokens
+            const sanitizedMsg = message.trim().slice(0, 300);
 
-            const { text, modelUsed } = await generateWithFallback(genAI, sanitizedMsg, TULIO_PROMPT);
+            const { text, modelUsed } = await generateWithFallback(genAI, sanitizedMsg, history, TULIO_PROMPT);
             return res.status(200).json({
                 model: modelUsed,
                 reply: text

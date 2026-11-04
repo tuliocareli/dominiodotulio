@@ -3533,11 +3533,21 @@
                 chatBox.appendChild(typingEl);
                 chatBox.scrollTop = chatBox.scrollHeight;
 
+                // Extrai no máximo 4 mensagens anteriores (2 turnos) para contexto econômico no Free Tier
+                const recentHistory = history
+                    .slice(0, -1)
+                    .filter(m => m.text && !m.type)
+                    .slice(-4)
+                    .map(m => ({
+                        role: (m.sender === 'Visitante' || m.sender === 'Você') ? 'user' : 'model',
+                        text: String(m.text).slice(0, 150)
+                    }));
+
                 try {
                     const response = await fetch('/api/chat', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: rawMsg })
+                        body: JSON.stringify({ message: rawMsg, history: recentHistory })
                     });
                     typingEl.remove();
                     if (!response.ok) { appendBotMessage('Opa, tive um probleminha aqui. Tenta de novo já já!'); }
